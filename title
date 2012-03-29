@@ -1,0 +1,13 @@
+#! /bin/bash
+
+
+case "$TERM" in 
+    rxvt*|xterm*)
+        tit=${@//$HOME/\~}
+        printf '\e]2;%s\a' "$tit"
+        ;;
+    *)
+        echo 'the title attribute is not supported' >&2
+        exit 1
+        ;;
+esac

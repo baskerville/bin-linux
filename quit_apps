@@ -1,0 +1,6 @@
+#! /bin/dash
+
+awid=$(xdotool getactivewindow)
+aclass=$(xprop WM_CLASS -id "$awid" | sed 's/^.*"\([^"]\+\)"$/\1/')
+
+printf "%s\n" "$aclass"

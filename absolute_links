@@ -1,0 +1,34 @@
+#! /bin/dash
+
+uri=$1
+cookies=$2
+http_dir=$(dirname "$uri")
+http_root=$(top_dir "$uri")
+
+case $uri in
+    file://*)
+        hrefs=$(cat "${uri#file://}" | tr '\n' ' ' | grep -io 'href="[^"]\+"' | sort -u | sed 's/href="\([^"]\+\)"/\1/i')
+        ;;
+    *)
+        hrefs=$(wget -qO - --load-cookies "$cookies" "$uri" | tr '\n' ' ' | grep -io 'href="[^"]\+"' | sort -u | sed 's/href="\([^"]\+\)"/\1/i')
+        ;;
+esac
+
+for ref in $hrefs
+do
+    case $ref in
+        *://*)
+            printf "%s\n" "$ref"
+            ;;
+        *)
+            case $ref in
+                /*)
+                    printf "%s\n" "${http_root%/}/${ref#/}"
+                    ;;
+                *)
+                    printf "%s\n" "${http_dir%/}/${ref#/}"
+                    ;;
+            esac
+            ;;
+    esac
+done

@@ -1,0 +1,63 @@
+#! /usr/bin/env python2
+# -*- coding: utf-8 -*-
+
+import re
+import sys
+from PIL import Image, ImageDraw
+from math import ceil
+
+horizontal_squares = 8
+output_square_side = 30
+
+args = sys.argv[1:]
+if len(args) > 0:
+    horizontal_squares = int(args[0])
+    if len(args) > 1:
+        output_square_side = int(args[1])
+
+# palette = set()
+palette = []
+
+def remove_duplicates(seq, idfun=None): 
+    if idfun is None:
+        def idfun(x): return x
+    seen = {}
+    result = []
+    for item in seq:
+        marker = idfun(item)
+        if marker in seen: continue
+        seen[marker] = 1
+        result.append(item)
+    return result
+
+for line in sys.stdin:
+    color_codes = re.findall('#[0-9A-F]{6}', line, flags=re.IGNORECASE)
+    # palette.update(color_codes)
+    palette.extend(color_codes)
+
+palette = remove_duplicates(palette)
+
+if len(palette) < 1:
+    print >> sys.stderr, 'no color found'
+    sys.exit(1)
+
+print(len(palette))
+
+vertical_squares = int(ceil(len(palette) / float(horizontal_squares)))
+output_width = horizontal_squares * output_square_side
+output_height = vertical_squares * output_square_side
+output = Image.new('RGBA', (output_width, output_height))
+draw = ImageDraw.Draw(output)
+
+i = j = 0
+
+for c in palette:
+    draw.rectangle([i * output_square_side, j * output_square_side, 
+                    (i + 1) * output_square_side - 1, (j + 1) * output_square_side - 1], fill=c)
+    i = i + 1
+    if i >= horizontal_squares:
+        i = 0
+        j = j + 1
+
+output.save("output.png")
+

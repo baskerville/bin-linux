@@ -1,0 +1,4 @@
+#! /bin/dash
+
+pkill -x neap
+pkill -x tint2

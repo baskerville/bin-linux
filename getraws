@@ -1,0 +1,3 @@
+#! /bin/dash
+
+gphoto2 --get-all-files 2> /dev/null

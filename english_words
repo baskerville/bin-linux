@@ -1,0 +1,5 @@
+#! /bin/dash
+
+DI_PATH=$XDG_DATA_HOME/dicen.txt
+
+[ -n "$@" ] && grep -E "$@" "$DI_PATH"

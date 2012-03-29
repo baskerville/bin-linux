@@ -1,0 +1,7 @@
+#! /bin/bash
+
+files=(*)
+N=${#files[@]}
+((N=RANDOM%N))
+randomfile=${files[$N]}
+echo $randomfile

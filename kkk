@@ -1,0 +1,5 @@
+#! /bin/dash
+
+PID=$(pgrep -x "$@")
+
+[ -n "$PID" ] && kill -KILL "$PID"

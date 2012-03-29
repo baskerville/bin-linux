@@ -1,0 +1,31 @@
+#! /usr/bin/python
+
+import sys, re
+from os.path import basename
+
+COLOR_CHUNKS = [40 * j + (55 * (j > 0)) for j in range(6)]
+MONOTONE_CHUNKS = [10 * i + 8 for i in range(24)]
+COLORS = [(i, j, k) for i in COLOR_CHUNKS for j in COLOR_CHUNKS for k in COLOR_CHUNKS]
+MONOTONES = [(i, i, i) for i in MONOTONE_CHUNKS]
+NUMERAL_BASE = 16
+START_OF_COLORS = 16
+START_OF_MONOTONES = 232
+END_OF_MONOTONES = 255
+
+def expand_value(match_obj):
+    color = int(match_obj.group(0))
+    if color >= START_OF_COLORS and color <= END_OF_MONOTONES:
+        if color < START_OF_MONOTONES:
+            idx = color - START_OF_COLORS 
+            html = COLORS[idx]
+        else:
+            idx = color - START_OF_MONOTONES
+            html = MONOTONES[idx]
+        html_components = ['%02x' % c for c in html]
+        html_code = ('#%s' % (''.join(html_components))).upper()
+        return html_code
+    return match_obj.group(0)
+
+for line in sys.stdin:
+    sline = re.sub('(?<=\s)\d+', expand_value, line)
+    print(sline, end='')

@@ -1,0 +1,8 @@
+#! /bin/dash
+
+while true ; do
+    date "+datetime %d, %a, %H:%M"
+    # printf "datetime hello man\n"
+    sleep 1
+done | awk '$0 != line {print; line = $0; fflush();}'
+# done

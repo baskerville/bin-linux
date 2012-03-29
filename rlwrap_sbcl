@@ -1,0 +1,3 @@
+#! /bin/dash
+
+rlwrap -r -b '()' -m '¬' -i -f ~/.sbcl_completions sbcl --noinform $@

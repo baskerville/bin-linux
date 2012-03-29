@@ -1,0 +1,5 @@
+#! /bin/dash
+
+LANG_PATH=$XDG_DATA_HOME/languages.txt
+
+[ -n "$@" ] && egrep "$@" "$LANG_PATH" | awk '{printf("%-23s %s\n",$1,$2)}'

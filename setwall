@@ -1,0 +1,4 @@
+#! /bin/dash
+
+ln -sf "$@" ~/.wallpaper
+imlibsetroot -s a ~/.wallpaper

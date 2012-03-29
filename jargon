@@ -1,0 +1,3 @@
+#! /bin/dash
+
+dict -d jargon "$@" | grep "^[[:space:]]"

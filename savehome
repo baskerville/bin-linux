@@ -1,0 +1,35 @@
+#! /bin/dash
+
+while [ $# -gt 0 ]
+do
+    case $1 in
+        dots)
+            tar -cvz -C ~ -f dots.tgz .coordinates .mpoprc .msmtprc .surfraw.conf .xscreensaver .procmailrc .jnewsrc .urlview .eatrc
+            ;;
+        dirs)
+            tar -cvz -C ~ -f dirs.tgz .local .config .mutt .vim .mpd .themes .colors .fonts .icons .aria2 .mplayer .irssi .pal .FontForge .ssh .w3m .elinks .ncmpcpp .mldonkey/*.ini
+            ;;
+        bin)
+            tar -cvz -C ~ -f bin.tgz bin
+            ;;
+        usenet)
+            tar -cvz -C ~ -f usenet.tgz .slrn .slrnpull/slrnpull.conf
+            ;;
+        mail)
+            tar -cvz -C ~ -f mail.tgz .maildir
+            ;;
+        src)
+            tar -cvz -C ~ -f src.tgz src/lang src/github src/aur
+            ;;
+        aur)
+            tar -cvz -C ~ -f src.tgz src/aur
+            ;;
+        doc)
+            tar -cvz -C ~ -f doc.tgz doc
+            ;;
+        sys)
+            tar -cvz -C ~ -f sys.tgz /etc/rc.conf /etc/rc.local /boot/grub/menu.lst /usr/local/bin/brightness /etc/pacman.conf /etc/udev/rules.d/* /etc/pm/sleep.d/49xscreensaver
+            ;;
+    esac
+    shift
+done

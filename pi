@@ -1,0 +1,8 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    REF=$(eat find $1)
+    REF=${REF##*\'}
+    printf '[img]%b[/img]\n' "$(eat blob $REF)"
+    shift
+done

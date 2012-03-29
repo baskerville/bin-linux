@@ -1,0 +1,56 @@
+#! /usr/bin/env python2
+
+from xml.dom import minidom
+from getopt import gnu_getopt
+import sys
+
+SYMBOL_ITEM_ELT = "DOMSymbolItem"
+SYMBOL_INSTANCE_ELT = "DOMSymbolInstance"
+TIMELINE_ELT = "DOMTimeline"
+DYNAMIC_TEXT_ELT = "DOMDynamicText"
+LINKAGE_ATTR = "linkageClassName"
+NAME_ATTR = "name"
+VAR_ACCESS = "protected var"
+VAR_CLASS = "MovieClip"
+DYNAMIC_TEXT_CLASS = "TextField"
+
+#rawNames = False
+
+def main(args):
+    #optlist, args = gnu_getopt(args, 'r');
+    #for o, a in optlist:
+        #if o == '-r':
+            #rawNames = True
+    for arg in args:
+        fd = open(arg);
+        dom = minidom.parse(fd);
+        nodelist = dom.getElementsByTagName(SYMBOL_ITEM_ELT)
+        for element in nodelist:
+            if (element.hasAttribute(LINKAGE_ATTR)):
+                class_name = element.getAttribute(LINKAGE_ATTR)
+                class_name_list = list(class_name)
+                class_name_list[0] = class_name_list[0].lower()
+                instance_name = ''.join(class_name_list)
+                print "%s %s:%s = new %s();" % (VAR_ACCESS, instance_name, VAR_CLASS, class_name)
+                #if (rawNames):
+                    #print instance_name
+                #else:
+                    #print "%s %s:%s = new %s();" % (VAR_ACCESS, instance_name, VAR_CLASS, class_name)
+                children = element.getElementsByTagName(SYMBOL_INSTANCE_ELT)
+                for child in children:
+                    child_name = child.getAttribute(NAME_ATTR)
+                    print "%s %s:%s = %s.%s;" % (VAR_ACCESS, child_name, VAR_CLASS, instance_name, child_name)
+            else:
+                timelinelist = element.getElementsByTagName(TIMELINE_ELT)
+                for timeline in timelinelist:
+                    timeline_name = timeline.getAttribute(NAME_ATTR)
+                    children = timeline.getElementsByTagName(DYNAMIC_TEXT_ELT)
+                    for child in children:
+                        child_name = child.getAttribute(NAME_ATTR)
+                        print "%s %s:%s = %s.%s;" % (VAR_ACCESS, child_name, DYNAMIC_TEXT_CLASS, timeline_name, child_name)
+
+
+        fd.close()
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

@@ -1,0 +1,9 @@
+#! /bin/dash
+
+while [ $# -gt 0 ]
+do
+    for i in *."$1" ; do
+        open "$i"
+    done
+    shift
+done

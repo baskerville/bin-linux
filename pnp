@@ -1,0 +1,61 @@
+#! /bin/dash
+
+MEDIA_DIR=/media
+DVD_LABEL=dvd
+
+if [ $# -lt 1 ] ; then
+    printf "no arguments given\n" >&2
+    exit 1
+fi
+
+action=$1
+
+case $action in
+    m|mount)
+        device=$(ls -1td /dev/s* | head -n 1 | grep '/dev/s\(d[b-z]\|r\)[0-9]\+' )
+        if [ -z "$device" ] ; then
+            printf "no device matched\n" >&2
+            exit 1
+        fi
+        mount_point=''
+        mount_options=''
+        case $device in
+            /dev/sr*)
+                mount_point="$MEDIA_DIR/$DVD_LABEL"
+                ;;
+            *)
+                mount_options='-o relatime'
+                device_label=$(sudo blkid -o value -s LABEL $device | tr '[:upper:]' '[:lower:]')
+                device_type=$(sudo blkid -o value -s TYPE $device)
+                case $device_type in
+                    vfat|ntfs)
+                        mount_options="$mount_options,flush,utf8,gid=100,umask=002"
+                        ;;
+                esac
+                if [ -n "$device_label" ] ; then
+                   mount_point="$MEDIA_DIR/$device_label"
+                else
+                   mount_point=$(mktemp -d --tmpdir $MEDIA_DIR nonameXXX)
+                fi
+                ;;
+        esac
+        printf "mounting '%b' to '%b'\n" "$device" "$mount_point"
+        sudo mkdir "$mount_point"
+        sudo mount $mount_options "$device" "$mount_point"
+        # if [ -t 1 ] ; then
+        #     ncd "$mount_point"
+        # fi
+        ;;
+    u|umount)
+        mount_point=$(ls -1td $MEDIA_DIR/* | head -n 1) > /dev/null 2>&1
+        if [ -n "$mount_point" ] ; then
+            printf "unmounting '%b'\n" "$mount_point"
+            sudo umount "$mount_point"
+            sudo rmdir "$mount_point"
+        fi
+        ;;
+    *)
+        printf "unknown action: '%b'\n" $action >&2
+        exit 1
+        ;;
+esac

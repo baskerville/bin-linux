@@ -1,0 +1,7 @@
+#! /bin/dash
+
+if daytime ; then
+    togglethm light
+else
+    togglethm dark
+fi

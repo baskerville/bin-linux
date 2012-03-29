@@ -1,0 +1,8 @@
+#! /bin/dash
+
+export LC_ALL='C'
+
+if [ -n "$@" ]
+then
+    cat $@ | perl -pe 's/(.)/$1\n/g' | sort | uniq -c | sort -nr
+fi

@@ -1,0 +1,32 @@
+#! /bin/dash
+
+
+while [ $# -gt 0 ] ; do
+    pattern=$1
+    exact=$XDG_DOTFILES_DIR/$pattern
+    if [ -e "$exact" ] ; then
+        editor "$exact"
+    else
+        case "$pattern" in
+            tco)
+                editor "$XDG_COLORS_DIR/current"
+                ;;
+            vth)
+                editor ~/.vim/colors/theme.vim
+                ;;
+            mth)
+                editor ~/.mutt/theme
+                ;;
+            # oth)
+            #     editor "$XDG_DOTFILES_DIR/themes/openbox/themerc"
+            #     ;;
+            *)
+                dots="$(find "$XDG_DOTFILES_DIR" -maxdepth 1 -type f -iname "*$@*" -print0 | xargs -0)"
+                if [ -n "$dots" ]; then
+                    editor $dots
+                fi
+                ;;
+        esac
+    fi
+    shift
+done

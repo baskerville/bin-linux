@@ -1,0 +1,18 @@
+#! /bin/dash
+
+mime_type=$(file -L -b --mime-type "$@")
+
+case $mime_type in
+    video/* | application/vnd.rn-realmedia | audio/* | image/*)
+        mediainfo "$@" ;;
+    application/pdf)
+        pdfinfo "$@" ;;
+    application/zip)
+        unzip -l "$@" ;;
+    application/x-lha)
+        lha -l "$@" ;;
+    application/x-rar)
+        unrar l "$@" ;;
+    *)
+        file -b "$@" ;;
+esac

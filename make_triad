@@ -1,0 +1,52 @@
+#! /usr/bin/python
+
+import sys
+from grapefruit import Color
+
+LUM_GAP = 10
+FG_LUMS = [69.03, 72.75, 76.42]
+FG_NAMES = ['nero', 'cold_grey', 'fuscous_grey']
+COL_NAMES = ['RED', 'GRN', 'BLU', 'YEL', 'CYN', 'MAG']
+DARK_INDEXES = [1, 2, 4, 3, 6, 5]
+SCHEME_NAME = 'invisibone'
+
+def space_fill(num):
+    if num < 10:
+        return ' '
+    else:
+        return ''
+
+def main():
+    args = sys.argv[1:]
+    # arguments must be html colors of red and yellow
+    if len(args) > 0:
+        for fg_lum, fg_name in zip(FG_LUMS, FG_NAMES):
+            color_scheme = []
+            bright_lum = fg_lum + LUM_GAP
+            dark_lum = fg_lum - LUM_GAP
+            for generator in args:
+                c1 = Color.NewFromHtml(generator)
+                c2, c3 = c1.TriadicScheme(120, 'rgb')
+                for c in [c1, c2, c3]:
+                    (L, a, b) = c.lab
+                    dc = Color.NewFromLab(dark_lum, a, b)
+                    bc = Color.NewFromLab(bright_lum, a, b)
+                    hdc = dc.html.upper()
+                    hbc = bc.html.upper()
+                    color_scheme.append((hdc, hbc))
+            current_file = open('%s-%s' % (SCHEME_NAME, fg_name), 'w')
+            print('#include "monotones-%s"' % fg_name, file=current_file)
+            print('', file=current_file)
+            for pair, name, dark_index in zip(color_scheme, COL_NAMES, DARK_INDEXES):
+                (dark_color, light_color) = pair
+                light_index = dark_index + 8
+                print('!%s' % name, file=current_file)
+                print('URxvt.color%s: %s%s' % (dark_index, space_fill(dark_index), dark_color), file=current_file)
+                print('URxvt.color%s: %s%s' % (light_index, space_fill(light_index), light_color), file=current_file)
+                print('', file=current_file)
+            print('! vim: set ft=xdefaults:', file=current_file)
+            current_file.close()
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,1 @@
+../src/lang/shell/post_install.sh

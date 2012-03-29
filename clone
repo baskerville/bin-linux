@@ -1,0 +1,13 @@
+#! /bin/dash
+
+[ $# -lt 1 ] && exit 1
+
+original=$1
+numclones=${2:-1}
+counter=1
+
+while [ $counter -le $numclones ] ; do
+    suffix=$(printf '%02i' "$counter")
+    ln "$original" "${original}_$suffix"
+    counter=$((counter+1)) 
+done

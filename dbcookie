@@ -1,0 +1,24 @@
+#! /bin/dash
+
+cookie_db=$1
+domain_name=$2
+
+if [ -z "$cookie_db" ]; then
+    echo 'no cookie db given' >&2
+    exit 1
+fi
+
+db_query=".mode tabs
+          select host, case when host glob '.*' then 'TRUE' else 'FALSE' end,
+          path, case when isSecure then 'TRUE' else 'FALSE' end,
+          expiry, name, value
+          from moz_cookies"
+
+
+if [ -n "$domain_name" ]; then
+    db_query="$db_query where host like '%$domain_name%'"
+fi
+
+db_query="$db_query;"
+
+echo "$db_query" | sqlite3 "$cookie_db"

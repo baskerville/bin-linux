@@ -1,0 +1,36 @@
+#! /bin/dash
+
+current=$(readlink -nse "$XDG_COLORS_DIR/current")
+base=$(basename "$current")
+name=${base%-*}
+bgtype=${base##*-}
+
+if [ $# -gt 0 ] ; then
+    bgtype=$1
+else
+    case "$bgtype" in
+        dark)
+            bgtype=light
+            ;;
+        light)
+            bgtype=dark
+            ;;
+    esac
+fi
+
+setthm "${name}-${bgtype}"
+setconfbg "$XDG_DOTFILES_DIR/neaprc" $bgtype
+setconfbg "$XDG_DOTFILES_DIR/tint2rc" $bgtype
+# setconfbg "$XDG_DOTFILES_DIR/themes/openbox/themerc" $bgtype
+# setconfbg "$XDG_BIN_DIR/setrootbg" $bgtype
+# setrootbg
+
+setconfbg "$XDG_BIN_DIR/hc_colors" $bgtype
+hc_colors
+
+if pgrep -x tint2 ; then
+    reloadpanel
+fi
+
+# pkill -USR1 -x tint2
+# pkill -USR2 -x openbox

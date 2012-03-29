@@ -1,0 +1,20 @@
+#! /bin/dash
+
+uri=$1
+
+if [ -z "$uri" ]; then
+    echo "no uri given" >&2
+    exit 1
+fi
+
+domain_name=${uri#*//}
+domain_name=${domain_name%%/*}
+
+subdomains=${domain_name%.*.*}
+
+if ! [ "$subdomains" = "$domain_name" ] ; then
+    domain_name=${domain_name#"$subdomains"}
+    domain_name=${domain_name#.}
+fi
+
+echo "$domain_name"

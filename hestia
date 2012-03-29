@@ -1,0 +1,298 @@
+#! /usr/bin/python
+# -*- coding: utf-8 -*-
+
+import re, sys
+import http.client
+from html.parser import HTMLParser
+from urllib.parse import unquote
+from subprocess import check_call
+from os.path import basename, expanduser
+
+SERVER_DOMAIN = 'localhost:4080'
+SERVER_PATH_PREFIX = '/submit?q='
+SERVER_MSG = 'GET'
+LIST_COLUMNS = 14
+SERVER_COLUMNS = 21
+RESULT_COLUMNS = 6
+FILENAME_MAX_LEN = 80
+FILENAME_TAIL_LEN = 5 
+FILENAME_ELLIPSIS = '…'
+INFO_COMMAND = 'fileinfo'
+PREVIEW_COMMAND = 'open'
+MLDK_TEMP_DIR = expanduser('~/.mldonkey/temp')
+
+ACT_REQ_MAP = {'list'     : 'vd',
+               'servers'  : 'vm',
+               'queries'  : 'vs',
+               'search'   : 's+%s',
+               'results'  : 'vr+%s',
+               '!results' : 'vr',
+               'forget'   : 'forget+%s',
+               'add'      : 'd+%s',
+               'cancel'   : 'cancel+%s',
+               '!confirm' : 'confirm+yes',
+               'pause'    : 'pause+%s',
+               'resume'   : 'resume+%s',
+               'kill'     : 'kill',
+               'preview'  : 'preview+%s',
+               'info'     : 'vd+%s',
+               'priority'  : 'priority+%s',
+               'search'   : 's+%s'}
+
+SIMPLE_ACTIONS = ['add', 'pause', 'resume', 'cancel', \
+                  'priority', 'search', 'forget', 'kill']
+
+connection = None
+
+def simple_action(action, args = []):
+    path = ACT_REQ_MAP[action]
+    request(path, args)
+    if action != 'kill':
+        data = response()
+
+def view_servers():
+    path = ACT_REQ_MAP['servers']
+    request(path)
+    data = response()
+    values = re.findall('<td[^>]*class="sr(?:"|[^h][^"]*")[^>]*>([^<]*)', data, re.I)
+    values = list(map(lambda x: x.strip(), values))
+    infos = chunks(values, SERVER_COLUMNS)
+    for si in infos:
+        (sid, disc, rem, pref, master, high_low, network, status, addr, country, users, max_users, num_low_id, num_files, num_pub, soft_lim, hard_lim, ping, version, name, details) = si
+        print('%3s %-12s %-7s %-23s %13s %13s %5s' % (sid, status, network, name, users, num_files, ping))
+
+def view_queries():
+    path = ACT_REQ_MAP['queries']
+    request(path)
+    data = response()
+    founds = re.findall('found (\d+)', data, re.I)
+    values = re.findall('<a[^>]*href="submit\?q=vr\+(\d+)">[^(A-Z]+([^<]+)', data, re.I)
+    for sid_query, numres in zip(values, founds):
+        (sid, query) = sid_query
+        terms = ' '.join(re.findall('CONTAINS\[([^]]+)\]', query))
+        print('%3s %-30s %4s' % (sid, terms, numres))
+
+def truncate_filename(name, to_length, tail_len, ellipsis):
+    if len(name) > to_length:
+        length = len(name)
+        dot = name.rfind('.')
+        if dot == -1 or (length - dot) > (to_length / 2):
+            dot = length - tail_len
+        tail = length - dot + len(ellipsis)
+        cut_point = to_length - tail
+        return name[:cut_point] + ellipsis + name[dot:]
+    else:
+        return name
+
+def view_results(args):
+    if len(args) < 1:
+        path = ACT_REQ_MAP['!results']
+    else:
+        path = ACT_REQ_MAP['results']
+    request(path, args)
+    data = response()
+    names = re.findall('popLayer\(\\\\\'([^<]+)', data, re.I)
+    values = re.findall('<td[^>]*class="sr a."[^>]*>([^<]*)', data, re.I)
+    # fns = re.findall('<a[^>]*href=results\?d=\d+[^>]*>([^<]*)', data, re.I)
+    values = list(map(lambda x: x.strip(), values))
+    infos = chunks(values, RESULT_COLUMNS)
+    ids = range(1, len(infos) + 1)
+    for fid, filename, res in zip(ids, names, infos):
+        (size, availability, source, duration, codec, bitrate) = res
+        filename = filename.strip()
+        filename = truncate_filename(filename, FILENAME_MAX_LEN, FILENAME_TAIL_LEN, FILENAME_ELLIPSIS)
+        print('%3s %-80s %7s %4s %4s %5s' % (fid, filename, size, availability, source, codec)) 
+
+def get_path(args):
+    path = ACT_REQ_MAP['info']
+    request(path, args)
+    data = response()
+    hashes = re.findall('urn:ed2k:([^"]+)', data, re.I)
+    for md4h in hashes:
+        return '%s/urn_ed2k_%s' % (MLDK_TEMP_DIR, md4h)
+
+def download_info(args):
+    file_path = get_path(args)
+    check_call([INFO_COMMAND, file_path])
+
+def preview_download(args): 
+    file_path = get_path(args)
+    check_call([PREVIEW_COMMAND, file_path])
+
+def view_names(args):
+    path = ACT_REQ_MAP['info']
+    request(path, args)
+    data = response()
+    aka = re.findall('<option value="([^"]+)"', data, re.I)
+    aka = aka[3:]
+    for name in aka:
+        clean_name = unquote(HTMLParser().unescape(name))
+        print(clean_name)
+
+def view_path(args):
+    file_path = get_path(args)
+    print(file_path)
+ 
+def view_downloads():
+    path = ACT_REQ_MAP['list']
+    request(path)
+    data = response()
+    values = re.findall('<td[^>]*class="dl a."[^>]*>([^<]*)', data, re.I)
+    values = list(map(lambda x: x.strip(), values))
+    fid_prio = re.findall("submitPriority\((\d+),(\d+)", data, re.I)
+    infos = chunks(values, LIST_COLUMNS)
+    for fp, dl in zip(fid_prio, infos):
+        (network, filename, size, completed, percent, comment, source, active, availability, age, last, rate, eta, blur) = dl
+        (fid, priority) = map(lambda x: x.strip(), fp)
+        line = '%3s %-50s %6s%% %8s %6s %3s %3s %8s %5s' % (fid, filename, percent, size, rate, active, source, eta, priority)
+        if sys.stdout.isatty():
+            if rate == 'Paused':
+                line = magenta(line)
+            elif rate != '-':
+                line = blue(line)
+        print(line)
+
+def request(path, args = []):
+    global connection
+    if len(args) > 0:
+        full_path = SERVER_PATH_PREFIX + (path % args)
+    else:
+        full_path = SERVER_PATH_PREFIX + path
+    try:
+        connection.request(SERVER_MSG, full_path)
+    except IOError as err:
+        code = err.errno
+        if code == 111:
+            print('the daemon is not running', file = sys.stderr)
+        else:
+            print('server replied: %s' % code, file = sys.stderr)
+        exit(1)
+
+def response():
+    global connection
+    resp = connection.getresponse()
+    if resp.status != 200:
+        print('server replied: %s %s' % (resp.status, resp.reason), file = sys.stderr)
+        sys.exit(1)
+    data = resp.read()
+    data = data.decode('utf-8', 'replace')
+    return data
+
+def initiate_connection(domain = SERVER_DOMAIN):
+    global connection
+    if connection != None:
+        connection.close()
+
+    connection = http.client.HTTPConnection(domain)
+
+def help():
+    print('''
+SYNOPSIS
+    %s <action> [arguments]
+
+ACTIONS 
+    list
+        View current downloads.
+
+    servers
+        View connected servers.
+
+    queries
+        View all queries.
+
+    search TERMS
+        Search for TERMS on all networks.
+
+    results [QID ...]
+        View the results of the given queries.
+
+    forget QID ...
+        Forget the given queries.
+
+    add FID ...
+        Download the given files.
+
+    pause FID ...
+        Pause the given downloads.
+
+    resume FID ...
+        Resume the given downloads.
+
+    cancel FID ...
+        Cancel the given downloads.
+
+    preview FID
+        Preview a download. 
+
+    info FID
+        Retrieve informations regarding FID (requires `mediainfo`).
+
+    names FID
+        Display all the known names for FID.
+
+    path FID
+        Return the path of the file holding FID's content.
+
+    priority VALUE FID ...
+        Change the priority of given downloads.
+
+    kill
+        Kill the mldonkey daemon.
+    ''' % basename(sys.argv[0]))
+
+def main():
+    args = sys.argv[1:]
+    if len(args) < 1:
+        help()
+        sys.exit(1)
+
+    initiate_connection()
+
+    action = args[0]
+    args = args[1:]
+
+    if action in ['add', 'pause', 'resume', 'cancel', 'forget', 'search', 'preview', 'path', 'info', 'names'] and len(args) < 1 \
+    or action in ['priority'] and len(args) < 2 \
+    or action in ['preview', 'path', 'info', 'names'] and len(args) > 1 \
+    or action in ['list', 'servers', 'queries', 'kill'] and len(args) > 0:
+        print('wrong number of arguments', file=sys.stderr)
+        sys.exit(1)
+
+    if len(args) > 0:
+        args = tuple(['+'.join(args)])
+
+    if action == 'list':
+        view_downloads()
+    elif action == 'servers':
+        view_servers()
+    elif action == 'queries':
+        view_queries()
+    elif action == 'path':
+        view_path(args)
+    elif action == 'names':
+        view_names(args)
+    elif action == 'preview':
+        preview_download(args)
+    elif action == 'info':
+        download_info(args)
+    elif action == 'results':
+        view_results(args)
+    elif action in SIMPLE_ACTIONS:
+        simple_action(action, args)
+        if action == 'cancel':
+            simple_action('!confirm')
+    else:
+        print("action '{}' is unknown".format(action), file=sys.stderr)
+        sys.exit(1)
+
+def blue(s):
+    return '\033[1;34m%s\033[0m' % s
+
+def magenta(s):
+    return '\033[1;35m%s\033[0m' % s
+
+def chunks(l, n):
+    return [l[i:i+n] for i in range(0, len(l), n)]
+
+if __name__ == '__main__':
+    main()

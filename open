@@ -1,0 +1,137 @@
+#! /bin/dash
+#
+# open -- file / url opener
+#
+#
+
+if [ -d "$@" ]; then
+    ncd "$@"
+elif [ -e "$@" ]; then
+    mime_type=$(file -L -b --mime-type "$@")
+    # filter by mime type
+    # the order is important, e.g. foo/bar must appear before foo/*
+    case $mime_type in
+        inode/x-empty)
+            editor "$@"
+            ;;
+        video/*|application/vnd.rn-realmedia)
+            video_player "$@"
+            ;;
+        audio/*)
+            audio_player "$@"
+            ;;
+        image/vnd.djvu)
+            document_reader "$@"
+            ;;
+        image/x-canon-cr2)
+            dcraw -o 0 -w -T "$@"
+            ;;
+        image/svg+xml|application/x-shockwave-flash)
+            web_browser "$@"
+            ;;
+        image/x-xcf)
+            gimp "$@"
+            ;;
+        image/*)
+            image_viewer "$@"
+            ;;
+        application/x-lha)
+            lha x "$@"
+            ;;
+        application/postscript)
+            document_reader "$@"
+            ;;
+        application/pdf)
+            document_reader "$@"
+            ;;
+        application/zip)
+            unzip -d "${@%.*}" "$@"
+            ;;
+        application/x-rar)
+            unrar x "$@"
+            ;;
+        application/x-bittorrent)
+            diana_add "$@"
+            ;;
+        application/vnd.ms-opentype|application/x-font-ttf|application/vnd.font-fontforge-sfd)
+            fontforge "$@"
+            ;;
+        text/html)
+            web_browser "$@"
+            ;;
+        *)
+            # filter by extension
+            case "$@" in
+                *.tar.gz|*.tgz)
+                    tar xvzf "$@"
+                    ;;
+                *.tar.bz2)
+                    tar xvjf "$@"
+                    ;;
+                *.bz2)
+                    bunzip2 "$@"
+                    ;;
+                *.tar)
+                    tar xvf "$@"
+                    ;;
+                *.gz)
+                    gunzip "$@"
+                    ;;
+                *.chm)
+                    xchm "$@"
+                    ;;
+                *.nzb)
+                    nzbget -A "$@"
+                    ;;
+                *.nfo)
+                    editor "$@"
+                    ;;
+                *.pcf|*.bdf)
+                    fontforge "$@"
+                    ;;
+                *.svg)
+                    web_browser "$@"
+                    ;;
+                *.pps|*.PPS|*.ppt|*.PPT)
+                    ppsei "$@"
+                    ;;
+                *.rft|*.doc)
+                    catdoc -s cp1252 "$@"
+                    ;;
+                *.xpm)
+                    image_viewer "$@"
+                    ;;
+                *.mp3|*.m3u|*.ogg)
+                    audio_player "$@"
+                    ;;
+                *.mp4|*.avi|*.mpg|*.mpeg|*.mkv|*.ogv|*.f4v|*.m2ts)
+                    video_player "$@"
+                    ;;
+                *)
+                    # filter by mime encoding 
+                    mime_encoding=$(file -L -b --mime-encoding "$@")
+                    case $mime_encoding in
+                        *binary)
+                            xxd -l 256 "$@"
+                            ;;
+                        *)
+                            editor "$@"
+                            ;;
+                    esac
+                    ;;
+            esac
+            ;;
+    esac
+else
+    case "$@" in
+        *://*)
+            web_browser "$@"
+            ;;
+        *:*)
+            handle_uri "$@"
+            ;;
+        *)
+            echo "$@ doesn't exist."
+            ;;
+    esac
+fi

@@ -1,0 +1,8 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    REF=$(eat find $1)
+    REF=${REF##*\'}
+    printf '[url=%b][img]%b[/img][/url]\n' "$(eat blob $REF)" "$(eat thumb $REF)"
+    shift
+done

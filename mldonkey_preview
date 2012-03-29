@@ -1,0 +1,3 @@
+#! /bin/dash
+
+open ~/.mldonkey/"$1"

@@ -1,0 +1,430 @@
+#! /usr/bin/python
+
+import re, sys, json, time
+from os.path import expanduser, exists, getmtime, basename
+import http.client
+import urllib.request
+
+CONFIG_PATH = expanduser('~/.eatrc')
+SESSION_PATH = expanduser('~/.eat_session')
+SERVER_DOMAIN = 'open.ge.tt'
+SERVER_URL_PREFIX = '/1'
+SERVER_HEADER = {'Content-Type' : 'application/json'}
+NON_SECURE_ACTIONS = [ 'upload' ]
+ACT_REQ_MAP = {'!login' : ['POST', '/users/login'],
+               'status' : ['GET', '/users/me?accesstoken=%s'],
+               'list'   : ['GET', '/shares?accesstoken=%s'],
+               'show'   : ['GET', '/shares/%s'],
+               'info'   : ['GET', '/files/%s/%s'],
+               'add'    : ['POST', '/shares/create?accesstoken=%s'],
+               'change' : ['POST', '/shares/%s/update?accesstoken=%s'],
+               'remove' : ['POST', '/shares/%s/destroy?accesstoken=%s'],
+               'delete' : ['POST', '/files/%s/%s/destroy?accesstoken=%s'],
+               'upload' : ['POST', '/files/%s/create?accesstoken=%s'],
+               '!renew' : ['GET', '/files/%s/%s/upload?accesstoken=%s'],
+               'blob'   : ['GET', '/files/%s/%s/blob'],
+               'scale'  : ['GET', '/files/%s/%s/blob/scale'],
+               'thumb'  : ['GET', '/files/%s/%s/blob/thumb']}
+
+settings = {}
+connection = None
+access_token = None
+
+def grey(s):
+    return '\033[1;30m%s\033[0m' % s
+
+def format_size(value):
+    n = value / 1024
+    if n < 1:
+        return '%dB' % value
+    value = n
+    n = value / 1024
+    if n < 1:
+        return '%.1fK' % value
+    else:
+        value = n;
+        n = value / 1024
+        if n < 1:
+            return '%.1fM' % value
+        else:
+            return '%.1fG' % n
+
+def get_shares():
+    global access_token
+    msg, short_url = ACT_REQ_MAP['list']
+    url_params = tuple([access_token])
+    request(msg, short_url, url_params = url_params)
+    data = handle_response()
+    shares = json.loads(data)
+    return shares
+
+def print_file(file_dict):
+    file_id = file_dict['fileid']
+    file_name = file_dict['filename']
+    gett_url = file_dict['getturl']
+    size = format_size(file_dict['size'])
+    created = time.strftime('%Y-%m-%d %H:%M', time.localtime(file_dict['created']))
+    downloads = file_dict['downloads']
+    print('{0:>3}  {1:<28}  {2:>6}  {3}  {4}  {5:>3}'\
+          .format(file_id, file_name, size, created, gett_url, downloads))
+
+def print_share(share_dict):
+    title = ''
+    if 'title' in share_dict:
+        title = '%s  ' % share_dict['title']
+    share_name = share_dict['sharename']
+    share_line = '%s%s' % (title, share_name)
+    if sys.stdout.isatty():
+        share_line = grey(share_line)
+    print(share_line)
+    files = share_dict['files']
+    for f in files:
+        print_file(f)
+
+def list_shares():
+    shares = get_shares()
+    shares = sorted(shares, key = lambda x: x['created'])
+    for s in shares:
+        print_share(s)
+        print()
+
+def list_names():
+    shares = get_shares()
+    for s in shares:
+        print(s['sharename'])
+
+def show_status():
+    msg, short_url = ACT_REQ_MAP['status']
+    url_params = tuple([access_token])
+    request(msg, short_url, url_params = url_params)
+    data = handle_response()
+    body = json.loads(data)
+    limit = format_size(body['storage']['limit'] + body['storage']['extra'])
+    used = format_size(body['storage']['used'])
+    full_name = body['fullname']
+    email = body['email']
+    user_line = '%s  %s' % (full_name, email)
+    if sys.stdout.isatty():
+        user_line = grey(user_line)
+    print(user_line)
+    print('%s / %s' % (used, limit))
+
+def locate_item(action, pattern):
+    shares = get_shares()
+
+    flags = 0
+    if pattern.lower() == pattern:
+        flags = re.I
+
+    spattern = re.compile(pattern, flags = flags)
+
+    for s in shares:
+        share_name = s['sharename']
+        if action == 'search':
+            if 'title' in s:
+                title = s['title']
+                if spattern.search(title):
+                    print("'%s' %s" % (title, share_name)) 
+        elif action == 'find':
+            for f in s['files']:
+                file_name = f['filename']
+                if spattern.search(file_name):
+                    print("'%s' %s %s" % (file_name, share_name, f['fileid']))
+
+def add_share(title=None):
+    msg, short_url = ACT_REQ_MAP['add']
+    req_params = {}
+
+    if title:
+        req_params['title'] = title
+
+    url_params = tuple([access_token])
+    request(msg, short_url, req_params, url_params)
+    data = handle_response()
+    body = json.loads(data)
+    print(body['sharename'])
+
+def change_share(share, title):
+    msg, short_url = ACT_REQ_MAP['change']
+    req_params = {'title' : title}
+    url_params = (share, access_token)
+    request(msg, short_url, req_params, url_params)
+    handle_response()
+
+def show_share(args):
+    msg, short_url = ACT_REQ_MAP['show']
+    request(msg, short_url, url_params = args)
+    data = handle_response()
+    body = json.loads(data)
+    print_share(body)
+
+def file_info(args):
+    msg, short_url = ACT_REQ_MAP['info']
+    request(msg, short_url, url_params = args)
+    data = handle_response()
+    body = json.loads(data)
+    print_file(body)
+
+def remove_share(args):
+    msg, short_url = ACT_REQ_MAP['remove']
+    url_params = args + tuple([access_token])
+    request(msg, short_url, url_params = url_params)
+    handle_response()
+
+def delete_file(args):
+    msg, short_url = ACT_REQ_MAP['delete']
+    url_params = args + tuple([access_token])
+    request(msg, short_url, url_params = url_params)
+    handle_response()
+
+def get_redirect(action, args):
+    msg, short_url = ACT_REQ_MAP[action]
+    request(msg, short_url, url_params = args, action = action)
+    redirect_url = handle_response()
+    print(redirect_url)
+
+def upload_file(share, file_path):
+    file_name = basename(file_path)
+    msg, short_url = ACT_REQ_MAP['upload']
+    req_params = {'filename' : file_name}
+    url_params = (share, access_token)
+    request(msg, short_url, req_params, url_params)
+    data = handle_response()
+    body = json.loads(data)
+
+    print('%s %s' % (body['sharename'], body['fileid']))
+
+    msg = 'PUT'
+    put_url = body['upload']['puturl']
+    url_seg = re.match('http://([^/]+)(/.*)', put_url)
+    domain, long_url = url_seg.groups()
+    make_connection('upload', domain)
+    f = open(expanduser(file_path), 'rb')
+    request(msg, long_url, f, short_is_long = True)
+    f.close()
+
+def download_file(args):
+    action = 'blob'
+    msg, short_url = ACT_REQ_MAP[action]
+    request(msg, short_url, url_params = args, action = action)
+    redirect_url = handle_response()
+    start_of_name = redirect_url.rfind('/') + 1
+    end_of_name = redirect_url.rfind('?')
+
+    if end_of_name == -1:
+        file_name = redirect_url[start_of_name:]
+    else:
+        file_name = redirect_url[start_of_name:end_of_name]
+
+    urllib.request.urlretrieve(redirect_url, file_name)
+
+
+def request(msg, short_url, req_params = {}, url_params = [], header = SERVER_HEADER, short_is_long = False, action = None):
+    global connection
+    long_url = None
+    if short_is_long:
+        long_url = short_url
+    else:
+        if len(url_params) > 0:
+            long_url = SERVER_URL_PREFIX + (short_url % url_params)
+        else:
+            long_url = SERVER_URL_PREFIX + short_url
+
+    if msg == 'GET':
+        connection.request(msg, long_url)
+    elif msg == 'POST':
+        params = json.dumps(req_params)
+        connection.request(msg, long_url, params, header)
+    elif msg == 'PUT':
+        connection.request(msg, long_url, req_params)
+
+def make_connection(action, domain = SERVER_DOMAIN):
+    global connection
+    if connection != None:
+        connection.close()
+    if action in NON_SECURE_ACTIONS:
+        connection = http.client.HTTPConnection(domain)
+    else:
+        connection = http.client.HTTPSConnection(domain)
+
+def init():
+    global settings
+    if exists(SESSION_PATH):
+        f = open(SESSION_PATH, 'r')
+        session_content = json.load(f)
+        f.close()
+        session_mtime = getmtime(SESSION_PATH)
+        expires = session_content['expires']
+        refresh_token = session_content['refreshtoken']
+        epoch_time = time.time()
+
+        if (epoch_time - session_mtime) < expires:
+            settings = {'refreshtoken' : refresh_token}
+            shake_hands(settings)
+            data = handle_response()
+            refresh_session(data)
+            return
+
+    load_config()
+    shake_hands(settings)
+    data = handle_response()
+    refresh_session(data, True)
+
+def refresh_session(data, write_session = False):
+    global access_token
+    if write_session:
+        f = open(SESSION_PATH, 'w')
+        f.write(data)
+        f.close()
+    real_data = json.loads(data)
+    access_token = real_data['accesstoken']
+
+def handle_response():
+    global connection
+    resp = connection.getresponse()
+    if resp.status != 200:
+        if resp.status == 307:
+            return resp.msg['location']
+        else:
+            print('server replied: %s %s' % (resp.status, resp.reason), file = sys.stderr)
+            sys.exit(1)
+    data = resp.read().decode('utf-8')
+    return data
+
+def shake_hands(req_params):
+    action = '!login'
+    make_connection(action)
+    msg, short_url = ACT_REQ_MAP[action]
+    request(msg, short_url, req_params) 
+
+def load_config(path=CONFIG_PATH):
+    global settings
+    if not exists(path):
+        print("nonexistent: %s" % path, file=sys.stderr)
+        sys.exit(1)
+    f = open(path, 'r')
+    for line in f:
+        if re.match('[^=]+=[^=]+', line):
+            pair = re.split('\s*=\s*', line.rstrip('\n'))
+            key = pair[0]
+            value = pair[1]
+            settings[key] = value
+    f.close()
+
+def help():
+    print('''
+SYNOPSIS
+    %s <action> [arguments]
+
+ACTIONS 
+    list
+        Output a list of all the shares and files.
+
+    names
+        Output a list of all the shares names.
+
+    status
+        Display informations regarding the current user.
+
+    add [TITLE]
+        Make a new share with optional title TITLE.
+
+    change SHARENAME TITLE
+        Change the title of the share SHARENAME to TITLE. 
+
+    remove SHARENAME
+        Remove the share SHARENAME.
+
+    show SHARENAME
+        Show informations regarding the share SHARENAME.
+
+    search PATTERN
+        Search for shares whose title matches PATTERN.
+
+    upload SHARENAME FILE ...
+        Upload the given files to the share SHARENAME.
+
+    download SHARENAME FILEID
+        Download the file FILEID of the share SHARENAME.
+
+    delete SHARENAME FILEID
+        Delete the file FILEID of the share SHARENAME.
+
+    info SHARENAME FILEID
+        Give informations on the file FILEID of the share SHARENAME.
+
+    find PATTERN
+        Search for files whose file name matches PATTERN.
+
+    blob SHARENAME FILEID
+        Returns the URL of the content of the file FILEID of the share SHARENAME.
+
+    thumb SHARENAME FILEID
+        Returns the URL of the content of the thumbnail of the file FILEID of the share SHARENAME.
+
+    scale SHARENAME FILEID
+        Returns the URL of the content of the scaled version of the file FILEID of the share SHARENAME.
+    ''' % basename(sys.argv[0]))
+
+def main():
+    args = sys.argv[1:]
+    if len(args) < 1:
+        help()
+        sys.exit(1)
+    init()
+    action = args[0]
+    args = tuple(args[1:])
+
+    if action in ['info', 'delete', 'blob', 'thumb', 'scale'] and len(args) != 2 \
+    or action in ['show', 'remove'] and len(args) != 1 \
+    or action in ['change', 'upload'] and len(args) < 2 \
+    or action in ['search', 'find'] and len(args) < 1 \
+    or action in ['list', 'status'] and len(args) > 0:
+        print('wrong number of arguments', file=sys.stderr)
+        sys.exit(1)
+
+    if action == 'list':
+        list_shares()
+    elif action == 'names':
+        list_names()
+    elif action == 'status':
+        show_status()
+    elif action == 'add':
+        if len(args) > 0:
+            title = ' '.join(args)
+            add_share(title)
+        else:
+            add_share()
+    elif action == 'upload':
+        share = args[0]
+        for file_path in args[1:]:
+            upload_file(share, expanduser(file_path))
+            init()
+    elif action == 'download':
+        download_file(args)
+    elif action == 'change':
+        share = args[0]
+        title = ' '.join(args[1:])
+        change_share(share, title)
+    elif action == 'blob' or action == 'thumb' or action == 'scale':
+        get_redirect(action, args)
+    elif action == 'search' or action == 'find':
+        pattern = ' '.join(args)
+        locate_item(action, pattern)
+    elif action == 'find':
+        pattern = ' '.join(args)
+        find_file(pattern)
+    elif action == 'remove':
+        remove_share(args)
+    elif action == 'delete':
+        delete_file(args)
+    elif action == 'show':
+        show_share(args)
+    elif action == 'info':
+        file_info(args)
+    else:
+        print("action '{}' is unknown".format(action), file=sys.stderr)
+        sys.exit(1)
+
+if __name__ == '__main__':
+    main()

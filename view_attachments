@@ -1,0 +1,6 @@
+#! /bin/dash
+
+download_dir="$XDG_DOWNLOAD_DIR/dl$(date +%m%d_%H%M)"
+[ -d "$download_dir" ] || mkdir "$download_dir"
+munpack -C "$download_dir"
+sxiv -bftZ "$download_dir"/*

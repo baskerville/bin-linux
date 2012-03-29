@@ -1,0 +1,49 @@
+#! /bin/dash
+
+if [ $# -lt 2 ]; then
+    echo "no arguments given" >&2
+    exit 1
+elif [ $# -lt 1 ]; then
+    echo "no basename given" >&2
+    exit 1
+fi
+
+counter=1
+basename=$1
+shift
+
+for item in "$@"; do
+    ext=${item##*.}
+    parent=$(dirname "$item")
+    full_parent="$parent/$basename"
+    mkdir -p "$full_parent"
+    num=$(printf "%02d" $counter)
+    target="$full_parent/$basename-$num.$ext"
+
+    if [ "$ext" = "$item" ]
+    then
+        target="$full_parent/$basename-$num"
+    elif [ ${#ext} -gt 6 ]
+    then
+        mime_type=$(file -b --mime-type $item)
+        case $mime_type in
+            image/png)
+                ext='png';;
+            image/jpeg)
+                ext='jpg';;
+            image/gif)
+                ext='gif';;
+            image/x-ms-bmp)
+                ext='bmp';;
+            image/tiff)
+                ext='tiff';;
+            *)
+                ext='unk';;
+        esac
+        target="$full_parent/$basename-$num.$ext"
+    fi
+
+    echo "$item -> $target"
+    mv "$item" "$target"
+	counter=$((counter+1))
+done

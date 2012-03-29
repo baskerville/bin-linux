@@ -1,0 +1,19 @@
+#! /usr/bin/php
+<?php
+    $latitude = getenv('LATITUDE');
+    $longitude = getenv('LONGITUDE');
+
+    if ($argc == 3) {
+        $latitude = $argv[1];
+        $longitude = $argv[2];
+    } elseif ($argc > 1) {
+        $progname = basename($argv[0]);
+        fwrite(STDERR,  "usage: $progname LATITUDE LONGITUDE\n");
+        exit(1);
+    }
+
+    $now = time();
+    $sunrise = date_sunrise($now, SUNFUNCS_RET_STRING, $latitude, $longitude);
+    $sunset = date_sunset($now, SUNFUNCS_RET_STRING, $latitude, $longitude);
+    fwrite(STDOUT,  "$sunrise $sunset\n");
+?>

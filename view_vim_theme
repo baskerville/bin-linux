@@ -1,0 +1,18 @@
+#! /bin/dash
+
+START_COLOR=16
+LINE_LENGTH=8
+all_colors=$(cat "$@" | grep -o 'cterm[fb]g=[0-9]\+' | sed 's/[^0-9]*//' | sort -u)
+counter=1
+
+printf '\n'
+
+for i in $all_colors
+do
+    [ $i -lt $START_COLOR ] && continue
+    printf "\033[38;5;${i}m■\033[0m"
+    [ $((counter % LINE_LENGTH)) -eq 0 -a $counter -gt 0 ] && printf '\n'
+    counter=$((counter+1))
+done
+
+printf '\n\n'

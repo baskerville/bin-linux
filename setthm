@@ -1,0 +1,15 @@
+#! /bin/dash
+
+[ $# -lt 1 ] && exit 1
+
+theme_name=$(basename "$@")
+
+cd "$XDG_COLORS_DIR"
+
+ln -sf "$theme_name" current
+xrdb -merge current
+
+ln -sf "redef-$theme_name" redef-current
+for vt in /dev/pts/[0-9]* ; do
+    ./redef-current > "$vt"
+done

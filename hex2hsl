@@ -1,0 +1,20 @@
+#! /usr/bin/python
+
+import sys, re
+from colormath.color_objects import HSLColor, RGBColor
+
+palette = set()
+
+for line in sys.stdin:
+    color_codes = re.findall('#[0-9A-F]{6}', line, flags=re.IGNORECASE)
+    palette.update(color_codes)
+
+if len(palette) < 1:
+    print('no color found', file=sys.stderr)
+    sys.exit(1)
+
+for c in palette:
+    color = RGBColor()
+    color.set_from_rgb_hex(c)
+    hsl = color.convert_to('hsl')
+    print('%i %i %i' % (hsl.hsl_h, hsl.hsl_s, hsl.hsl_l))

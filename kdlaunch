@@ -1,0 +1,33 @@
+#! /bin/dash
+
+XMODMAP_CONF="$HOME/.xmodmaprc"
+KEYDOUBLE_CONF="$HOME/.keydoublerc"
+
+die() {
+    printf "$@" >&2
+    exit 1
+}
+
+[ -f "$KEYDOUBLE_CONF" ] || die "found no configuration file\n"
+natart_pairs=$(grep -i '^![[:space:]]*natart_pairs:' "$KEYDOUBLE_CONF" | sed 's/^[^:]\+:[[:space:]]*//')
+[ -z "$natart_pairs" ] && die "please define a natart_pairs header\n"
+
+restore_map() {
+    lyt=$(setxkbmap -query | grep -i '^layout:' | awk '{print $2}')
+    if [ -n "$lyt" ] ; then
+        setxkbmap -layout "$lyt"
+    else
+        die "couldn't guess the current keyboard layout"
+    fi
+    [ -f "$XMODMAP_CONF" ] && xmodmap "$XMODMAP_CONF"
+    exit 0
+}
+
+trap restore_map INT
+
+xmodmap "$KEYDOUBLE_CONF"
+
+# don't use quotes here
+keydouble $natart_pairs
+
+restore_map

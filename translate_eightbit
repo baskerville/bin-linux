@@ -1,0 +1,31 @@
+#! /usr/bin/python
+
+import sys, re
+from os.path import basename
+from math import floor
+from colormath.color_objects import LCHabColor, RGBColor
+
+COLOR_CHUNKS = [40 * j + (55 * (j > 0)) for j in range(6)]
+COLORS = [(i, j, k) for i in COLOR_CHUNKS for j in COLOR_CHUNKS for k in COLOR_CHUNKS]
+START_OF_COLORS = 16
+START_OF_MONOTONES = 232
+DESTINATION_GRAIN = 360 / 232
+
+def translate_value(match_obj):
+    m = match_obj.group(0)
+    islot = int(m)
+    if islot >= START_OF_COLORS and islot < START_OF_MONOTONES:
+        color_index = islot - START_OF_COLORS 
+        color = COLORS[color_index]
+        hex_color = ('#%02X%02X%02X' % color)
+        rgb_color = RGBColor()
+        rgb_color.set_from_rgb_hex(hex_color)
+        lch_color = rgb_color.convert_to('lchab')
+        color_hue = lch_color.lch_h
+        oslot = 24 + floor(color_hue / DESTINATION_GRAIN)
+        return str(oslot)
+    return m
+
+for line in sys.stdin:
+    sline = re.sub('(?<==)\d+', translate_value, line)
+    print(sline, end='')

@@ -1,0 +1,11 @@
+#! /usr/bin/python
+
+COLOR_CHUNKS = [40 * j + (55 * (j > 0)) for j in range(6)]
+COLORS = [(i, j, k) for i in COLOR_CHUNKS for j in COLOR_CHUNKS for k in COLOR_CHUNKS]
+START_OF_COLORS = 16
+
+for c in COLORS:
+    (R, G, B) = c
+    if (R == G == B):
+        idx = START_OF_COLORS + COLORS.index(c)
+        print('color%s' % idx)

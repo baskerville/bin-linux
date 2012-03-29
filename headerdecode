@@ -1,0 +1,7 @@
+#! /usr/bin/python
+
+import sys
+from nntplib import decode_header
+
+for line in sys.stdin:
+    print(decode_header(line))

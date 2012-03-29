@@ -1,0 +1,6 @@
+#! /bin/dash
+
+RED=$(printf '%b' '\033[41m\033[37m')
+NORMAL=$(printf '%b' '\033[0m')
+
+cat | sed "s/\(Error\)/$RED\1$NORMAL/g"

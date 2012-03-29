@@ -1,0 +1,32 @@
+#! /usr/bin/python
+
+import re
+import sys
+
+START_OF_COLORS = 16
+COLOR_CHUNKS = [40 * j + (55 * (j > 0)) for j in range(6)]
+MONOTONE_CHUNKS = [10 * i + 8 for i in range(24)]
+COLORS = [(i, j, k) for i in COLOR_CHUNKS for j in COLOR_CHUNKS for k in COLOR_CHUNKS]
+MONOTONES = [(i, i, i) for i in MONOTONE_CHUNKS]
+COLORS.extend(MONOTONES)
+
+for line in sys.stdin:
+    color_elements = re.findall('cterm([fb])g=(\S+)', line)
+    print(line.rstrip('\n'), end='')
+    for ce in color_elements:
+        color_type = ce[0]
+        color_value = ce[1]
+        color_code = color_value
+        if re.match('^\d+$', color_value):
+            color_index = int(color_value)
+            if color_index < START_OF_COLORS or color_index > 255:
+                print('color index out of range: %s' % color_index, file=sys.stderr)
+                sys.exit(1)
+            translated_index = color_index - START_OF_COLORS
+            c = COLORS[translated_index]
+            color_code = '#%s' % (''.join(['%02x' % i for i in c])).upper()
+        print('    gui%sg=%s' % (color_type, color_code), end='')
+    attribute_elements = re.findall('cterm=(\S+)', line)
+    for ae in attribute_elements:
+        print('    gui=%s' % ae, end='')
+    print()

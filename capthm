@@ -1,0 +1,11 @@
+#! /bin/dash
+
+theme="$1"
+xrdb -merge "$theme"
+urxvtc -b 9 -fn '-*-terminus-medium-*-*-*-16-*-*-*-*-*-*-*' -e thm_sleep
+# ss_name=$(date +%Y-%m-%d-%H%M%S)
+ss_name=$(basename "$theme")
+sleep 1
+import -window $(xdotool getactivewindow) +repage "${ss_name}"_raw.png
+# import +repage ${ss_name}_raw.png
+convert "${ss_name}"_raw.png -crop 536x441+2+7 "${ss_name}".png

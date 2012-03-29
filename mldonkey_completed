@@ -1,0 +1,5 @@
+#! /bin/dash
+
+MLDONKEY_ROOT="$HOME/.mldonkey"
+
+ln -s -t "$XDG_DOWNLOAD_DIR" "${MLDONKEY_ROOT}/${INCOMING}/${FILENAME}"

@@ -1,0 +1,13 @@
+#! /bin/dash
+
+for itm in "$1"/*
+do
+    base=$(basename "$itm")
+    destination=$2/$base
+
+    if [ ! -e "$destination" ]
+    then
+        cp -r "$itm" "$destination"
+        echo "$base"
+    fi
+done

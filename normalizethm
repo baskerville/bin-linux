@@ -1,0 +1,44 @@
+#! /usr/bin/python
+
+import sys
+import re
+from os.path import basename
+from colormath.color_objects import LabColor, RGBColor
+
+LO_IDX = range(1, 7)
+HI_IDX = range(9, 15)
+
+args = sys.argv[1:]
+
+if len(args) != 2:
+    print('wrong number of arguments', file = sys.stderr)
+    print('syntax: {} LO_LUM HI_LUM'.format(basename(sys.argv[0])))
+    sys.exit(1)
+
+lo_lum = float(args[0])
+hi_lum = float(args[1])
+
+def normalize(match_obj):
+    global lo_lum, hi_lum
+    index = int(match_obj.group(1))
+    separator = match_obj.group(2)
+    hex_color = match_obj.group(3)
+    rgb_color = RGBColor()
+    rgb_color.set_from_rgb_hex(hex_color)
+    lab_color = rgb_color.convert_to('lab')
+    a = lab_color.lab_a
+    b = lab_color.lab_b
+    if index in LO_IDX:
+        lum = lo_lum
+    elif index in HI_IDX:
+        lum = hi_lum
+    else:
+        return '{}{}{}'.format(index, separator, hex_color)
+    norm_lab = LabColor(lum, a, b)
+    norm_rgb = norm_lab.convert_to('rgb')
+    norm_hex = norm_rgb.get_rgb_hex().upper()
+    return '{}{}{}'.format(index, separator, norm_hex)
+
+for line in sys.stdin:
+    sline = re.sub('(?<=color)(\d+)(:\s*)(#[A-Fa-f0-9]+)', normalize, line)
+    print(sline, end='')

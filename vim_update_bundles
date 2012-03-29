@@ -1,0 +1,4 @@
+#! /bin/dash
+
+cd "$HOME/.vim/bundle"
+update_repositories

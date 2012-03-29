@@ -1,0 +1,14 @@
+#! /bin/dash
+
+uri=$1
+
+if [ -z "$uri" ]; then
+    echo "no uri given" >&2
+    exit 1
+fi
+
+link=${uri#*://}
+dom=${link%%/*}
+proto=${uri%%://*}
+
+printf "${proto}://${dom}\n"

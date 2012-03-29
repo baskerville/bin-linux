@@ -1,0 +1,16 @@
+#! /bin/dash
+
+case $DWB_SCHEME in
+    mailto)
+        urxvtc -e mutt "$DWB_URI"
+        ;;
+    ftp)
+        urxvtc -e lftp "$DWB_URI"
+        ;;
+    magnet)
+        diana_add "$DWB_URI"
+        ;;
+    *)
+        open "$DWB_URI"
+        ;;
+esac

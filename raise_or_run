@@ -1,0 +1,34 @@
+#! /bin/dash
+
+case "$@" in
+    dwb)
+        xdotool search --desktop 1 --class dwb | xargs xdotool windowactivate || dwb
+        ;;
+    mutt)
+        xdotool search --classname mutt windowactivate || urxvtc -title mutt -name mutt -e m
+        ;;
+    slrn)
+        xdotool search --classname slrn windowactivate || urxvtc -title slrn -name slrn -e ng
+        ;;
+    htop)
+        xdotool search --classname htop windowactivate || urxvtc -title htop -name htop -e htop
+        ;;
+    post_install)
+        xdotool search --classname post_install windowactivate || urxvtc -name post_install -e editor ~/bin/post_install.sh
+        ;;
+    xlog)
+        xdotool search --classname xlog windowactivate || urxvtc -name xlog -e editor ~/.Xlog
+        ;;
+    hlconf)
+        xdotool search --classname hlconf windowactivate || urxvtc -name hlconf -e editor "${XDG_CONFIG_HOME}/herbstluftwm/autostart"
+        ;;
+    # obconf)
+    #     xdotool search --classname obconf windowactivate || urxvtc -name obconf -e editor "${XDG_CONFIG_HOME}/openbox/rc.xml"
+    #     ;;
+    ncmpcpp)
+        xdotool search --classname ncmpcpp windowactivate || urxvtc -name ncmpcpp -e ncmpcpp
+        ;;
+    *)
+        xdotool search --classname "$@" windowactivate || urxvtc -name "$@" -e editor "$XDG_DATA_HOME/$@"
+        ;;
+esac

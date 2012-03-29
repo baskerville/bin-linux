@@ -1,0 +1,246 @@
+#! /usr/bin/python
+#
+# Color Scheme Generator
+# baskerville at lavabit dot com
+#
+
+import sys, re
+from os import chmod
+from getopt import getopt
+from os.path import basename
+from colormath.color_objects import LCHabColor, RGBColor
+
+FIRST_EMPTY_SLOT = 16
+NUM_MONOTONES = 8
+COLORS_START = FIRST_EMPTY_SLOT + NUM_MONOTONES
+NUM_COLORS = 256 - FIRST_EMPTY_SLOT - NUM_MONOTONES
+MONOTONES_SLOTS = range(FIRST_EMPTY_SLOT, COLORS_START)
+# SIMPLE_HUES = [60 * i for i in range(6)]
+RAVEN_HUES = [26, 61, 154, 197, 272, 354]
+EUCALYPTUS_HUES = [20, 301, 153, 198, 269, 344]
+# standard_hues = RAVEN_HUES
+STANDARD_POSITIONS = [1, 3, 2, 6, 4, 5]
+STANDARD_LABELS = ['RED', 'YEL', 'GRN', 'CYN', 'BLU', 'MAG']
+standard_hues = EUCALYPTUS_HUES
+scheme_name = 'colors'
+redef_file = None
+
+def term_rgb(hex_color):
+    cpts = re.match('#(..)(..)(..)', hex_color).groups()
+    return 'rgb:%s/%s/%s' % cpts
+
+def term_cmd(code, param):
+    global redef_file
+    print("printf '\\033]%i;%s\\007'" % (code, param), file = redef_file) 
+
+def prop_cmd(code, hex_color):
+    param = term_rgb(hex_color)
+    term_cmd(code, param)
+
+def redef_cmd(slot, hex_color):
+    term_color = term_rgb(hex_color)
+    param = '%i;%s' % (slot, term_color)
+    term_cmd(4, param)
+
+def make_scheme(hex_bg, standard_hues, scheme_name):
+# In terms of legibiliy, the CIELCH lightness
+# difference of the foreground and background
+# colors must be superior to twenty-seven units.
+#
+# Reference:
+# Silvia Zuffi, Carla Brambilla, Giordano Beretta and Paolo Scala:
+# Human Computer Interaction: Legibility and Contrast (2007)
+    global redef_file
+    scheme_kind = 'dark'
+    small_jump = 3
+    bg_fg_gap = 16 * small_jump
+    fg_cl_L = 100
+    bg_fl_L = 100 - fg_cl_L
+    dark_chroma = 11 * small_jump
+    light_chroma = 23 * small_jump
+    color_chroma = dark_chroma
+
+    rgb_bg = RGBColor()
+    rgb_bg.set_from_rgb_hex(hex_bg)
+    lch_bg = rgb_bg.convert_to('lchab')
+
+    # the foreground's hue is the complementary
+    # of the backgound's hue
+    bg_h = lch_bg.lch_h
+    fg_h = (bg_h + 180) % 360
+
+    bg_L = lch_bg.lch_l
+    bg_C = lch_bg.lch_c
+
+    # light background?
+    if bg_L > 50:
+        scheme_kind = 'light'
+        bg_fg_gap = -bg_fg_gap
+        small_jump = -small_jump
+        fg_cl_L = 100 - fg_cl_L
+        bg_fl_L = 100 - bg_fl_L
+        color_chroma = light_chroma
+
+    fg_L = bg_L + bg_fg_gap
+    fg_cm_L = fg_L - 5 * small_jump
+    fg_hl_L = fg_L + 2 * small_jump
+    bg_dp_L = bg_L - small_jump
+    bg_bp_L = bg_L + 2 * small_jump
+
+    lch_bg_fl = LCHabColor(bg_fl_L, bg_C, bg_h)
+    lch_bg_dp = LCHabColor(bg_dp_L, bg_C, bg_h)
+    lch_bg_bp = LCHabColor(bg_bp_L, bg_C, bg_h)
+    lch_fg_cm = LCHabColor(fg_cm_L, bg_C, fg_h)
+    lch_fg = LCHabColor(fg_L, bg_C, fg_h)
+    lch_fg_hl = LCHabColor(fg_hl_L, bg_C, fg_h)
+    lch_fg_cl = LCHabColor(fg_cl_L, bg_C, fg_h)
+
+    rgb_bg_fl = lch_bg_fl.convert_to('rgb')
+    rgb_bg_dp = lch_bg_dp.convert_to('rgb')
+    rgb_bg_bp = lch_bg_bp.convert_to('rgb')
+    rgb_fg_cm = lch_fg_cm.convert_to('rgb')
+    rgb_fg = lch_fg.convert_to('rgb')
+    rgb_fg_hl = lch_fg_hl.convert_to('rgb')
+    rgb_fg_cl = lch_fg_cl.convert_to('rgb')
+
+    hex_bg_fl = rgb_bg_fl.get_rgb_hex().upper()
+    hex_bg_dp = rgb_bg_dp.get_rgb_hex().upper()
+    hex_bg_bp = rgb_bg_bp.get_rgb_hex().upper()
+    hex_fg_cm = rgb_fg_cm.get_rgb_hex().upper()
+    hex_fg = rgb_fg.get_rgb_hex().upper()
+    hex_fg_hl = rgb_fg_hl.get_rgb_hex().upper()
+    hex_fg_cl = rgb_fg_cl.get_rgb_hex().upper()
+
+    monotones = (hex_bg_fl, hex_bg_dp, hex_bg, hex_bg_bp, hex_fg_cm, hex_fg, hex_fg_hl, hex_fg_cl)
+    xres_name = '%s-%s' % (scheme_name, scheme_kind)
+    redef_name = 'redef-%s-%s' % (scheme_name, scheme_kind)
+    # neap_name = '%s-%s.neaprc' % (scheme_name, scheme_kind)
+    xres_file = open(xres_name, 'w')
+    redef_file = open(redef_name, 'w')
+    # neap_file = open(neap_name, 'w')
+
+    print('''#define t_bg_floor     %s
+    #define t_bg_dip       %s
+    #define t_background   %s
+    #define t_bg_bump      %s
+    #define t_fg_comment   %s
+    #define t_foreground   %s
+    #define t_fg_highlight %s
+    #define t_fg_ceiling   %s''' % monotones, file = xres_file)
+
+    print(file = xres_file)
+
+    print('''URxvt.background: t_background
+    URxvt.foreground: t_foreground
+
+    URxvt.colorBD: t_fg_highlight
+    URxvt.colorIT: t_fg_highlight
+    URxvt.colorUL: t_fg_highlight
+
+    ! BLK
+    URxvt.color0: t_bg_bump
+    URxvt.color8: t_fg_comment
+
+    ! WHT
+    URxvt.color7: t_fg_highlight
+    URxvt.color15: t_fg_ceiling''', file = xres_file)
+
+    prop_cmd(11, hex_bg)
+    prop_cmd(708, hex_bg)
+    prop_cmd(10, hex_fg)
+
+    prop_cmd(706, hex_fg_hl)
+    prop_cmd(704, hex_fg_hl)
+    prop_cmd(707, hex_fg_hl)
+
+    redef_cmd(0, hex_bg_bp)
+    redef_cmd(8, hex_fg_cm)
+
+    redef_cmd(7, hex_fg_hl)
+    redef_cmd(15, hex_fg_cl)
+
+    print(file = xres_file)
+
+    for position, color_hue, color_label in zip(STANDARD_POSITIONS, standard_hues, STANDARD_LABELS):
+        lch_color_hl = LCHabColor(fg_hl_L, color_chroma, color_hue)
+        lch_color_cm = LCHabColor(fg_cm_L, color_chroma, color_hue)
+        rgb_color_hl = lch_color_hl.convert_to('rgb')
+        rgb_color_cm = lch_color_cm.convert_to('rgb')
+        hex_color_hl = rgb_color_hl.get_rgb_hex().upper()
+        hex_color_cm = rgb_color_cm.get_rgb_hex().upper()
+        slot_cm = position
+        slot_hl = position + 8
+        redef_cmd(slot_cm, hex_color_cm)
+        redef_cmd(slot_hl, hex_color_hl)
+        print('! %s' % color_label, file = xres_file)
+        print('URxvt.color%s: %s' % (slot_cm, hex_color_cm), file = xres_file)
+        print('URxvt.color%s: %s' % (slot_hl, hex_color_hl), file = xres_file)
+        print(file = xres_file)
+
+    print('''URxvt.color%s: t_bg_floor
+    URxvt.color%s: t_bg_dip
+    URxvt.color%s: t_background
+    URxvt.color%s: t_bg_bump
+    URxvt.color%s: t_fg_comment
+    URxvt.color%s: t_foreground
+    URxvt.color%s: t_fg_highlight
+    URxvt.color%s: t_fg_ceiling''' % tuple(MONOTONES_SLOTS), file = xres_file)
+
+    for slot, hex_color in zip(MONOTONES_SLOTS, monotones):
+        redef_cmd(slot, hex_color)
+
+    print(file = xres_file)
+
+    for slot in range(COLORS_START, COLORS_START + NUM_COLORS):
+        color_hue = (slot - COLORS_START) * 360 / NUM_COLORS
+        lch_color = LCHabColor(fg_L, color_chroma, color_hue)
+        rgb_color = lch_color.convert_to('rgb')
+        hex_color = rgb_color.get_rgb_hex().upper()
+        redef_cmd(slot, hex_color)
+        print('URxvt.color%s: %s' % (slot, hex_color), file = xres_file)
+
+    print(file = xres_file)
+    print('! %s: set ft=xdefaults:' % 'vim', file = xres_file)
+
+    xres_file.close()
+    redef_file.close()
+    # neap_file.close()
+
+    chmod(redef_name, 0o744)
+
+def usage():
+    print('''
+SYNOPSIS
+    {} [OPTIONS] BACKGROUND_COLOR [SCHEME_NAME]'
+
+OPTIONS
+    -h, --help
+        Show this message.
+    
+    -s, --standard-hues <LIST_OF_HUES>
+        Define standard hues from the given LIST_OF_HUES.
+'''.format(basename(sys.argv[0])))
+    sys.exit(1)
+
+def main():
+    global standard_hues, scheme_name
+    opts, args = getopt(sys.argv[1:], 'hs:', ['help', 'standard-hues='])
+
+    if len(args) < 1:
+        usage()
+
+    for opt, val in opts:
+        if opt in ('-h', '--help'):
+            usage()
+        elif opt in ('-k', '--standard-hues'):
+            standard_hues = map(int, val.split(','))
+
+    hex_bg = args[0].upper()
+
+    if len(args) > 1:
+        scheme_name = args[1]
+
+    make_scheme(hex_bg, standard_hues, scheme_name)
+
+if __name__ == '__main__':
+    main()

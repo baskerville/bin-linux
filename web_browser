@@ -1,0 +1,30 @@
+#! /bin/dash
+
+BROWSER=${BROWSER:-curl}
+
+[ $# -eq 0 ] && $BROWSER > /dev/null
+
+while [ $# -gt 0 ] ; do
+    url=''
+    case $1 in
+        *://*)
+            url=$1
+            ;;
+        *)
+            if [ -e "$1" ] ; then
+                case $1 in
+                    /*)
+                        url="file://$1"
+                        ;;
+                    *)
+                        url="file://$PWD/$1"
+                        ;;
+                esac
+            else
+                url=$1
+            fi
+            ;;
+    esac
+    $BROWSER "$url" > /dev/null
+    shift
+done

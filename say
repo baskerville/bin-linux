@@ -1,0 +1,7 @@
+#! /bin/dash
+
+if [ $# -lt 2 ] ; then
+    printf "usage: %s <language> <text>\n" "$(basename $0)" 
+fi
+
+espeak -v$1 "$2" 2> /dev/null

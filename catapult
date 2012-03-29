@@ -1,0 +1,66 @@
+#! /bin/bash
+
+if [ $# -lt 1 ]; then
+    echo 'no arguments given' >&2
+    exit 1
+fi
+
+action=$1
+shift
+
+MAX_LINES=128
+move_places="$XDG_DATA_HOME/wuwei_places"
+places_temp="$XDG_DATA_HOME/wuwei_places.tmp"
+last_action="$XDG_DATA_HOME/wuwei_last_action"
+
+if [ "$action" = "repeat" ]; then
+    destination=$(head -n 1 "$move_places")
+    destination=${destination//\~/$HOME}
+    if [ -z "$destination" ]; then
+        echo 'last destination is missing' >&2
+        exit 1
+    fi
+    action=$(cat "$last_action")
+    case "$action" in
+        copy)
+            cp -t "$destination" "$@"
+            ;;
+        move)
+            mv -t "$destination" "$@"
+            ;;
+        *)
+            echo "action '$action' can't be repeated" >&2
+            exit 1
+            ;;
+    esac
+    exit
+fi
+
+destination=$(cat "$move_places" | dmenu_select)
+
+if [ -n "$destination" -a -$? -eq 0 ]; then
+    destination=${destination//\~/$HOME}
+    case "$action" in
+        copy)
+            cp -t "$destination" "$@"
+            ;;
+        move)
+            mv -t "$destination" "$@"
+            ;;
+        rename)
+            mv "$@" "$destination"
+            ;;
+        *)
+            echo "action '$action' is unknown" >&2
+            exit 1
+            ;;
+    esac
+    echo -n "$action" > "$last_action"
+    if [ "$action" != "rename" ]; then
+        destination=${destination//$HOME/\~}
+        destination=${destination//\//\\\/}
+        sed -i "1s/^/$destination\n/" "$move_places"
+        cat "$move_places" | sort | uniq -c | sort -rn | sed 's/^[0-9 ]*//' | head -n $MAX_LINES > "$places_temp"
+        mv "$places_temp" "$move_places"
+    fi
+fi

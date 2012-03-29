@@ -1,0 +1,13 @@
+#! /bin/dash
+
+while [ $# -gt 0 ]; do
+    if [ -d "$1" ] ; then
+        case "$1" in
+            /*)
+                urxvtc -cd "$1";;
+            *)
+                urxvtc -cd "$PWD/$1";;
+        esac
+    fi
+    shift
+done

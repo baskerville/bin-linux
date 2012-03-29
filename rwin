@@ -1,0 +1,21 @@
+#! /bin/dash
+
+vid_out=${1-out.mp4}
+tmp_out=$(mktemp rwin.XXX)
+xwininfo > $tmp_out
+
+get_field() {
+    grep "$@" $tmp_out | awk -F ': *' '{print $2}'
+}
+
+width=$(get_field 'Width:')
+height=$(get_field 'Height:')
+left=$(get_field 'Absolute upper-left X:')
+top=$(get_field 'Absolute upper-left Y:')
+
+size="${width}x${height}"
+pos="${left},${top}"
+
+rm $tmp_out
+
+ffmpeg -f x11grab -s $size -i ${DISPLAY-0:0}+$pos -sameq $vid_out

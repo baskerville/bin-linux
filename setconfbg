@@ -1,0 +1,13 @@
+#! /bin/dash
+
+[ $# -lt 2 ] && exit 1
+
+conf=$1
+bgtype=$2
+
+name=$(basename "$conf")
+current=$(readlink -nse "$conf")
+dir=$(dirname "$current")
+
+cd "$dir"
+ln -sf "${name}-${bgtype}" "$name"

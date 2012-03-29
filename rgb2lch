@@ -1,0 +1,25 @@
+#! /usr/bin/python
+
+import sys, re
+from colormath.color_objects import RGBColor
+
+palette = []
+args = sys.argv[1:]
+
+if len(args) > 0:
+    palette.extend(args)
+else:
+    for line in sys.stdin:
+        colors = re.findall('[0-9]+ +[0-9]+ +[0-9]+', line)
+        palette.extend(colors)
+
+if len(palette) < 1:
+    print('no color found', file=sys.stderr)
+    sys.exit(1)
+
+for color in palette:
+    (R, G, B) = map(int, re.split(' +', color))
+    rgb_color = RGBColor(R, G, B)
+    lch_color = rgb_color.convert_to('lchab')
+    print('%f %f %f ' % lch_color.get_value_tuple(), end='')
+    print('(%s)' % color)

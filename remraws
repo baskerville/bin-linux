@@ -1,0 +1,10 @@
+#! /bin/dash
+
+for raw in *.CR2; do
+    base=${raw%.*}
+    good=$(ls $base.* | grep -v $raw)
+    if [ -z "$good" ]; then
+        echo "trashing $raw"
+        mv -t "$XDG_TRASH_DIR" "$raw" 
+    fi
+done

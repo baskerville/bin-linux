@@ -1,0 +1,216 @@
+#! /usr/bin/env python2
+# -*- coding: utf-8 -*-
+
+import sys, os
+import random
+from PIL import Image, ImageDraw
+from getopt import getopt, GetoptError
+from math import hypot
+from colormath.color_objects import LabColor, RGBColor
+
+LUMINANCES = [80, 60]
+SOLARIZED_LUMINANCES = [97,  92,  65,  60,  50,  45,  20, 15]
+PALETTE_SIZE = 6
+OUTPUT_SQUARE_SIDE = 30
+MIN_AB_DISTANCE = 20
+MAX_AB_DISTANCE = 425   # 300 * sqrt(2)
+MIN_LUMINANCE = 0
+MAX_LUMINANCE = 100
+MIN_NORM = 0
+MAX_NORM = 213  # 150 * sqrt(2)
+PULSE_EVERY = 10000
+OUTPUT_NAME = 'output.png'
+VERBOSE_PROGRESS = False
+
+palette=[]
+
+def usage():
+    print '''
+SYNOPSIS
+    %s [options] <image>
+
+OPTIONS
+    -h, --help
+        Show this message.
+
+    -o, --output <name>
+        Save the generated palette to <name> (default: "%s").
+
+    -s, --size <num>
+        Generates a palette of <num> colors (default: "%s").
+
+    -l, --luminances <list>
+        Generates colors for each luminance in <list> (default: "%s").
+
+    -m, --min-ab-distance <value>
+        Lower bound for the ab-distance (default: "%s").
+
+    -M, --max-ab-distance <value>
+        Upper bound for the ab-distance (default: "%s").
+
+    -n, --norm-range <min-max>
+        Colors which ab-norm isn't in the given range are discarded (default: "%s").
+
+    -u, --luminance-range <min-max>
+        Colors which L*a*b* luminance isn't in the given range are discarded (default: "%s").
+
+    -r, --square-side <length>
+        Set the side <length> in pixels of the output squares (default: "%s").
+
+    -p, --pulse-every <value>
+        If verbose mode is activated, show remaining pixels count every <value> pixels (default: "%s").
+
+    -k, --keep-luminance
+        Keep original luminance in the output.
+
+    -z, --solarized-luminances
+        Use luminance values taken from the 'solarized' scale.
+
+    -v, --verbose-progress
+        Show informations about the palette while it's being generated.
+''' % (os.path.basename(sys.argv[0]), OUTPUT_NAME, PALETTE_SIZE, ','.join(map(str, LUMINANCES)), MIN_AB_DISTANCE, MAX_AB_DISTANCE, '%s-%s' % (MIN_NORM, MAX_NORM), '%s-%s' % (MIN_LUMINANCE, MAX_LUMINANCE), OUTPUT_SQUARE_SIDE, PULSE_EVERY)
+    sys.exit()
+
+def make_palette(img, output_name, palette_size, luminances, min_ab_distance, max_ab_distance, min_norm, max_norm, min_luminance, max_luminance, output_square_side, pulse_every, verbose_progress):
+    random.seed()
+    img = img.convert('RGB')
+    width, height = img.size
+    data = list(img.getdata())
+
+    while len(palette) < palette_size and len(data) > 0:
+        randindex = random.randint(0, len(data) - 1)
+        pixel = data.pop(randindex)
+        remaining_pixels = len(data)
+
+        if verbose_progress and (remaining_pixels % pulse_every) == 0 and remaining_pixels > 0:
+            print '%s pixels left' % remaining_pixels
+
+        if type(pixel) is int:
+            pixel = [pixel, pixel, pixel]
+
+        (red, green, blue) = pixel
+        rgb = RGBColor(red, green, blue)
+        color = rgb.convert_to('lab')
+        L = color.lab_l
+        a = color.lab_a
+        b = color.lab_b
+        ab_norm = hypot(a, b)
+
+        if L < min_luminance or L > max_luminance or ab_norm < min_norm or ab_norm > max_norm:
+            continue
+
+        distance = float('inf') # positive infinity
+
+        for n in palette:
+            na = n.lab_a
+            nb = n.lab_b
+            d = hypot(na - a, nb - b)
+            if (d < distance):
+                distance = d
+
+        if (distance > min_ab_distance and distance < max_ab_distance) or len(palette) < 1:
+            palette.append(color)
+            if verbose_progress:
+                print '\ndistance to palette:  %s' % distance
+                print ('#%02x%02x%02x' % (red, green, blue)).upper()
+                print 'L* %s a* %s b* %s' % (color.lab_l, a, b)
+                need_more = (palette_size - len(palette))
+                if need_more < palette_size and need_more > 0:
+                    print 'need %s more\n' % need_more
+                else:
+                    print 'finished\n'
+
+    output_width = len(palette) * output_square_side
+    output_height = len(luminances) * output_square_side
+
+    output = Image.new('RGBA', (output_width, output_height))
+    draw = ImageDraw.Draw(output)
+
+    for i in range(len(luminances)):
+        lum = luminances[i]
+        for j in range(len(palette)):
+            color = palette[j]
+            a = color.lab_a
+            b = color.lab_b
+            L = lum
+            if not lum:
+                L = color.lab_l
+            color = LabColor(L, a, b)
+            rgb = color.convert_to('rgb')
+            R = rgb.rgb_r
+            G = rgb.rgb_g
+            B = rgb.rgb_b
+            draw.rectangle([j * output_square_side, i * output_square_side, 
+                            (j + 1) * output_square_side, (i + 1) * output_square_side], fill=(R, G, B))
+            if verbose_progress:
+                html_color = rgb.get_rgb_hex().upper()
+                print(html_color)
+
+    output.save(output_name)
+
+def main():
+    try:
+        opts, args = getopt(sys.argv[1:], 'hkvzo:s:l:m:M:n:u:r:p:', ['help', 'keep-luminance', 'solarized-luminances', 'verbose-progress', 'output=', 'size=', 'luminances=', 'min-ab-distance=', 'max-ab-distance=', 'norm-range=', 'luminance-range=', 'square-side=', 'pulse-every='])
+    except GetoptError as (msg, opt):
+        print >> sys.stderr, "%s" % msg
+        sys.exit(1)
+
+    if len(args) < 1:
+        usage()
+
+    output_name = OUTPUT_NAME
+    palette_size = PALETTE_SIZE
+    luminances = LUMINANCES
+    min_ab_distance = MIN_AB_DISTANCE
+    max_ab_distance = MAX_AB_DISTANCE
+    min_norm = MIN_NORM
+    max_norm = MAX_NORM
+    min_luminance = MIN_LUMINANCE
+    max_luminance = MAX_LUMINANCE
+    output_square_side = OUTPUT_SQUARE_SIDE
+    pulse_every = PULSE_EVERY
+    verbose_progress = VERBOSE_PROGRESS
+
+    for opt, val in opts:
+        if opt in ('-h', '--help'):
+            usage()
+        elif opt in ('-k', '--keep-luminance'):
+            luminances = [False]
+        elif opt in ('-z', '--solarized-luminances'):
+            luminances = SOLARIZED_LUMINANCES
+        elif opt in ('-v', '--verbose-progress'):
+            verbose_progress = True
+        elif opt in ('-o', '--output'):
+            output_name = val
+        elif opt in ('-s', '--size'):
+            palette_size = int(val)
+        elif opt in ('-l', '--luminances'):
+            luminances = map(int, val.split(','))
+        elif opt in ('-m', '--min-ab-distance'):
+            min_ab_distance = float(val)
+        elif opt in ('-M', '--max-ab-distance'):
+            max_ab_distance = float(val)
+        elif opt in ('-n', '--norm-range'):
+            (min_norm, max_norm) = map(int, val.split('-'))
+        elif opt in ('-u', '--luminance-range'):
+            (min_luminance, max_luminance) = map(int, val.split('-'))
+        elif opt in ('-r', '--square-side'):
+            output_square_side = int(val)
+        elif opt in ('-p', '--pulse-every'):
+            pulse_every = int(val)
+        else:
+            print >> sys.stderr, "don't know what to do with: '%s'" % opt
+            sys.exit(1)
+            
+    file_name = args[0]
+
+    try:
+        img = Image.open(file_name)
+    except IOError:
+        print >> sys.stderr, "could not open '%s'" % file_name
+        sys.exit(1)
+
+    make_palette(img, output_name, palette_size, luminances, min_ab_distance, max_ab_distance, min_norm, max_norm, min_luminance, max_luminance, output_square_side, pulse_every, verbose_progress)
+
+if __name__ == '__main__':
+    main()
