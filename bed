@@ -6,7 +6,7 @@ if [ $? -eq 0 ]
 then
     editor "$target"
 else
-    results="$(find "$XDG_BIN_DIR" -maxdepth 1 -type f -iname "*$@*" -print0 | xargs -0)"
+    results="$(find -L "$XDG_BIN_DIR" -maxdepth 1 -type f -iname "*$@*" -print0 | xargs -0)"
     if [ -n "$results" ]; then
         editor $results
     fi
