@@ -1,7 +1,12 @@
 #! /bin/dash
 
 {
-    window_ids=$(xdotool search --class .)
+    if [ $# -gt 0 ] ; then
+        window_ids=$(xdotool search --desktop "$@" --class .)
+    else
+        window_ids=$(xdotool search --class .)
+    fi
+
     for wid in $window_ids ; do
         desk=$(xprop _NET_WM_DESKTOP -id "$wid" | grep '= [0-9]$' | sed 's/= //')
         if [ -n "$desk" ] ; then
