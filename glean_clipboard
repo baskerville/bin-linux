@@ -1,0 +1,3 @@
+#! /bin/dash
+
+web_browser "$(xsel -bo | sed 's/&/%26/g')"

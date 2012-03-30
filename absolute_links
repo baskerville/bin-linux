@@ -1,18 +1,26 @@
 #! /bin/dash
 
 uri=$1
-cookies=$2
+page_content=$2
+cookies=$3
 http_dir=$(dirname "$uri")
 http_root=$(top_dir "$uri")
 
-case $uri in
-    file://*)
-        hrefs=$(cat "${uri#file://}" | tr '\n' ' ' | grep -io 'href="[^"]\+"' | sort -u | sed 's/href="\([^"]\+\)"/\1/i')
-        ;;
-    *)
-        hrefs=$(wget -qO - --load-cookies "$cookies" "$uri" | tr '\n' ' ' | grep -io 'href="[^"]\+"' | sort -u | sed 's/href="\([^"]\+\)"/\1/i')
-        ;;
-esac
+hrefs=$(echo "$page_content" | tr '\n' ' ' | grep -io 'href="[^"]\+"' | sort -u | sed 's/href="\([^"]\+\)"/\1/i')
+# if [ -e "$page_content" ] ; then
+#     hrefs=$(echo "$page_content" | tr '\n' ' ' | grep -io 'href="[^"]\+"' | sort -u | sed 's/href="\([^"]\+\)"/\1/i')
+# else
+#     hrefs=$(wget -qO - --load-cookies "$cookies" "$uri" | tr '\n' ' ' | grep -io 'href="[^"]\+"' | sort -u | sed 's/href="\([^"]\+\)"/\1/i')
+# fi
+
+# case $uri in
+#     file://*)
+#         hrefs=$(cat "${uri#file://}" | tr '\n' ' ' | grep -io 'href="[^"]\+"' | sort -u | sed 's/href="\([^"]\+\)"/\1/i')
+#         ;;
+#     *)
+#         hrefs=$(wget -qO - --load-cookies "$cookies" "$uri" | tr '\n' ' ' | grep -io 'href="[^"]\+"' | sort -u | sed 's/href="\([^"]\+\)"/\1/i')
+#         ;;
+# esac
 
 for ref in $hrefs
 do

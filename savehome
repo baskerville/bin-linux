@@ -28,7 +28,7 @@ do
             tar -cvz -C ~ -f doc.tgz doc
             ;;
         sys)
-            tar -cvz -C ~ -f sys.tgz /etc/rc.conf /etc/rc.local /boot/grub/menu.lst /usr/local/bin/brightness /etc/pacman.conf /etc/udev/rules.d/* /etc/pm/sleep.d/49xscreensaver
+            tar -cvz -C ~ -f sys.tgz /etc/rc.conf /etc/rc.local /usr/share/kbd/keymaps/extra.map /boot/grub/menu.lst /usr/local/bin/brightness /etc/pacman.conf /etc/udev/rules.d/* /etc/pm/sleep.d/49xscreensaver
             ;;
     esac
     shift

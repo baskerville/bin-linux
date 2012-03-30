@@ -1,9 +1,1 @@
-#! /bin/dash
-
-fn='-*-terminus-medium-*-*-*-18-*-*-*-*-*-*-*'
-nb='#32312E'
-nf='#A6A7AA'
-sb='#3F3E3B'
-sf='#A6A7AA'
-
-dmenu_run -i -fn "$fn" -nb "$nb" -nf "$nf" -sb "$sb" -sf "$sf" -p '>' -q
+dmenu_launch-light
