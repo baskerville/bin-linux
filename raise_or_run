@@ -4,6 +4,9 @@ case "$@" in
     dwb)
         xdotool search --desktop 1 --class dwb | xargs xdotool windowactivate || dwb
         ;;
+    dwb_restore)
+        xdotool search --desktop 1 --class dwb | xargs xdotool windowactivate || dwb -r
+        ;;
     mutt)
         xdotool search --classname mutt windowactivate || urxvtc -title mutt -name mutt -e m
         ;;
