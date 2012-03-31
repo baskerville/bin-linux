@@ -48,7 +48,7 @@ elif [ -e "$@" ]; then
             unzip -d "${@%.*}" "$@"
             ;;
         application/x-rar)
-            unrar x "$@"
+            unrar -ad x "$@"
             ;;
         application/x-bittorrent)
             diana_add "$@"

@@ -233,7 +233,7 @@ def main():
         if opt in ('-h', '--help'):
             usage()
         elif opt in ('-k', '--standard-hues'):
-            standard_hues = map(int, val.split(','))
+            standard_hues = map(float, val.split(','))
 
     hex_bg = args[0].upper()
 
