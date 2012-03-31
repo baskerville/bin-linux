@@ -43,6 +43,7 @@ if len(palette) < 1:
 
 print(len(palette))
 
+horizontal_squares = min(horizontal_squares, len(palette))
 vertical_squares = int(ceil(len(palette) / float(horizontal_squares)))
 output_width = horizontal_squares * output_square_side
 output_height = vertical_squares * output_square_side

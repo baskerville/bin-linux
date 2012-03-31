@@ -6,10 +6,6 @@ from getopt import getopt
 
 base = None
 
-def get_base(uri):
-    comp = urlparse(uri)
-    return '{}://{}/'.format(comp.scheme, comp.netloc)
-
 def format_links(line):
     global base
     hyper_refs = re.findall('(?<=href=")[^"]+', line, flags = re.I)
@@ -25,7 +21,7 @@ def main():
 
     for opt, val in opts:
         if opt in ('-b', '--base'):
-            base = get_base(val)
+            base = val
 
     if len(args) > 0:
         for filename in args:

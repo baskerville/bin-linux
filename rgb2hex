@@ -10,7 +10,7 @@ if len(args) > 0:
     palette.extend(args)
 else:
     for line in sys.stdin:
-        colors = re.findall('[0-9]+ +[0-9]+ +[0-9]+', line)
+        colors = re.findall('[0-9]+\s+[0-9]+\s+[0-9]+', line)
         palette.extend(colors)
 
 if len(palette) < 1:
@@ -18,7 +18,7 @@ if len(palette) < 1:
     sys.exit(1)
 
 for color in palette:
-    (R, G, B) = map(int, re.split(' +', color))
+    (R, G, B) = map(int, re.split('\s+', color))
     rgb_color = RGBColor(R, G, B)
     hex_color = rgb_color.get_rgb_hex()
     print(hex_color)
