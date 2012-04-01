@@ -4,13 +4,10 @@ while [ $# -gt 0 ]
 do
     case $1 in
         dots)
-            tar -cvz -C ~ -f dots.tgz .coordinates .mpoprc .msmtprc .surfraw.conf .xscreensaver .procmailrc .jnewsrc .urlview .eatrc
+            tar -cvz -C ~ -f dots.tgz .coordinates .mpoprc .msmtprc .xscreensaver .procmailrc .jnewsrc .urlview .eatrc
             ;;
         dirs)
             tar -cvz -C ~ -f dirs.tgz .local .config .mutt .vim .mpd .themes .colors .fonts .icons .aria2 .mplayer .irssi .pal .FontForge .ssh .w3m .elinks .ncmpcpp .mldonkey/*.ini
-            ;;
-        bin)
-            tar -cvz -C ~ -f bin.tgz bin
             ;;
         usenet)
             tar -cvz -C ~ -f usenet.tgz .slrn .slrnpull/slrnpull.conf

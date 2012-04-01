@@ -1,0 +1,59 @@
+#! /bin/sh
+
+select task in network user sound applications homestructure
+do
+    echo $task
+    case $task in
+        network)
+            # run as root
+            echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=wheel" > /etc/wpa_supplicant.conf
+            wpa_passphrase "*SSID*" "*SECRET*KEY*" >> /etc/wpa_supplicant.conf
+            wpa_supplicant -B -Dwext -i wlan0 -c /etc/wpa_supplicant.conf
+            dhcpcd wlan0
+            pacman -S netcfg
+            ;;
+        user)
+            # run as root
+            pacman -Syu
+            useradd -m -g users -G audio,lp,optical,storage,video,wheel,games,power,scanner -s /bin/bash ice
+            ;;
+        sound)
+            sudo pacman -S alsa-utils 
+            alsamixer
+            speaker-test -c 2
+            sudo alsactl -f /var/lib/alsa/asound.state store
+            ;;
+        programs)
+            sudo pacman -S bash-completion dash gdb
+            sudo pacman -S curl yajl perl inetutils openssh openssl
+            sudo pacman -S git mercurial subversion cvs bzr
+            sudo pacman -S pm-utils vim mutt msmtp ed
+            sudo pacman -S rlwrap w3m elinks tmux duff ack surfraw dictd bc
+            sudo pacman -S xorg-server xorg-xinit xorg-utils xorg-server-utils
+            sudo pacman -S xorg-xmessage xorg-xclock xorg-xcalc xorg-xeyes
+            sudo pacman -S terminus-font rxvt-unicode xscreensaver zenity gtk-engine-murrine
+            sudo pacman -S ttf-droid ttf-liberation
+            sudo pacman -S scrot mplayer ffmpeg xcompmgr
+            sudo pacman -S mpd mpc
+            sudo pacman -S xclip xsel xdotool flashplugin
+            sudo pacman -S gimp-devel inkscape fontforge sdlmame
+            sudo pacman -S cups gutenprint cdrkit gphoto2 dcraw
+            sudo pacman -S lirc lirc-utils
+            sudo pacman -S mac cuetools shntool libplist
+            sudo pacman -S fortune-mod figlet cowsay htop lsof strace words
+            sudo pacman -S gnuplot gtk
+            sudo pacman -S p7zip tk id3v2
+            sudo pacman -S openjdk6 apache-ant
+            sudo pacman -S apache php php-apache mysql
+            sudo pacman -S abiword
+            owl install mutt-bare-git dzen2-bare-git herbstluftwm-git tint2-svn neap-svn
+            ;;
+        home)
+            cd
+            mkdir -p art doc incoming image audio video src tmp work other
+            # git clone git://github.com/baskerville/dotfiles.git .dotfiles
+            # git clone git://github.com/baskerville/bin.git .bindir
+            # ln -s .bindir bin
+            ;;
+    esac
+done
