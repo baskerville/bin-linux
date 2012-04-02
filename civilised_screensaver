@@ -3,7 +3,7 @@
 TIMEOUT=355
 
 while true ; do
-    sleep TIMEOUT
+    sleep $TIMEOUT
     awid=$(xdotool getactivewindow 2>/dev/null)
     if [ $? -eq 0 ] ; then
         wstate=$(xprop -id "$awid" _NET_WM_STATE)
