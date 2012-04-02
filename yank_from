@@ -1,0 +1,3 @@
+#! /bin/dash
+
+grep '^From: ' | sed 's/^From: //' | headerdecode | tr -d '\n' | xsel -bi

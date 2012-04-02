@@ -1,4 +1,4 @@
 #! /bin/dash
 
 xset -dpms
-pkill -x xscreensaver
+xscreensaver-command -exit

@@ -112,7 +112,7 @@ elif [ -e "$@" ]; then
                     mime_encoding=$(file -L -b --mime-encoding "$@")
                     case $mime_encoding in
                         *binary)
-                            xxd -l 256 "$@"
+                            xxd -l 128 "$@"
                             ;;
                         *)
                             editor "$@"

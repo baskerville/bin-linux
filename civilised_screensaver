@@ -1,0 +1,16 @@
+#! /bin/dash
+
+TIMEOUT=355
+
+while true ; do
+    sleep TIMEOUT
+    awid=$(xdotool getactivewindow 2>/dev/null)
+    if [ $? -eq 0 ] ; then
+        wstate=$(xprop -id "$awid" _NET_WM_STATE)
+        case "$wstate" in
+            *_NET_WM_STATE_FULLSCREEN)
+                xscreensaver-command -deactivate >&- 2>&- &
+                ;;
+        esac
+    fi
+done
