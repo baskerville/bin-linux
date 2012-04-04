@@ -1,9 +1,29 @@
 #! /bin/dash
 
-TIMEOUT=355
+set -- $(grep -i '^timeout:' ~/.xscreensaver | sed 's/[^0-9]\+\([0-9]\+\):\([0-9]\+\):\([0-9]\+\)/\1 \2 \3/')
+
+if [ $# -eq 0 ] ; then
+    printf '%s' "no timeout data could be extracted from Xscreensaver's configuration file" >&2
+    exit 1
+fi
+
+delete_zeros() {
+    printf '%s' "$@" | sed 's/0*\([0-9].*\)/\1/'
+}
+
+hours=$(delete_zeros "$1")
+minutes=$(delete_zeros "$2")
+seconds=$(delete_zeros "$3")
+
+timeout=$((hours * 60 * 60 + minutes * 60 + seconds - 5))
+
+if [ $timeout -lt 1 ] ; then
+    printf '%s' "Xscreensaver's sleep timeout is too short" >&2
+    exit 1
+fi
 
 while true ; do
-    sleep $TIMEOUT
+    sleep $timeout
     awid=$(xdotool getactivewindow 2>/dev/null)
     if [ $? -eq 0 ] ; then
         wstate=$(xprop -id "$awid" _NET_WM_STATE)
