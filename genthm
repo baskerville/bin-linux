@@ -442,14 +442,18 @@ hi def link perlSharpBang Comment'''.format(**idx_color_set), file = vim_file)
 def usage():
     print('''
 SYNOPSIS
-    {} [OPTIONS] BACKGROUND_COLOR [SCHEME_NAME]'
+    {} [OPTIONS] BACKGROUND_COLOR [SCHEME_NAME]
 
 OPTIONS
     -h, --help
         Show this message.
     
+    -t, --translate
+        Format stdin, output the result to stdout.
+
     -s, --standard-hues <LIST_OF_HUES>
         Define standard hues from the given LIST_OF_HUES.
+        The expected colors are: red, yellow, green, cyan, blue, magenta.
 '''.format(basename(sys.argv[0])))
     sys.exit(1)
 
