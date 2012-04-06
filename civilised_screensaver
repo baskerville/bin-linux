@@ -18,7 +18,7 @@ seconds=$(delete_zeros "$3")
 timeout=$((hours * 60 * 60 + minutes * 60 + seconds - 5))
 
 if [ $timeout -lt 1 ] ; then
-    printf '%s' "Xscreensaver's sleep timeout is too short" >&2
+    printf '%s' "Xscreensaver's timeout is too short" >&2
     exit 1
 fi
 

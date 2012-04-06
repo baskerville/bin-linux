@@ -6,6 +6,7 @@
 
 import sys, re
 from os import chmod
+from math import floor
 from getopt import getopt
 from os.path import basename
 from colormath.color_objects import LCHabColor, RGBColor
@@ -14,14 +15,13 @@ FIRST_EMPTY_SLOT = 16
 NUM_MONOTONES = 8
 COLORS_START = FIRST_EMPTY_SLOT + NUM_MONOTONES
 NUM_COLORS = 256 - FIRST_EMPTY_SLOT - NUM_MONOTONES
+HUE_GRAIN = 360 / NUM_COLORS
 MONOTONES_SLOTS = range(FIRST_EMPTY_SLOT, COLORS_START)
-# SIMPLE_HUES = [60 * i for i in range(6)]
-RAVEN_HUES = [26, 61, 154, 197, 272, 354]
-EUCALYPTUS_HUES = [20, 301, 153, 198, 269, 344]
-# standard_hues = RAVEN_HUES
+SIMPLE_HUES = [(30 + 60 * i) % 360 for i in range(6)]
 STANDARD_POSITIONS = [1, 3, 2, 6, 4, 5]
 STANDARD_LABELS = ['RED', 'YEL', 'GRN', 'CYN', 'BLU', 'MAG']
-standard_hues = EUCALYPTUS_HUES
+standard_hues = SIMPLE_HUES
+translate_stdin = False
 scheme_name = 'colors'
 redef_file = None
 
@@ -42,6 +42,27 @@ def redef_cmd(slot, hex_color):
     param = '%i;%s' % (slot, term_color)
     term_cmd(4, param)
 
+def approx_hue(h):
+    factor = floor(h / HUE_GRAIN)
+    return factor * HUE_GRAIN
+
+def mid_hue(h1, h2):
+    if h2 < h1:
+        return floor((h1 + h2 + 360) / 2) % 360
+    else:
+        return floor((h1 + h2) / 2)
+
+def hue_to_idx(h):
+    factor = floor(h / HUE_GRAIN)
+    return COLORS_START + factor
+
+def idx_to_hex(i, color_lightness, color_chroma):
+    color_hue = (i - COLORS_START) * 360 / NUM_COLORS
+    lch_color = LCHabColor(color_lightness, color_chroma, color_hue)
+    rgb_color = lch_color.convert_to('rgb')
+    hex_color = rgb_color.get_rgb_hex().upper()
+    return hex_color
+
 def make_scheme(hex_bg, standard_hues, scheme_name):
 # In terms of legibiliy, the CIELCH lightness
 # difference of the foreground and background
@@ -50,14 +71,14 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
 # Reference:
 # Silvia Zuffi, Carla Brambilla, Giordano Beretta and Paolo Scala:
 # Human Computer Interaction: Legibility and Contrast (2007)
-    global redef_file
+    global redef_file, translate_stdin
     scheme_kind = 'dark'
     small_jump = 3
     bg_fg_gap = 16 * small_jump
     fg_cl_L = 100
     bg_fl_L = 100 - fg_cl_L
     dark_chroma = 11 * small_jump
-    light_chroma = 23 * small_jump
+    light_chroma = 21 * small_jump
     color_chroma = dark_chroma
 
     rgb_bg = RGBColor()
@@ -112,38 +133,110 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     hex_fg_cl = rgb_fg_cl.get_rgb_hex().upper()
 
     monotones = (hex_bg_fl, hex_bg_dp, hex_bg, hex_bg_bp, hex_fg_cm, hex_fg, hex_fg_hl, hex_fg_cl)
+
+    (red_h, yellow_h, green_h, cyan_h, blue_h, magenta_h) = standard_hues
+    (red_i, yellow_i, green_i, cyan_i, blue_i, magenta_i) = tuple(map(hue_to_idx, standard_hues))
+
+    orange_h = mid_hue(red_h, yellow_h)
+    spring_h = mid_hue(yellow_h, green_h)
+    teal_h = mid_hue(green_h, cyan_h)
+    azure_h = mid_hue(cyan_h, blue_h)
+    violet_h = mid_hue(blue_h, magenta_h)
+    pink_h = mid_hue(magenta_h, red_h)
+    
+    secondary_hues = tuple(map(approx_hue, (orange_h, spring_h, teal_h, azure_h, violet_h, pink_h)))
+    (orange_i, spring_i, teal_i, azure_i, violet_i, pink_i) = tuple(map(hue_to_idx, secondary_hues))
+
+    idx_color_set = {
+    'colors_name':  scheme_name,
+    'bg_floor':  16,
+    'bg_dip':  17,
+    'background':  18,
+    'bg_bump':  19,
+    'fg_comment':  20,
+    'foreground':  21,
+    'fg_highlight':  22,
+    'fg_ceiling':  23,
+    'red':  red_i,
+    'yellow':  yellow_i,
+    'green':  green_i,
+    'cyan':  cyan_i,
+    'blue':  blue_i,
+    'magenta':  magenta_i,
+    'orange':  orange_i,
+    'spring':  spring_i,
+    'teal':  teal_i,
+    'azure':  azure_i,
+    'violet':  violet_i,
+    'pink':  pink_i
+    }
+
+    hex_color_set = {
+    'colors_name':  scheme_name,
+    'bg_floor':  hex_bg_fl,
+    'bg_dip':  hex_bg_dp,
+    'background':  hex_bg,
+    'bg_bump':  hex_bg_bp,
+    'fg_comment':  hex_fg_cm,
+    'foreground':  hex_fg,
+    'fg_highlight':  hex_fg_hl,
+    'fg_ceiling':  hex_fg_cl,
+    'red':  idx_to_hex(red_i, fg_L, color_chroma),
+    'yellow':  idx_to_hex(yellow_i, fg_L, color_chroma),
+    'green':  idx_to_hex(green_i, fg_L, color_chroma),
+    'cyan':  idx_to_hex(cyan_i, fg_L, color_chroma),
+    'blue':  idx_to_hex(blue_i, fg_L, color_chroma),
+    'magenta':  idx_to_hex(magenta_i, fg_L, color_chroma),
+    'orange':  idx_to_hex(orange_i, fg_L, color_chroma),
+    'spring':  idx_to_hex(spring_i, fg_L, color_chroma),
+    'teal':  idx_to_hex(teal_i, fg_L, color_chroma),
+    'azure':  idx_to_hex(azure_i, fg_L, color_chroma),
+    'violet':  idx_to_hex(violet_i, fg_L, color_chroma),
+    'pink':  idx_to_hex(pink_i, fg_L, color_chroma)
+    }
+
+    if translate_stdin:
+        for line in sys.stdin:
+            print(line.format(**hex_color_set), end='')
+        exit()
+
     xres_name = '%s-%s' % (scheme_name, scheme_kind)
     redef_name = 'redef-%s-%s' % (scheme_name, scheme_kind)
+    vim_name = '%s.vim' % scheme_name
     # neap_name = '%s-%s.neaprc' % (scheme_name, scheme_kind)
     xres_file = open(xres_name, 'w')
     redef_file = open(redef_name, 'w')
+    vim_file = open(vim_name, 'w')
     # neap_file = open(neap_name, 'w')
 
     print('''#define t_bg_floor     %s
-    #define t_bg_dip       %s
-    #define t_background   %s
-    #define t_bg_bump      %s
-    #define t_fg_comment   %s
-    #define t_foreground   %s
-    #define t_fg_highlight %s
-    #define t_fg_ceiling   %s''' % monotones, file = xres_file)
+#define t_bg_dip       %s
+#define t_background   %s
+#define t_bg_bump      %s
+#define t_fg_comment   %s
+#define t_foreground   %s
+#define t_fg_highlight %s
+#define t_fg_ceiling   %s''' % monotones, file = xres_file)
 
     print(file = xres_file)
 
     print('''URxvt.background: t_background
-    URxvt.foreground: t_foreground
+URxvt.foreground: t_foreground
 
-    URxvt.colorBD: t_fg_highlight
-    URxvt.colorIT: t_fg_highlight
-    URxvt.colorUL: t_fg_highlight
+URxvt.colorBD: t_fg_highlight
+URxvt.colorIT: t_fg_highlight
+URxvt.colorUL: t_fg_highlight
 
-    ! BLK
-    URxvt.color0: t_bg_bump
-    URxvt.color8: t_fg_comment
+! ORG
+URxvt.cursorColor: {violet}
 
-    ! WHT
-    URxvt.color7: t_fg_highlight
-    URxvt.color15: t_fg_ceiling''', file = xres_file)
+! BLK
+URxvt.color0: t_bg_bump
+URxvt.color8: t_fg_comment
+
+! WHT
+URxvt.color7: t_fg_highlight
+URxvt.color15: t_fg_ceiling'''.format(**hex_color_set), file = xres_file)
 
     prop_cmd(11, hex_bg)
     prop_cmd(708, hex_bg)
@@ -152,6 +245,8 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     prop_cmd(706, hex_fg_hl)
     prop_cmd(704, hex_fg_hl)
     prop_cmd(707, hex_fg_hl)
+
+    prop_cmd(12, idx_to_hex(violet_i, fg_L, color_chroma))
 
     redef_cmd(0, hex_bg_bp)
     redef_cmd(8, hex_fg_cm)
@@ -178,13 +273,13 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
         print(file = xres_file)
 
     print('''URxvt.color%s: t_bg_floor
-    URxvt.color%s: t_bg_dip
-    URxvt.color%s: t_background
-    URxvt.color%s: t_bg_bump
-    URxvt.color%s: t_fg_comment
-    URxvt.color%s: t_foreground
-    URxvt.color%s: t_fg_highlight
-    URxvt.color%s: t_fg_ceiling''' % tuple(MONOTONES_SLOTS), file = xres_file)
+URxvt.color%s: t_bg_dip
+URxvt.color%s: t_background
+URxvt.color%s: t_bg_bump
+URxvt.color%s: t_fg_comment
+URxvt.color%s: t_foreground
+URxvt.color%s: t_fg_highlight
+URxvt.color%s: t_fg_ceiling''' % tuple(MONOTONES_SLOTS), file = xres_file)
 
     for slot, hex_color in zip(MONOTONES_SLOTS, monotones):
         redef_cmd(slot, hex_color)
@@ -192,19 +287,155 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     print(file = xres_file)
 
     for slot in range(COLORS_START, COLORS_START + NUM_COLORS):
-        color_hue = (slot - COLORS_START) * 360 / NUM_COLORS
-        lch_color = LCHabColor(fg_L, color_chroma, color_hue)
-        rgb_color = lch_color.convert_to('rgb')
-        hex_color = rgb_color.get_rgb_hex().upper()
+        # color_hue = (slot - COLORS_START) * 360 / NUM_COLORS
+        # lch_color = LCHabColor(fg_L, color_chroma, color_hue)
+        # rgb_color = lch_color.convert_to('rgb')
+        # hex_color = rgb_color.get_rgb_hex().upper()
+        hex_color = idx_to_hex(slot, fg_L, color_chroma)
         redef_cmd(slot, hex_color)
         print('URxvt.color%s: %s' % (slot, hex_color), file = xres_file)
 
     print(file = xres_file)
     print('! %s: set ft=xdefaults:' % 'vim', file = xres_file)
 
+
+    print('''hi clear
+
+if exists("syntax on")
+    syntax reset
+endif
+
+let g:colors_name="{colors_name}"
+
+"
+" preferred groups
+" (see `:h w18`)
+"
+hi Normal          ctermfg={foreground}    ctermbg={background}     cterm=none
+hi Comment         ctermfg={fg_comment}
+
+hi Constant        ctermfg={yellow}
+hi String          ctermfg={yellow}
+hi Character       ctermfg={yellow}
+hi Number          ctermfg={yellow}
+hi Boolean         ctermfg={yellow}
+hi Float           ctermfg={yellow}
+
+hi Identifier      ctermfg={violet}
+hi Function        ctermfg={violet}
+
+hi Statement       ctermfg={teal}
+hi Conditional     ctermfg={teal}
+hi Repeat          ctermfg={teal}
+hi Label           ctermfg={teal}
+hi Operator        ctermfg={teal}
+hi Keyword         ctermfg={teal}
+hi Exception       ctermfg={teal}
+
+hi PreProc         ctermfg={azure}
+hi Include         ctermfg={azure}
+hi Define          ctermfg={azure}
+hi Macro           ctermfg={azure}
+hi PreCondit       ctermfg={azure}
+
+hi Type            ctermfg={orange}
+hi StorageClass    ctermfg={orange}
+hi Structure       ctermfg={orange}
+hi Typedef         ctermfg={orange}
+
+hi Special         ctermfg={pink}
+hi SpecialChar     ctermfg={pink}
+hi Tag             ctermfg={pink}
+hi Delimiter       ctermfg={pink}
+hi SpecialComment  ctermfg={pink}
+hi Debug           ctermfg={pink}
+
+hi Underlined      ctermfg=fg
+hi Ignore          ctermfg=bg
+hi Error           ctermfg={bg_floor}    ctermbg={red}
+hi Todo            ctermfg={fg_highlight}  ctermbg=bg    cterm=none
+
+"
+" minor groups
+"
+hi StatusLine      ctermfg=fg     ctermbg={bg_bump}    cterm=none
+hi StatusLineNC    ctermfg={fg_comment}    ctermbg={bg_bump}    cterm=none
+
+hi TabLine         ctermfg=fg     ctermbg={bg_bump}    cterm=none
+hi TabLineSel      ctermfg={cyan}    ctermbg={bg_bump}    cterm=none
+hi TabLineFill     ctermfg=fg     ctermbg={bg_bump}    cterm=none
+
+hi Pmenu           ctermfg=fg     ctermbg={bg_bump}
+hi PmenuSel        ctermfg={fg_ceiling}    ctermbg={fg_comment}
+hi PmenuSbar       ctermfg={fg_ceiling}    ctermbg={fg_comment}
+hi WildMenu        ctermfg={spring}     ctermbg={bg_bump}    cterm=none
+
+hi Visual          ctermfg=bg     ctermbg={cyan}
+hi VisualNOS       ctermfg=bg     ctermbg={blue}
+hi VertSplit       ctermfg=bg     ctermbg={bg_bump}    cterm=none
+hi LineNr          ctermfg={fg_comment}    ctermbg={bg_bump}
+
+hi Title           ctermfg={azure}
+hi SpecialKey      ctermfg={green}
+hi NonText         ctermfg={fg_comment}
+hi MatchParen      ctermfg={bg_floor}     ctermbg={teal}
+hi Directory       ctermfg={violet}
+
+hi ErrorMsg        ctermfg={red}    ctermbg=bg
+hi WarningMsg      ctermfg={orange}
+hi MoreMsg         ctermfg={teal}
+hi ModeMsg         ctermfg={violet}
+
+hi Search          ctermfg={bg_floor}     ctermbg={yellow}     cterm=none
+hi IncSearch       ctermfg={bg_floor}     ctermbg={magenta}     cterm=none
+hi Question        ctermfg={blue}
+
+hi Folded          ctermfg={fg_comment}     ctermbg=bg
+hi FoldColumn      ctermfg={teal}     ctermbg={bg_bump}
+hi SignColumn      ctermfg={teal}     ctermbg={bg_bump}
+hi ColorColumn     ctermfg={teal}     ctermbg={bg_bump}
+
+hi CursorColumn    ctermbg={bg_dip}    cterm=none
+hi CursorLine      ctermbg={bg_dip}    cterm=none
+
+hi vimFold         ctermfg={fg_comment}
+hi vimCommentTitle ctermfg=fg
+hi helpHyperTextJump ctermfg={azure}
+
+hi htmlTag         ctermfg={violet}
+hi htmlEndTag      ctermfg={violet}
+hi htmlTagName     ctermfg={pink}
+hi htmlString      ctermfg={yellow}
+
+hi diffFile        ctermfg={fg_comment}
+hi diffLine        ctermfg={fg_comment}
+hi diffAdded       ctermfg={spring}
+hi diffRemoved     ctermfg={pink}
+hi diffChanged     ctermfg={orange}
+
+hi diffAdd         ctermfg={bg_floor}     ctermbg={green}
+hi diffDelete      ctermfg={fg_ceiling}    ctermbg=fg
+hi diffText        ctermfg={bg_floor}     ctermbg=fg
+hi diffChange      ctermfg={bg_floor}     ctermbg={red}
+hi diffOldLine     ctermfg={violet}
+
+hi SpellBad        ctermfg={red}    ctermbg=bg      cterm=underline
+hi SpellCap        ctermfg={pink}    ctermbg=bg      cterm=underline
+hi SpellRare       ctermfg={violet}    ctermbg=bg      cterm=underline
+hi SpellLocal      ctermfg={orange}    ctermbg=bg      cterm=underline
+
+hi mkdCode         ctermfg={fg_comment}
+hi mkdURL          ctermfg={azure}
+hi mkdLink         ctermfg={magenta}
+
+hi def link mailSubject Title
+hi def link mailSignature Comment
+hi def link mailQuoted2 mailQuoted1
+hi def link perlSharpBang Comment'''.format(**idx_color_set), file = vim_file)
+
     xres_file.close()
     redef_file.close()
-    # neap_file.close()
+    vim_file.close()
 
     chmod(redef_name, 0o744)
 
@@ -223,8 +454,8 @@ OPTIONS
     sys.exit(1)
 
 def main():
-    global standard_hues, scheme_name
-    opts, args = getopt(sys.argv[1:], 'hs:', ['help', 'standard-hues='])
+    global standard_hues, scheme_name, translate_stdin
+    opts, args = getopt(sys.argv[1:], 'hts:', ['help', 'translate', 'standard-hues='])
 
     if len(args) < 1:
         usage()
@@ -232,6 +463,8 @@ def main():
     for opt, val in opts:
         if opt in ('-h', '--help'):
             usage()
+        if opt in ('-t', '--translate'):
+            translate_stdin = True
         elif opt in ('-k', '--standard-hues'):
             standard_hues = map(float, val.split(','))
 
@@ -239,6 +472,8 @@ def main():
 
     if len(args) > 1:
         scheme_name = args[1]
+
+    standard_hues = tuple(map(approx_hue, standard_hues))
 
     make_scheme(hex_bg, standard_hues, scheme_name)
 

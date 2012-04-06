@@ -1,0 +1,11 @@
+#! /usr/bin/python
+
+import sys, re
+
+def translate_value(match_obj):
+    slot = match_obj.group(0)
+    return '\033[38;5;{}m{}\033[0m'.format(slot, slot)
+
+for line in sys.stdin:
+    sline = re.sub('(?<==)\d+', translate_value, line)
+    print(sline, end='')

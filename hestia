@@ -36,13 +36,17 @@ ACT_REQ_MAP = {'list'     : 'vd',
                'kill'     : 'kill',
                'preview'  : 'preview+%s',
                'info'     : 'vd+%s',
-               'priority'  : 'priority+%s',
+               'rename'   : 'rename+%s',
+               'priority' : 'priority+%s',
                'search'   : 's+%s'}
 
 SIMPLE_ACTIONS = ['add', 'pause', 'resume', 'cancel', \
-                  'priority', 'search', 'forget', 'kill']
+                  'rename', 'priority', 'search', 'forget', 'kill']
 
 connection = None
+
+def clean_name(filename):
+    return unquote(HTMLParser().unescape(filename))
 
 def simple_action(action, args = []):
     path = ACT_REQ_MAP[action]
@@ -125,9 +129,8 @@ def view_names(args):
     data = response()
     aka = re.findall('<option value="([^"]+)"', data, re.I)
     aka = aka[3:]
-    for name in aka:
-        clean_name = unquote(HTMLParser().unescape(name))
-        print(clean_name)
+    for filename in aka:
+        print(clean_name(filename))
 
 def view_path(args):
     file_path = get_path(args)
@@ -143,6 +146,7 @@ def view_downloads():
     infos = chunks(values, LIST_COLUMNS)
     for fp, dl in zip(fid_prio, infos):
         (network, filename, size, completed, percent, comment, source, active, availability, age, last, rate, eta, blur) = dl
+        filename = clean_name(filename)
         (fid, priority) = map(lambda x: x.strip(), fp)
         line = '%3s %-50s %6s%% %8s %6s %3s %3s %8s %5s' % (fid, filename, percent, size, rate, active, source, eta, priority)
         if sys.stdout.isatty():
@@ -223,6 +227,9 @@ ACTIONS
 
     preview FID
         Preview a download. 
+
+    rename FID NAME
+        Set FID's filename to NAME.
 
     info FID
         Retrieve informations regarding FID (requires `mediainfo`).

@@ -25,9 +25,6 @@ case "$@" in
     hlconf)
         xdotool search --classname hlconf windowactivate || urxvtc -name hlconf -e editor "${XDG_CONFIG_HOME}/herbstluftwm/autostart"
         ;;
-    # obconf)
-    #     xdotool search --classname obconf windowactivate || urxvtc -name obconf -e editor "${XDG_CONFIG_HOME}/openbox/rc.xml"
-    #     ;;
     ncmpcpp)
         xdotool search --classname ncmpcpp windowactivate || urxvtc -name ncmpcpp -e ncmpcpp
         ;;

@@ -59,6 +59,9 @@ elif [ -e "$@" ]; then
         text/html)
             web_browser "$@"
             ;;
+        text/troff)
+            man -l "$@"
+            ;;
         *)
             # filter by extension
             case "$@" in
