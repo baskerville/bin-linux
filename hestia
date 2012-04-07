@@ -23,6 +23,7 @@ MLDK_TEMP_DIR = expanduser('~/.mldonkey/temp')
 
 ACT_REQ_MAP = {'list'     : 'vd',
                'servers'  : 'vm',
+               'stats'    : 'bw_stats',
                'queries'  : 'vs',
                'search'   : 's+%s',
                'results'  : 'vr+%s',
@@ -64,6 +65,18 @@ def view_servers():
     for si in infos:
         (sid, disc, rem, pref, master, high_low, network, status, addr, country, users, max_users, num_low_id, num_files, num_pub, soft_lim, hard_lim, ping, version, name, details) = si
         print('%3s %-12s %-7s %-23s %13s %13s %5s' % (sid, status, network, name, users, num_files, ping))
+
+def view_stats():
+    path = ACT_REQ_MAP['stats']
+    request(path)
+    data = response()
+    founds = re.findall('(?<=>)(Down:|Up:|Shared\(\d+\):)([^<]+)', data, re.I)
+    for key, value in founds:
+        if sys.stdout.isatty():
+            print('%23s' % grey(key), end='')
+        else:
+            print(key, end='')
+        print(value)
 
 def view_queries():
     path = ACT_REQ_MAP['queries']
@@ -201,6 +214,9 @@ ACTIONS
     servers
         View connected servers.
 
+    stats
+        Show bandwidth statistics.
+
     queries
         View all queries.
 
@@ -272,6 +288,8 @@ def main():
         view_downloads()
     elif action == 'servers':
         view_servers()
+    elif action == 'stats':
+        view_stats()
     elif action == 'queries':
         view_queries()
     elif action == 'path':
@@ -291,6 +309,9 @@ def main():
     else:
         print("action '{}' is unknown".format(action), file=sys.stderr)
         sys.exit(1)
+
+def grey(s):
+    return '\033[1;30m%s\033[0m' % s
 
 def blue(s):
     return '\033[1;34m%s\033[0m' % s

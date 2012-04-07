@@ -39,6 +39,7 @@ palette = remove_duplicates(palette)
 
 if len(palette) < 1:
     print >> sys.stderr, 'no color found'
+    # print('no color found')
     sys.exit(1)
 
 print(len(palette))
