@@ -24,7 +24,8 @@ SMALL_JUMP = 3
 NUM_VARIATIONS = 4
 standard_hues = SIMPLE_HUES
 fgbg_contrast = 16
-translate_stdin = False
+translate_to_index = False
+translate_to_hex = False
 make_variations = False
 scheme_name = 'colors'
 redef_file = None
@@ -75,7 +76,7 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     # Reference:
     # Silvia Zuffi, Carla Brambilla, Giordano Beretta and Paolo Scala:
     # Human Computer Interaction: Legibility and Contrast (2007)
-    global redef_file, fgbg_contrast, translate_stdin
+    global redef_file, fgbg_contrast, translate_to_index, translate_to_hex
     scheme_kind = 'dark'
     small_jump = SMALL_JUMP
     bg_fg_gap = fgbg_contrast * small_jump
@@ -111,10 +112,12 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     fg_hl_L = fg_L + 2 * small_jump
     bg_dp_L = bg_L - small_jump
     bg_bp_L = bg_L + 2 * small_jump
+    bg_sb_L = bg_L + 5 * small_jump
 
     lch_bg_fl = LCHabColor(bg_fl_L, bg_C, bg_h)
     lch_bg_dp = LCHabColor(bg_dp_L, bg_C, bg_h)
     lch_bg_bp = LCHabColor(bg_bp_L, bg_C, bg_h)
+    lch_bg_sb = LCHabColor(bg_sb_L, bg_C, bg_h)
     lch_fg_cm = LCHabColor(fg_cm_L, bg_C, fg_h)
     lch_fg = LCHabColor(fg_L, bg_C, fg_h)
     lch_fg_hl = LCHabColor(fg_hl_L, bg_C, fg_h)
@@ -123,6 +126,7 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     rgb_bg_fl = lch_bg_fl.convert_to('rgb')
     rgb_bg_dp = lch_bg_dp.convert_to('rgb')
     rgb_bg_bp = lch_bg_bp.convert_to('rgb')
+    rgb_bg_sb = lch_bg_sb.convert_to('rgb')
     rgb_fg_cm = lch_fg_cm.convert_to('rgb')
     rgb_fg = lch_fg.convert_to('rgb')
     rgb_fg_hl = lch_fg_hl.convert_to('rgb')
@@ -131,6 +135,7 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     hex_bg_fl = rgb_bg_fl.get_rgb_hex().upper()
     hex_bg_dp = rgb_bg_dp.get_rgb_hex().upper()
     hex_bg_bp = rgb_bg_bp.get_rgb_hex().upper()
+    hex_bg_sb = rgb_bg_sb.get_rgb_hex().upper()
     hex_fg_cm = rgb_fg_cm.get_rgb_hex().upper()
     hex_fg = rgb_fg.get_rgb_hex().upper()
     hex_fg_hl = rgb_fg_hl.get_rgb_hex().upper()
@@ -155,7 +160,7 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     (orange_i, spring_i, teal_i, azure_i, violet_i, pink_i) = tuple(map(hue_to_idx, secondary_hues))
 
     idx_color_set = {
-    'colors_name':  scheme_name,
+    'scheme_name':  scheme_name,
     'bg_floor':  16,
     'bg_dip':  17,
     'background':  18,
@@ -179,11 +184,12 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     }
 
     hex_color_set = {
-    'colors_name':  scheme_name,
+    'scheme_name':  scheme_name,
     'bg_floor':  hex_bg_fl,
     'bg_dip':  hex_bg_dp,
     'background':  hex_bg,
     'bg_bump':  hex_bg_bp,
+    'bg_springboard':  hex_bg_sb,
     'fg_comment':  hex_fg_cm,
     'foreground':  hex_fg,
     'fg_highlight':  hex_fg_hl,
@@ -202,19 +208,18 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     'pink':  idx_to_hex(pink_i, fg_L, color_chroma)
     }
 
-    if translate_stdin:
+    if translate_to_index or translate_to_hex:
+        color_set = hex_color_set
+        if translate_to_index:
+            color_set = idx_color_set
         for line in sys.stdin:
-            print(line.format(**hex_color_set), end='')
+            print(line.format(**color_set), end='')
         exit()
 
     xres_name = '%s-%s' % (scheme_name, scheme_kind)
     redef_name = 'redef-%s-%s' % (scheme_name, scheme_kind)
-    vim_name = '%s.vim' % scheme_name
-    # neap_name = '%s-%s.neaprc' % (scheme_name, scheme_kind)
     xres_file = open(xres_name, 'w')
     redef_file = open(redef_name, 'w')
-    vim_file = open(vim_name, 'w')
-    # neap_file = open(neap_name, 'w')
 
     print('''#define t_bg_floor     %s
 #define t_bg_dip       %s
@@ -293,10 +298,6 @@ URxvt.color%s: t_fg_ceiling''' % tuple(MONOTONES_SLOTS), file = xres_file)
     print(file = xres_file)
 
     for slot in range(COLORS_START, COLORS_START + NUM_COLORS):
-        # color_hue = (slot - COLORS_START) * 360 / NUM_COLORS
-        # lch_color = LCHabColor(fg_L, color_chroma, color_hue)
-        # rgb_color = lch_color.convert_to('rgb')
-        # hex_color = rgb_color.get_rgb_hex().upper()
         hex_color = idx_to_hex(slot, fg_L, color_chroma)
         redef_cmd(slot, hex_color)
         print('URxvt.color%s: %s' % (slot, hex_color), file = xres_file)
@@ -304,144 +305,8 @@ URxvt.color%s: t_fg_ceiling''' % tuple(MONOTONES_SLOTS), file = xres_file)
     print(file = xres_file)
     print('! %s: set ft=xdefaults:' % 'vim', file = xres_file)
 
-
-    print('''hi clear
-
-if exists("syntax on")
-    syntax reset
-endif
-
-let g:colors_name="{colors_name}"
-
-"
-" preferred groups
-" (see `:h w18`)
-"
-hi Normal          ctermfg={foreground}    ctermbg={background}     cterm=none
-hi Comment         ctermfg={fg_comment}
-
-hi Constant        ctermfg={yellow}
-hi String          ctermfg={yellow}
-hi Character       ctermfg={yellow}
-hi Number          ctermfg={yellow}
-hi Boolean         ctermfg={yellow}
-hi Float           ctermfg={yellow}
-
-hi Identifier      ctermfg={violet}
-hi Function        ctermfg={violet}
-
-hi Statement       ctermfg={teal}
-hi Conditional     ctermfg={teal}
-hi Repeat          ctermfg={teal}
-hi Label           ctermfg={teal}
-hi Operator        ctermfg={teal}
-hi Keyword         ctermfg={teal}
-hi Exception       ctermfg={teal}
-
-hi PreProc         ctermfg={azure}
-hi Include         ctermfg={azure}
-hi Define          ctermfg={azure}
-hi Macro           ctermfg={azure}
-hi PreCondit       ctermfg={azure}
-
-hi Type            ctermfg={orange}
-hi StorageClass    ctermfg={orange}
-hi Structure       ctermfg={orange}
-hi Typedef         ctermfg={orange}
-
-hi Special         ctermfg={pink}
-hi SpecialChar     ctermfg={pink}
-hi Tag             ctermfg={pink}
-hi Delimiter       ctermfg={pink}
-hi SpecialComment  ctermfg={pink}
-hi Debug           ctermfg={pink}
-
-hi Underlined      ctermfg=fg
-hi Ignore          ctermfg=bg
-hi Error           ctermfg={bg_floor}    ctermbg={red}
-hi Todo            ctermfg={fg_highlight}  ctermbg=bg    cterm=none
-
-"
-" minor groups
-"
-hi StatusLine      ctermfg=fg     ctermbg={bg_bump}    cterm=none
-hi StatusLineNC    ctermfg={fg_comment}    ctermbg={bg_bump}    cterm=none
-
-hi TabLine         ctermfg=fg     ctermbg={bg_bump}    cterm=none
-hi TabLineSel      ctermfg={cyan}    ctermbg={bg_bump}    cterm=none
-hi TabLineFill     ctermfg=fg     ctermbg={bg_bump}    cterm=none
-
-hi Pmenu           ctermfg=fg     ctermbg={bg_bump}
-hi PmenuSel        ctermfg={fg_ceiling}    ctermbg={fg_comment}
-hi PmenuSbar       ctermfg={fg_ceiling}    ctermbg={fg_comment}
-hi WildMenu        ctermfg={spring}     ctermbg={bg_bump}    cterm=none
-
-hi Visual          ctermfg=bg     ctermbg={cyan}
-hi VisualNOS       ctermfg=bg     ctermbg={blue}
-hi VertSplit       ctermfg=bg     ctermbg={bg_bump}    cterm=none
-hi LineNr          ctermfg={fg_comment}    ctermbg={bg_bump}
-
-hi Title           ctermfg={azure}
-hi SpecialKey      ctermfg={green}
-hi NonText         ctermfg={fg_comment}
-hi MatchParen      ctermfg={bg_floor}     ctermbg={teal}
-hi Directory       ctermfg={violet}
-
-hi ErrorMsg        ctermfg={red}    ctermbg=bg
-hi WarningMsg      ctermfg={orange}
-hi MoreMsg         ctermfg={teal}
-hi ModeMsg         ctermfg={pink}
-
-hi Search          ctermfg={bg_floor}     ctermbg={yellow}     cterm=none
-hi IncSearch       ctermfg={bg_floor}     ctermbg={magenta}     cterm=none
-hi Question        ctermfg={blue}
-
-hi Folded          ctermfg={fg_comment}     ctermbg=bg
-hi FoldColumn      ctermfg={teal}     ctermbg={bg_bump}
-hi SignColumn      ctermfg={teal}     ctermbg={bg_bump}
-hi ColorColumn     ctermfg={teal}     ctermbg={bg_bump}
-
-hi CursorColumn    ctermbg={bg_dip}    cterm=none
-hi CursorLine      ctermbg={bg_dip}    cterm=none
-
-hi vimFold         ctermfg={fg_comment}
-hi vimCommentTitle ctermfg=fg
-hi helpHyperTextJump ctermfg={azure}
-
-hi htmlTag         ctermfg={violet}
-hi htmlEndTag      ctermfg={violet}
-hi htmlTagName     ctermfg={pink}
-hi htmlString      ctermfg={yellow}
-
-hi diffFile        ctermfg={fg_comment}
-hi diffLine        ctermfg={fg_comment}
-hi diffAdded       ctermfg={spring}
-hi diffRemoved     ctermfg={pink}
-hi diffChanged     ctermfg={orange}
-
-hi diffAdd         ctermfg={bg_floor}     ctermbg={green}
-hi diffDelete      ctermfg={fg_ceiling}    ctermbg=fg
-hi diffText        ctermfg={bg_floor}     ctermbg=fg
-hi diffChange      ctermfg={bg_floor}     ctermbg={red}
-hi diffOldLine     ctermfg={violet}
-
-hi SpellBad        ctermfg={red}    ctermbg=bg      cterm=underline
-hi SpellCap        ctermfg={pink}    ctermbg=bg      cterm=underline
-hi SpellRare       ctermfg={violet}    ctermbg=bg      cterm=underline
-hi SpellLocal      ctermfg={orange}    ctermbg=bg      cterm=underline
-
-hi mkdCode         ctermfg={fg_comment}
-hi mkdURL          ctermfg={azure}
-hi mkdLink         ctermfg={magenta}
-
-hi def link mailSubject Title
-hi def link mailSignature Comment
-hi def link mailQuoted2 mailQuoted1
-hi def link perlSharpBang Comment'''.format(**idx_color_set), file = vim_file)
-
     xres_file.close()
     redef_file.close()
-    vim_file.close()
 
     chmod(redef_name, 0o744)
 
@@ -471,8 +336,11 @@ OPTIONS
     -h, --help
         Show this message.
     
-    -t, --translate
-        Format stdin, output the result to stdout.
+    -T, --translate-to-index
+        Translate color tags read from stdin as indexes to stdout.
+
+    -t, --translate-to-hex
+        Translate color tags read from stdin as hex to stdout.
 
     -v, --make-variations
         Produce multiple versions of the color scheme by shifting
@@ -489,8 +357,8 @@ OPTIONS
     sys.exit(1)
 
 def main():
-    global standard_hues, scheme_name, fgbg_contrast, translate_stdin, make_variations
-    opts, args = getopt(sys.argv[1:], 'htvc:s:', ['help', 'translate', 'make-variations', '--fgbg-contrast=', 'standard-hues='])
+    global standard_hues, scheme_name, fgbg_contrast, translate_to_index, translate_to_hex, make_variations
+    opts, args = getopt(sys.argv[1:], 'htTvc:s:', ['help', 'translate-to-index', 'translate-to-hex', 'make-variations', '--fgbg-contrast=', 'standard-hues='])
 
     if len(args) < 1:
         usage()
@@ -498,8 +366,10 @@ def main():
     for opt, val in opts:
         if opt in ('-h', '--help'):
             usage()
-        elif opt in ('-t', '--translate'):
-            translate_stdin = True
+        elif opt in ('-T', '--translate-to-index'):
+            translate_to_index = True
+        elif opt in ('-t', '--translate-to-hex'):
+            translate_to_hex = True
         elif opt in ('-v', '--make-variations'):
             make_variations = True
         elif opt in ('-c', '--fgbg-constrast'):
