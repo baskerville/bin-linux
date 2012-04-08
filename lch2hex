@@ -9,5 +9,4 @@ lch_color = LCHabColor(L, C, H)
 rgb_color = lch_color.convert_to('rgb')
 hex_color = rgb_color.get_rgb_hex()
 
-# print(rgb_color)
 print(hex_color)

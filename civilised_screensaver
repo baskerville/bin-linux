@@ -1,6 +1,8 @@
 #! /bin/dash
 
-set -- $(grep -i '^timeout:' ~/.xscreensaver | sed 's/[^0-9]\+\([0-9]\+\):\([0-9]\+\):\([0-9]\+\)/\1 \2 \3/')
+XSCREENSAVER_CONFIG=~/.xscreensaver
+
+set -- $(grep -i '^timeout:' "$XSCREENSAVER_CONFIG" | sed 's/[^0-9]\+\([0-9]\+\):\([0-9]\+\):\([0-9]\+\)/\1 \2 \3/')
 
 if [ $# -eq 0 ] ; then
     printf '%s' "no timeout data could be extracted from Xscreensaver's configuration file" >&2
@@ -29,8 +31,13 @@ while true ; do
         wstate=$(xprop -id "$awid" _NET_WM_STATE)
         case "$wstate" in
             *_NET_WM_STATE_FULLSCREEN)
+                sed -i 's/^\(dpmsEnabled:[[:space:]]\+\)True/\1False/' "$XSCREENSAVER_CONFIG"
                 xscreensaver-command -deactivate >&- 2>&- &
                 ;;
+            *)
+                sed -i 's/^\(dpmsEnabled:[[:space:]]\+\)False/\1True/' "$XSCREENSAVER_CONFIG"
+                ;;
+
         esac
     fi
 done
