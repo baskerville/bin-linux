@@ -165,6 +165,14 @@ def file_info(args):
     body = json.loads(data)
     print_file(body)
 
+def show_url(args):
+    msg, short_url = ACT_REQ_MAP['info']
+    request(msg, short_url, url_params = args)
+    data = handle_response()
+    body = json.loads(data)
+    print(body['getturl'])
+
+
 def remove_share(args):
     msg, short_url = ACT_REQ_MAP['remove']
     url_params = args + tuple([access_token])
@@ -356,6 +364,9 @@ ACTIONS
     find PATTERN
         Search for files whose file name matches PATTERN.
 
+    url SHARENAME FILEID
+        Returns the URL of the file FILEID of the share SHARENAME.
+
     blob SHARENAME FILEID
         Returns the URL of the content of the file FILEID of the share SHARENAME.
 
@@ -375,7 +386,7 @@ def main():
     action = args[0]
     args = tuple(args[1:])
 
-    if action in ['info', 'delete', 'blob', 'thumb', 'scale'] and len(args) != 2 \
+    if action in ['info', 'delete', 'url', 'blob', 'thumb', 'scale'] and len(args) != 2 \
     or action in ['show', 'remove'] and len(args) != 1 \
     or action in ['change', 'upload'] and len(args) < 2 \
     or action in ['search', 'find'] and len(args) < 1 \
@@ -406,6 +417,8 @@ def main():
         share = args[0]
         title = ' '.join(args[1:])
         change_share(share, title)
+    elif action == 'url':
+        show_url(args)
     elif action == 'blob' or action == 'thumb' or action == 'scale':
         get_redirect(action, args)
     elif action == 'search' or action == 'find':

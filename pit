@@ -1,8 +1,11 @@
 #! /bin/dash
 
 while [ $# -gt 0 ] ; do
-    REF=$(eat find $1)
-    REF=${REF##*\'}
-    printf '[url=%b][img]%b[/img][/url]\n' "$(eat blob $REF)" "$(eat thumb $REF)"
+    results=$(eat find $1 | sort | cut -d' ' -f 2- | tr '\n' ':')
+    IFS=':'
+    for r in $results ; do
+        IFS=' '
+        printf '[url=%s][img]%s[/img][/url]\n' "$(eat url $r)" "$(eat thumb $r)"
+    done
     shift
 done
