@@ -2,10 +2,10 @@
 
 case "$@" in
     dwb)
-        xdotool search --desktop 1 --class dwb | xargs xdotool windowactivate || dwb
+        xdotool search --desktop 1 --class dwb | xargs xdotool windowactivate || dwb -x toggle_tabbar
         ;;
     dwb_restore)
-        xdotool search --desktop 1 --class dwb | xargs xdotool windowactivate || dwb -r
+        xdotool search --desktop 1 --class dwb | xargs xdotool windowactivate || dwb -r -x toggle_tabbar
         ;;
     mutt)
         xdotool search --classname mutt windowactivate || urxvtc -title mutt -name mutt -e m
