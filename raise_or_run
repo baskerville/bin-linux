@@ -1,34 +1,33 @@
 #! /bin/dash
 
-case "$@" in
-    dwb)
-        xdotool search --desktop 1 --class dwb | xargs xdotool windowactivate || dwb
-        ;;
-    dwb_restore)
-        xdotool search --desktop 1 --class dwb | xargs xdotool windowactivate || dwb -r
-        ;;
-    mutt)
-        xdotool search --classname mutt windowactivate || urxvtc -title mutt -name mutt -e m
-        ;;
-    slrn)
-        xdotool search --classname slrn windowactivate || urxvtc -title slrn -name slrn -e ng
-        ;;
-    htop)
-        xdotool search --classname htop windowactivate || urxvtc -title htop -name htop -e htop
-        ;;
-    post_install)
-        xdotool search --classname post_install windowactivate || urxvtc -name post_install -e editor ~/bin/post_install.sh
-        ;;
-    xlog)
-        xdotool search --classname xlog windowactivate || urxvtc -name xlog -e editor ~/.Xlog
-        ;;
-    hlconf)
-        xdotool search --classname hlconf windowactivate || urxvtc -name hlconf -e editor "${XDG_CONFIG_HOME}/herbstluftwm/autostart"
-        ;;
-    ncmpcpp)
-        xdotool search --classname ncmpcpp windowactivate || urxvtc -name ncmpcpp -e ncmpcpp
-        ;;
-    *)
-        xdotool search --classname "$@" windowactivate || urxvtc -name "$@" -e editor "$XDG_DATA_HOME/$@"
-        ;;
-esac
+while [ $# -gt 0 ] ; do
+    case "$1" in
+        dwb | dwb_restore)
+            CMD=dwb
+            [ "$1" = "dwb_restore" ] && CMD="$CMD -r"
+            xdotool search --desktop 1 --class dwb windowactivate || $CMD
+            ;;
+        mutt | slrn | htop | xlog | hlconf | ncmpcpp)
+            CMD=$1
+            case "$1" in
+                mutt)
+                    CMD=m
+                    ;;
+                slrn)
+                    CMD=ng
+                    ;;
+                xlog)
+                    CMD="editor $HOME/.Xlog"
+                    ;;
+                hlconf)
+                    CMD="editor ${XDG_CONFIG_HOME}/herbstluftwm/autostart"
+                    ;;
+            esac
+            xdotool search --classname "$1" windowactivate || urxvtc -title "$1" -name "$1" -e $CMD
+            ;;
+        *)
+            xdotool search --classname "$1" windowactivate || urxvtc -name "$1" -e editor "${XDG_DATA_HOME}/$1"
+            ;;
+    esac
+    shift
+done

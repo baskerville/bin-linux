@@ -43,7 +43,7 @@ do
             sudo pacman -S fortune-mod figlet cowsay htop lsof strace words
             sudo pacman -S gnuplot gtk
             sudo pacman -S p7zip tk id3v2
-            sudo pacman -S openjdk6 apache-ant
+            sudo pacman -S jd7-openjdk icedtea-web-java7 apache-ant
             sudo pacman -S apache php php-apache mysql
             sudo pacman -S abiword
             owl install mutt-bare-git dzen2-bare-git herbstluftwm-git tint2-svn neap-svn
