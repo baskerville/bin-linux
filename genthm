@@ -29,6 +29,7 @@ fgbg_contrast = 16
 is_bg_dark = False
 translate_to_index = False
 translate_to_hex = False
+translate_to_rgb = False
 make_variations = False
 scheme_name = 'colors'
 redef_file = None
@@ -60,14 +61,24 @@ def mid_hue(h1, h2):
     else:
         return floor((h1 + h2) / 2)
 
+def scaled_rgb_str(rgb_color):
+    return ' '.join(map(str, scaled_rgb(rgb_color)))
+
+def scaled_rgb(rgb_color):
+    return tuple(map(lambda x: x / 255, rgb_color.get_value_tuple()))
+
 def hue_to_idx(h):
     factor = floor(h / HUE_GRAIN)
     return COLORS_START + factor
 
-def idx_to_hex(i, color_lightness, color_chroma):
+def idx_to_rgb(i, color_lightness, color_chroma):
     color_hue = (i - COLORS_START) * 360 / NUM_COLORS
     lch_color = LCHabColor(color_lightness, color_chroma, color_hue)
     rgb_color = lch_color.convert_to('rgb')
+    return rgb_color
+
+def idx_to_hex(i, color_lightness, color_chroma):
+    rgb_color = idx_to_rgb(i, color_lightness, color_chroma)
     hex_color = rgb_color.get_rgb_hex().upper()
     return hex_color
 
@@ -79,7 +90,7 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     # Reference:
     # Silvia Zuffi, Carla Brambilla, Giordano Beretta and Paolo Scala:
     # Human Computer Interaction: Legibility and Contrast (2007)
-    global redef_file, fgbg_contrast, translate_to_index, translate_to_hex
+    global redef_file, fgbg_contrast, translate_to_index, translate_to_hex, translate_to_rgb
     scheme_kind = 'dark'
     small_jump = SMALL_JUMP
     bg_fg_gap = fgbg_contrast * small_jump
@@ -211,10 +222,37 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     'pink':  idx_to_hex(pink_i, fg_L, color_chroma)
     }
 
-    if translate_to_index or translate_to_hex:
+    rgb_color_set = {
+    'scheme_name':  scheme_name,
+    'bg_floor':  scaled_rgb_str(rgb_bg_fl),
+    'bg_dip':  scaled_rgb_str(rgb_bg_dp),
+    'background':  scaled_rgb_str(rgb_bg),
+    'bg_bump':  scaled_rgb_str(rgb_bg_bp),
+    'bg_springboard':  scaled_rgb_str(rgb_bg_sb),
+    'fg_comment':  scaled_rgb_str(rgb_fg_cm),
+    'foreground':  scaled_rgb_str(rgb_fg),
+    'fg_highlight':  scaled_rgb_str(rgb_fg_hl),
+    'fg_ceiling':  scaled_rgb_str(rgb_fg_cl),
+    'red':  scaled_rgb_str(idx_to_rgb(red_i, fg_L, color_chroma)),
+    'yellow':  scaled_rgb_str(idx_to_rgb(yellow_i, fg_L, color_chroma)),
+    'green':  scaled_rgb_str(idx_to_rgb(green_i, fg_L, color_chroma)),
+    'cyan':  scaled_rgb_str(idx_to_rgb(cyan_i, fg_L, color_chroma)),
+    'blue':  scaled_rgb_str(idx_to_rgb(blue_i, fg_L, color_chroma)),
+    'magenta':  scaled_rgb_str(idx_to_rgb(magenta_i, fg_L, color_chroma)),
+    'orange':  scaled_rgb_str(idx_to_rgb(orange_i, fg_L, color_chroma)),
+    'spring':  scaled_rgb_str(idx_to_rgb(spring_i, fg_L, color_chroma)),
+    'teal':  scaled_rgb_str(idx_to_rgb(teal_i, fg_L, color_chroma)),
+    'azure':  scaled_rgb_str(idx_to_rgb(azure_i, fg_L, color_chroma)),
+    'violet':  scaled_rgb_str(idx_to_rgb(violet_i, fg_L, color_chroma)),
+    'pink':  scaled_rgb_str(idx_to_rgb(pink_i, fg_L, color_chroma))
+    }
+
+    if translate_to_index or translate_to_hex or translate_to_rgb:
         color_set = hex_color_set
         if translate_to_index:
             color_set = idx_color_set
+        if translate_to_rgb:
+            color_set = rgb_color_set
         for line in sys.stdin:
             print(line.format(**color_set), end='')
         exit()
@@ -346,10 +384,13 @@ OPTIONS
         Use the predefined dark background ({}).
 
     -t, --translate-to-hex
-        Translate color tags read from stdin as hex to stdout.
+        Translate color tags read from stdin to hex.
 
     -T, --translate-to-index
-        Translate color tags read from stdin as indexes to stdout.
+        Translate color tags read from stdin to indexes.
+
+    -r, --translate-to-rgb
+        Translate color tags read from stdin to rgb.
 
     -v, --make-variations
         Produce multiple versions of the color scheme by shifting
@@ -366,8 +407,8 @@ OPTIONS
     sys.exit(1)
 
 def main():
-    global standard_hues, scheme_name, fgbg_contrast, is_bg_dark, translate_to_index, translate_to_hex, make_variations
-    opts, args = getopt(sys.argv[1:], 'hldtTvc:s:', ['help', 'light', 'dark', 'translate-to-index', 'translate-to-hex', 'make-variations', '--fgbg-contrast=', 'standard-hues='])
+    global standard_hues, scheme_name, fgbg_contrast, is_bg_dark, translate_to_index, translate_to_hex, translate_to_rgb, make_variations
+    opts, args = getopt(sys.argv[1:], 'hldtTrvc:s:', ['help', 'light', 'dark', 'translate-to-index', 'translate-to-hex', 'translate-to-rgb', 'make-variations', '--fgbg-contrast=', 'standard-hues='])
 
     for opt, val in opts:
         if opt in ('-h', '--help'):
@@ -380,6 +421,8 @@ def main():
             translate_to_index = True
         elif opt in ('-t', '--translate-to-hex'):
             translate_to_hex = True
+        elif opt in ('-r', '--translate-to-rgb'):
+            translate_to_rgb = True
         elif opt in ('-v', '--make-variations'):
             make_variations = True
         elif opt in ('-c', '--fgbg-constrast'):
