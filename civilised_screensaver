@@ -34,7 +34,6 @@ while true ; do
             *_NET_WM_STATE_FULLSCREEN)
                 sed -i 's/^\(dpmsEnabled:[[:space:]]\+\)True/\1False/' "$XSCREENSAVER_CONFIG"
                 xscreensaver-command -deactivate >&- 2>&- &
-                xprop -id "$awid" WM_CLASS WM_NAME >> "$HOME/.civil_log"
                 ;;
             *)
                 sed -i 's/^\(dpmsEnabled:[[:space:]]\+\)False/\1True/' "$XSCREENSAVER_CONFIG"
