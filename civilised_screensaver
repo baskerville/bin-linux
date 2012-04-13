@@ -1,6 +1,7 @@
 #! /bin/dash
 
 XSCREENSAVER_CONFIG=~/.xscreensaver
+SAFETY_DELAY=9
 
 set -- $(grep -i '^timeout:' "$XSCREENSAVER_CONFIG" | sed 's/[^0-9]\+\([0-9]\+\):\([0-9]\+\):\([0-9]\+\)/\1 \2 \3/')
 
@@ -17,7 +18,7 @@ hours=$(delete_zeros "$1")
 minutes=$(delete_zeros "$2")
 seconds=$(delete_zeros "$3")
 
-timeout=$((hours * 60 * 60 + minutes * 60 + seconds - 5))
+timeout=$((hours * 60 * 60 + minutes * 60 + seconds - SAFETY_DELAY))
 
 if [ $timeout -lt 1 ] ; then
     printf '%s' "Xscreensaver's timeout is too short" >&2
@@ -31,14 +32,13 @@ while true ; do
         wstate=$(xprop -id "$awid" _NET_WM_STATE)
         case "$wstate" in
             *_NET_WM_STATE_FULLSCREEN)
-                # sed -i 's/^\(dpmsEnabled:[[:space:]]\+\)True/\1False/' "$XSCREENSAVER_CONFIG"
-                xset -dmps
-                xset +dmps
+                sed -i 's/^\(dpmsEnabled:[[:space:]]\+\)True/\1False/' "$XSCREENSAVER_CONFIG"
                 xscreensaver-command -deactivate >&- 2>&- &
+                xprop -id "$awid" WM_CLASS WM_NAME >> "$HOME/.civil_log"
                 ;;
-            # *)
-            #     # sed -i 's/^\(dpmsEnabled:[[:space:]]\+\)False/\1True/' "$XSCREENSAVER_CONFIG"
-            #     ;;
+            *)
+                sed -i 's/^\(dpmsEnabled:[[:space:]]\+\)False/\1True/' "$XSCREENSAVER_CONFIG"
+                ;;
 
         esac
     fi
