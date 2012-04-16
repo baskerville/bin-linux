@@ -28,7 +28,7 @@ case $action in
                 ;;
             *)
                 mount_options='-o relatime'
-                device_label=$(sudo blkid -o value -s LABEL $device | tr '[:upper:]' '[:lower:]')
+                device_label=$(sudo blkid -o value -s LABEL $device | tr '[:upper:] ' '[:lower:]_')
                 device_type=$(sudo blkid -o value -s TYPE $device)
                 case $device_type in
                     vfat|ntfs)
