@@ -1,18 +1,27 @@
 #! /bin/dash
 
-mime_type=$(file -L -b --mime-type "$@")
+while [ $# -gt 0 ] ; do
+    mime_type=$(file -L -b --mime-type "$1")
+    case $mime_type in
+        video/* | application/vnd.rn-realmedia | audio/* | image/*)
+            mediainfo "$1" ;;
+        application/pdf)
+            pdfinfo "$1" ;;
+        application/zip)
+            unzip -l "$1" ;;
+        application/x-lha)
+            lha -l "$1" ;;
+        application/x-rar)
+            unrar l "$1" ;;
+        *)
+            case "$1" in
+                *.icns)
+                    icns2png -l "$1" ;;
+                *)
+                    file -b "$1" ;;
+            esac
+            ;;
 
-case $mime_type in
-    video/* | application/vnd.rn-realmedia | audio/* | image/*)
-        mediainfo "$@" ;;
-    application/pdf)
-        pdfinfo "$@" ;;
-    application/zip)
-        unzip -l "$@" ;;
-    application/x-lha)
-        lha -l "$@" ;;
-    application/x-rar)
-        unrar l "$@" ;;
-    *)
-        file -b "$@" ;;
-esac
+    esac
+    shift
+done

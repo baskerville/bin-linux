@@ -9,13 +9,16 @@ if [ $# -lt 1 ] ; then
 fi
 
 action=$1
+device=$2
 
 case $action in
     m|mount)
-        device=$(ls -1td /dev/s* | head -n 1 | grep '/dev/s\(d[b-z]\|r\)[0-9]\+' )
         if [ -z "$device" ] ; then
-            printf "no device matched\n" >&2
-            exit 1
+            device=$(ls -1td /dev/s* | head -n 1 | grep '/dev/s\(d[b-z]\|r\)[0-9]\+' )
+            if [ -z "$device" ] ; then
+                printf "no device matched\n" >&2
+                exit 1
+            fi
         fi
         mount_point=''
         mount_options=''
@@ -33,9 +36,9 @@ case $action in
                         ;;
                 esac
                 if [ -n "$device_label" ] ; then
-                   mount_point="$MEDIA_DIR/$device_label"
+                    mount_point="$MEDIA_DIR/$device_label"
                 else
-                   mount_point=$(mktemp -d --tmpdir $MEDIA_DIR nonameXXX)
+                    mount_point=$(mktemp -d --tmpdir $MEDIA_DIR nonameXXX)
                 fi
                 ;;
         esac
