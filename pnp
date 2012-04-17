@@ -42,7 +42,11 @@ case $action in
                 fi
                 ;;
         esac
-        printf "mounting '%b' to '%b'\n" "$device" "$mount_point"
+        if [ -e "$mount_point" ] ; then
+            printf "mount point exists: %s\n" "$mount_point" >&2
+            exit 1
+        fi
+        printf "mounting '%s' to '%s'\n" "$device" "$mount_point"
         sudo mkdir "$mount_point"
         sudo mount $mount_options "$device" "$mount_point"
         # if [ -t 1 ] ; then
