@@ -3,6 +3,25 @@
 MEDIA_DIR=/media
 DVD_LABEL=dvd
 
+verbose_output=0
+
+while getopts "v-:" opt ; do
+    case $opt in
+        v)
+            verbose_output=1
+            ;;
+        -)
+            case $OPTARG in
+                verbose)
+                    verbose_output=1
+                    ;;
+            esac
+            ;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
 if [ $# -lt 1 ] ; then
     printf "no arguments given\n" >&2
     exit 1
@@ -43,10 +62,14 @@ case $action in
                 ;;
         esac
         if [ -e "$mount_point" ] ; then
-            printf "mount point exists: %s\n" "$mount_point" >&2
+            printf "mount point exists: '%s'\n" "$mount_point" >&2
             exit 1
         fi
-        printf "mounting '%s' to '%s'\n" "$device" "$mount_point"
+        if [ $verbose_output -eq 1 ] ; then
+            printf "mounting '%s' to '%s'\n" "$device" "$mount_point"
+        else
+            printf "%s\n" "$mount_point"
+        fi
         sudo mkdir "$mount_point"
         sudo mount $mount_options "$device" "$mount_point"
         # if [ -t 1 ] ; then
@@ -54,15 +77,23 @@ case $action in
         # fi
         ;;
     u|umount)
-        mount_point=$(ls -1td $MEDIA_DIR/* | head -n 1) > /dev/null 2>&1
+        if [ -z "$device" ] ; then
+            mount_point=$(ls -1td $MEDIA_DIR/* | head -n 1) > /dev/null 2>&1
+        else
+            mount_point="$MEDIA_DIR/$device"
+        fi
         if [ -n "$mount_point" ] ; then
-            printf "unmounting '%b'\n" "$mount_point"
+            if [ $verbose_output -eq 1 ] ; then
+                printf "unmounting '%s'\n" "$mount_point"
+            else
+                printf "%s\n" "$mount_point"
+            fi
             sudo umount "$mount_point"
             sudo rmdir "$mount_point"
         fi
         ;;
     *)
-        printf "unknown action: '%b'\n" $action >&2
+        printf "unknown action: '%s'\n" $action >&2
         exit 1
         ;;
 esac
