@@ -92,6 +92,10 @@ case $action in
             sudo rmdir "$mount_point"
         fi
         ;;
+    l|list)
+        cd "$MEDIA_DIR"
+        ls --color=auto -1dtc * 2> /dev/null
+        ;;
     *)
         printf "unknown action: '%s'\n" $action >&2
         exit 1

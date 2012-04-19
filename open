@@ -80,6 +80,9 @@ elif [ -e "$@" ]; then
                 *.gz)
                     gunzip "$@"
                     ;;
+                *.ace)
+                    unace x "$@"
+                    ;;
                 *.chm)
                     xchm "$@"
                     ;;
