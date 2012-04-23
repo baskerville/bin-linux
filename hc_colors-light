@@ -6,5 +6,3 @@ hc set frame_border_normal_color  '#FAF0E6'
 hc set frame_border_active_color  '#FFF9EE'
 hc set window_border_normal_color '#E7DFD5'
 hc set window_border_active_color '#8F98A1'
-
-# xsetroot -solid '#FAF0E6'
