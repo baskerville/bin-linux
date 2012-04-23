@@ -1,0 +1,13 @@
+#! /bin/dash
+
+tmpout=$(mktemp)
+
+curl -s "http://www.commandlinefu.com/commands/matching/$@/$(echo -n $@ | openssl base64)/plaintext" | grep -v "^# commandlinefu" > "$tmpout"
+
+if [ -t 1 ] ; then
+    cat "$tmpout" | sed "s/^#.*/\x1B[1;30m&\x1B[0m/g"
+else
+    cat "$tmpout"
+fi
+
+rm "$tmpout"
