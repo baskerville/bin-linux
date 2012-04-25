@@ -2,31 +2,35 @@
 
 while [ $# -gt 0 ]
 do
-    case $1 in
+    filelist=""
+    case "$1" in
         dots)
-            tar -cvz -C ~ -f dots.tgz .coordinates .mpoprc .msmtprc .xscreensaver .procmailrc .jnewsrc .urlview .eatrc
+            filelist=".coordinates .mpoprc .msmtprc .xscreensaver .procmailrc .jnewsrc .urlview .eatrc"
             ;;
         dirs)
-            tar -cvz -C ~ -f dirs.tgz .local .config .mutt .vim .mpd .themes .colors .fonts .icons .aria2 .mplayer .irssi .pal .FontForge .ssh .w3m .elinks .ncmpcpp .mldonkey/*.ini
+            filelist=".local .config .mutt .vim .mpd .themes .colors .fonts .icons .aria2 .irssi .pal .FontForge .ssh .w3m .elinks .ncmpcpp"
             ;;
         usenet)
-            tar -cvz -C ~ -f usenet.tgz .slrn .slrnpull/slrnpull.conf
+            filelist=".slrn .slrnpull/slrnpull.conf"
             ;;
         mail)
-            tar -cvz -C ~ -f mail.tgz .maildir
+            filelist=".maildir"
             ;;
         src)
-            tar -cvz -C ~ -f src.tgz src/lang src/github src/aur
+            filelist="src/lang src/github src/aur"
             ;;
         aur)
-            tar -cvz -C ~ -f src.tgz src/aur
+            filelist="src/aur"
             ;;
         doc)
-            tar -cvz -C ~ -f doc.tgz doc
+            filelist="doc"
             ;;
         sys)
-            tar -cvz -C ~ -f sys.tgz /etc/rc.conf /etc/rc.local /usr/share/kbd/keymaps/extra.map /boot/grub/menu.lst /usr/local/bin/brightness /etc/pacman.conf /etc/udev/rules.d/* /etc/pm/sleep.d/49xscreensaver
+            filelist="/etc/rc.conf /etc/rc.local /usr/share/kbd/keymaps/extra.map /boot/grub/menu.lst /usr/local/bin/brightness /etc/pacman.conf $(ls /etc/udev/rules.d/* 2> /dev/null) /etc/pm/sleep.d/49xscreensaver"
             ;;
     esac
+    if [ -n "$filelist" ] ; then
+        tar -cvz -C ~ -f "${1}.tgz" $filelist
+    fi
     shift
 done
