@@ -3,6 +3,8 @@
 while [ $# -gt 0 ] ; do
     mime_type=$(file -L -b --mime-type "$1")
     case $mime_type in
+        image/svg+xml)
+            inkscape -S "$1" ;;
         video/* | application/vnd.rn-realmedia | audio/* | image/*)
             mediainfo "$1" ;;
         application/pdf)
@@ -15,6 +17,8 @@ while [ $# -gt 0 ] ; do
             unrar l "$1" ;;
         *)
             case "$1" in
+                *.mkv)
+                    mediainfo "$1" ;;
                 *.ace)
                     unace l "$1" ;;
                 *.icns)
