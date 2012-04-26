@@ -5,7 +5,12 @@ while [ $# -gt 0 ] ; do
         dwb | dwb_restore)
             CMD=dwb
             [ "$1" = "dwb_restore" ] && CMD="$CMD -r"
-            xdotool search --desktop 1 --class dwb windowactivate || $CMD
+            wid=$(lswi --class dwb | head -1 | sed 's/.*(\([0-9]\+\))$/\1/')
+            if [ -n "$wid" ] ; then
+                xdotool windowactivate "$wid"
+            else
+                $CMD
+            fi
             ;;
         mutt | slrn | htop | xlog | hlconf | ncmpcpp)
             CMD=$1

@@ -1,3 +1,3 @@
 #! /bin/dash
 
-lasso "$(xdotool get_desktop)"
+lasso --desktop "$(xdotool get_desktop)" --class .
