@@ -1,4 +1,0 @@
-#! /bin/dash
-
-xset +dpms
-xscreensaver -no-splash &
