@@ -7,6 +7,7 @@ from html.parser import HTMLParser
 from urllib.parse import unquote
 from subprocess import check_call
 from os.path import basename, expanduser
+from itertools import chain
 
 SERVER_DOMAIN = 'localhost:4080'
 SERVER_PATH_PREFIX = '/submit?q='
@@ -195,6 +196,20 @@ def response():
     data = data.decode('utf-8', 'replace')
     return data
 
+def expand_option(opt):
+    if opt in ('-d', '--document'):
+        return ['-media', 'Doc']
+    elif opt in ('-p', '--program'):
+        return ['-media', 'Pro']
+    elif opt in ('-a', '--audio'):
+        return ['-media', 'Audio']
+    elif opt in ('-i', '--image'):
+        return ['-media', 'Image']
+    elif opt in ('-v', '--video'):
+        return ['-media', 'Video']
+    else:
+        return [opt]
+
 def initiate_connection(domain = SERVER_DOMAIN):
     global connection
     if connection != None:
@@ -261,7 +276,24 @@ ACTIONS
 
     kill
         Kill the mldonkey daemon.
-    ''' % basename(sys.argv[0]))
+
+OPTIONS
+    Filter search result by MIME types:
+    -d, --document
+        PDF, DJVU, PS, DOC, TXT, ...
+
+    -p, --program
+        TAR, BZ2, ZIP, RAR, EXE, ... 
+
+    -i, --image
+        JPG, PNG, TIFF, ...
+
+    -a, --audio
+        MP3, WAV, AIFF, ...
+
+    -v, --video
+        AVI, MKV, MP4, WMV, ...
+''' % basename(sys.argv[0]))
 
 def main():
     args = sys.argv[1:]
@@ -273,6 +305,7 @@ def main():
 
     action = args[0]
     args = args[1:]
+    args = list(chain.from_iterable(map(expand_option, args)))
 
     if action in ['add', 'pause', 'resume', 'cancel', 'forget', 'search', 'preview', 'path', 'info', 'names'] and len(args) < 1 \
     or action in ['priority'] and len(args) < 2 \
