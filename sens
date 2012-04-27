@@ -1,0 +1,38 @@
+#! /usr/bin/env python
+
+import sys, re
+from subprocess import call
+from tempfile import TemporaryFile
+
+SENSOR_TABLE = {
+        'TA0P': 'ambient',
+        'TC0H': 'CPU heatsink',
+        'TG0D': 'GPU die',
+        'TG0H': 'GPU heatsink',
+        'TH0O': 'HDD',
+        'TL0p': 'LCD',
+        'TN0H': 'MCP79 heatsink',
+        'TO0p': 'ODD sensor'
+        }
+
+def grey(s):
+    return '\033[1;30m%s\033[0m' % s
+
+tmpout = TemporaryFile('r+')
+call("sensors", stdout = tmpout)
+
+tmpout.seek(0)
+
+for line in tmpout.readlines():
+    ln = line.strip()
+    sp = re.split('\s*:\s*', ln)
+    if len(sp) > 1:
+        (name, temperature) = sp
+        temperature = temperature.lstrip('+')
+        if name in SENSOR_TABLE:
+            real_name = SENSOR_TABLE[name]
+            if sys.stdout.isatty():
+                real_name = grey(real_name)
+            print('{:>25}: {}'.format(real_name, temperature))
+
+tmpout.close()
