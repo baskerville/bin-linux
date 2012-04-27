@@ -113,6 +113,9 @@ elif [ -e "$@" ]; then
                 *.mp4|*.avi|*.mpg|*.mpeg|*.mkv|*.ogv|*.f4v|*.m2ts)
                     video_player "$@"
                     ;;
+                *.blend)
+                    blender "$@"
+                    ;;
                 *)
                     # filter by mime encoding 
                     mime_encoding=$(file -L -b --mime-encoding "$@")
