@@ -17,16 +17,16 @@ do
             filelist=".maildir"
             ;;
         src)
-            filelist="src/lang src/github src/aur"
+            filelist="src/lang"
             ;;
-        aur)
-            filelist="src/aur"
+        abs)
+            filelist="src/abs"
             ;;
         doc)
             filelist="doc"
             ;;
         sys)
-            filelist="/etc/rc.conf /etc/rc.local /usr/share/kbd/keymaps/extra.map /boot/grub/menu.lst /usr/local/bin/brightness /etc/pacman.conf $(ls /etc/udev/rules.d/* 2> /dev/null) /etc/pm/sleep.d/49xscreensaver"
+            filelist="/etc/rc.conf /etc/rc.local /usr/share/kbd/keymaps/extra.map /boot/grub/menu.lst /usr/local/bin/brightness /etc/pacman.conf $(ls /etc/udev/rules.d/* 2> /dev/null)"
             ;;
     esac
     if [ -n "$filelist" ] ; then
