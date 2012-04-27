@@ -1,0 +1,4 @@
+#! /bin/dash
+
+xsetroot -grey
+imlibsetroot -s a "$WALLPAPER"
