@@ -1,4 +1,4 @@
 #! /bin/dash
 
 imlibsetroot -s a "$WALLPAPER"
-hc
+herbstclient > /dev/null 2>&1

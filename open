@@ -116,6 +116,9 @@ elif [ -e "$@" ]; then
                 *.blend)
                     blender "$@"
                     ;;
+                *.emulecollection)
+                    amule-emc "$@"
+                    ;;
                 *)
                     # filter by mime encoding 
                     mime_encoding=$(file -L -b --mime-encoding "$@")
