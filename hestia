@@ -117,7 +117,7 @@ def view_results(args):
     ids = range(1, len(infos) + 1)
     for fid, filename, res in zip(ids, names, infos):
         (size, availability, source, duration, codec, bitrate) = res
-        filename = filename.strip()
+        filename = clean_name(filename.strip())
         filename = truncate_filename(filename, FILENAME_MAX_LEN, FILENAME_TAIL_LEN, FILENAME_ELLIPSIS)
         print('%3s %-80s %7s %4s %4s %5s' % (fid, filename, size, availability, source, codec)) 
 
