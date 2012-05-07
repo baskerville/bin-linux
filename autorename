@@ -1,0 +1,11 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    extension=${1##*.}
+    # name=$(id3v2 -l "$1" | grep TIT2 | awk -F' *: *' '{print $2}' | tr ' ' '_')
+    name=$(mediainfo '--Inform=General;%Title%' "$1" | tr ' ' '_')
+    if [ -n "$name" ] ; then
+        mv -iv "$1" "${name}.${extension}"
+    fi
+    shift
+done

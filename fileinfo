@@ -15,6 +15,8 @@ while [ $# -gt 0 ] ; do
             lha -l "$1" ;;
         application/x-rar)
             unrar l "$1" ;;
+        application/x-bittorrent)
+            aria2c -S "$@" | grep '\./' ;;
         *)
             case "$1" in
                 *.mkv)
