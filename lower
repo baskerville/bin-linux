@@ -1,3 +1,3 @@
 #! /bin/dash
 
-prename 'y/A-Z/a-z/' "$@" 
+prename -v 'y/A-Z/a-z/' "$@" 
