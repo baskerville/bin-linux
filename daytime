@@ -1,18 +1,13 @@
 #! /usr/bin/php
 <?php
     $now = time();
-    /* $now = localtime(); */
+
     $latitude = getenv('LATITUDE');
     $longitude = getenv('LONGITUDE');
 
     if ($argc == 3) {
         $latitude = $argv[1];
         $longitude = $argv[2];
-    }
-
-    $daylight_saving = date('I');
-    if ($daylight_saving) {
-        $now = $now + 60 * 60;
     }
 
     $sunrise = date_sunrise($now, SUNFUNCS_RET_TIMESTAMP, $latitude, $longitude);

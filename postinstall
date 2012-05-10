@@ -53,9 +53,11 @@ do
         home)
             cd
             mkdir -p art doc incoming image audio video src tmp work other
-            # git clone git://github.com/baskerville/dotfiles.git .dotfiles
-            # git clone git://github.com/baskerville/bin.git .bindir
-            # ln -s .bindir bin
+            git clone git://github.com/baskerville/dotfiles.git .dotfiles
+            git clone git://github.com/baskerville/bin.git .bindir
+            ln -s .bindir bin
+            ln -s src/aur aur
+            ln -s doc/books books
             ;;
     esac
 done

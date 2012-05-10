@@ -4,7 +4,8 @@
 # baskerville at lavabit dot com
 #
 
-import sys, re
+import sys
+import re
 from os import chmod
 from math import floor
 from getopt import getopt

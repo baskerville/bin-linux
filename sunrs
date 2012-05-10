@@ -13,7 +13,9 @@
     }
 
     $now = time();
-    $sunrise = date_sunrise($now, SUNFUNCS_RET_STRING, $latitude, $longitude);
-    $sunset = date_sunset($now, SUNFUNCS_RET_STRING, $latitude, $longitude);
+    $sunrise = date_sunrise($now, SUNFUNCS_RET_TIMESTAMP, $latitude, $longitude);
+    $sunset = date_sunset($now, SUNFUNCS_RET_TIMESTAMP, $latitude, $longitude);
+    $sunrise = date('H:i', $sunrise);
+    $sunset = date('H:i', $sunset);
     fwrite(STDOUT,  "$sunrise $sunset\n");
 ?>
