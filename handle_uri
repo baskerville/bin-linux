@@ -1,16 +1,25 @@
 #! /bin/dash
 
-case $DWB_SCHEME in
+if [ $# -gt 0 ] ; then
+    uri=$1
+    scheme=${1%%:*}
+else
+    uri=$DWB_URI
+    scheme=$DWB_SCHEME
+fi
+
+case $scheme in
     mailto)
-        urxvtc -e mutt "$DWB_URI"
+        urxvtc -e mutt "$uri"
         ;;
     ftp)
-        urxvtc -e lftp "$DWB_URI"
+        urxvtc -e lftp "$uri"
         ;;
     magnet)
-        diana_add "$DWB_URI"
+        diana_add "$uri"
         ;;
     *)
-        open "$DWB_URI"
+        echo "don't know how to handle '$uri'" >&2
+        exit 1
         ;;
 esac

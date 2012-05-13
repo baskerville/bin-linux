@@ -5,8 +5,10 @@
 #
 
 if [ -d "$@" ]; then
+# is it a directory?
     ncd "$@"
 elif [ -e "$@" ]; then
+# or a file?
     mime_type=$(file -L -b --mime-type "$@")
     # filter by mime type
     # the order is important, e.g. foo/bar must appear before foo/*
@@ -135,6 +137,7 @@ elif [ -e "$@" ]; then
             ;;
     esac
 else
+    # or something else?
     case "$@" in
         *://*)
             web_browser "$@"
@@ -143,7 +146,8 @@ else
             handle_uri "$@"
             ;;
         *)
-            echo "$@ doesn't exist."
+            echo "don't know how to open '$@'" >&2
+            exit 1
             ;;
     esac
 fi
