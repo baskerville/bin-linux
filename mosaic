@@ -1,3 +1,3 @@
 #! /bin/dash
 
-find "$@" -maxdepth 1 -type f -printf '%C@ %p\n' | sort -rn | cut -d ' ' -f 2- | tr '\n' '\0' | xargs -r0 sxiv -Zbft
+find "$@" -maxdepth 1 -type f -printf '%C@ %p\n' | sort -rn | cut -d ' ' -f 2- | xargs -r sxiv -Zbft
