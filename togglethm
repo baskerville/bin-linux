@@ -1,6 +1,10 @@
 #! /bin/dash
 
 current=$(readlink -nse "$XDG_COLORS_DIR/current")
+if [ $? -eq 1 ] ; then
+    echo "can't find the current color theme" >&2
+    exit 1
+fi
 base=$(basename "$current")
 name=${base%-*}
 bgtype=${base##*-}
