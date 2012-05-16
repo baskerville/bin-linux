@@ -1,6 +1,5 @@
 #! /bin/dash
 
 hc pad 0 20
-# setlayout 0 3 3 0
 tint2 &
 neap -g 14x14 &

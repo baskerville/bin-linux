@@ -2,3 +2,4 @@
 
 pkill -x neap
 pkill -x tint2
+hc pad 0 0
