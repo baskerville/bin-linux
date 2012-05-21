@@ -145,6 +145,9 @@ else
         *:*)
             handle_uri "$@"
             ;;
+        *@*.*)
+            mutt "$@"
+            ;;
         *)
             echo "don't know how to open '$@'" >&2
             exit 1
