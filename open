@@ -103,8 +103,8 @@ elif [ -e "$@" ]; then
                 *.pps|*.PPS|*.ppt|*.PPT)
                     ppsei "$@"
                     ;;
-                *.rft|*.doc)
-                    catdoc -s cp1252 "$@"
+                *.rtf|*.doc)
+                    catdoc -w -s cp1252 "$@"
                     ;;
                 *.xpm)
                     image_viewer "$@"

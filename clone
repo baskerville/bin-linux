@@ -5,9 +5,17 @@
 original=$1
 numclones=${2:-1}
 counter=1
+bsnm=$(basename "$original")
+name=${bsnm%.*}
+ext=${bsnm##*.}
+[ "$ext" = "$bsnm" ] && ext=""
 
 while [ $counter -le $numclones ] ; do
     suffix=$(printf '%02i' "$counter")
-    ln "$original" "${original}_$suffix"
+    if [ -z "$ext" ] ; then
+        ln "$original" "${name}-${suffix}"
+    else
+        ln "$original" "${name}-${suffix}.${ext}"
+    fi
     counter=$((counter+1)) 
 done
