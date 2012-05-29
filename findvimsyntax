@@ -1,0 +1,10 @@
+#! /bin/dash
+
+filetype=$1
+
+if [ -z "$filetype" ] ; then
+    echo "argument missing" >&2
+    exit 1
+fi
+
+owl lsgrep "syntax/${filetype}.vim" vim-runtime
