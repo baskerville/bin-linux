@@ -5,17 +5,23 @@ import re
 import sys
 from PIL import Image, ImageDraw
 from math import ceil
+from getopt import getopt
 
 horizontal_squares = 8
 output_square_side = 30
+ignore_duplicates = False
 
-args = sys.argv[1:]
+opts, args = getopt(sys.argv[1:], 'i', ['ignore-duplicates'])
+
+for opt, val in opts:
+    if opt in ('-i', '--ignore-duplicates'):
+        ignore_duplicates = True
+
 if len(args) > 0:
     horizontal_squares = int(args[0])
     if len(args) > 1:
         output_square_side = int(args[1])
 
-# palette = set()
 palette = []
 
 def remove_duplicates(seq, idfun=None): 
@@ -32,14 +38,13 @@ def remove_duplicates(seq, idfun=None):
 
 for line in sys.stdin:
     color_codes = re.findall('#[0-9A-F]{6}', line, flags=re.IGNORECASE)
-    # palette.update(color_codes)
     palette.extend(color_codes)
 
-palette = remove_duplicates(palette)
+if ignore_duplicates:
+    palette = remove_duplicates(palette)
 
 if len(palette) < 1:
     print >> sys.stderr, 'no color found'
-    # print('no color found')
     sys.exit(1)
 
 print(len(palette))
