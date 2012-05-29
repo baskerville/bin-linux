@@ -1,0 +1,10 @@
+#! /bin/dash
+
+word_start=''
+if [ $# -gt 1 ] ; then
+    word_start=$2
+elif [ $# -gt 0 ] ; then
+    word_start=$1
+fi
+
+find "$XDG_DOTFILES_DIR" -path '*/.git/*' -prune -o -type f -name "${word_start}*" -printf "%f\n" | grep -v '^\.'
