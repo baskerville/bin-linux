@@ -6,7 +6,7 @@ while [ $# -gt 0 ] ; do
     if [ -e "$exact_match" ] ; then
         editor "$exact_match"
     else
-        dots=$(find "$XDG_DOTFILES_DIR" -path "*/.git/*" -prune -o -type f -name "${pattern}*" -print0 | xargs -0)
+        dots=$(find "$XDG_DOTFILES_DIR" -path "*/.git/*" -prune -o -type f -iname "${pattern}*" -print0 | xargs -0)
         if [ -n "$dots" ] ; then
             editor $dots
         fi

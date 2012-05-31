@@ -27,6 +27,7 @@ do
             sudo pacman -S bash-completion dash gdb
             sudo pacman -S curl yajl perl inetutils openssh openssl
             sudo pacman -S git mercurial subversion cvs bzr
+            sudo pacman -S zip unzip unrar
             sudo pacman -S pm-utils vim mutt msmtp ed
             sudo pacman -S rlwrap w3m elinks tmux duff ack surfraw dictd bc
             sudo pacman -S xorg-server xorg-xinit xorg-utils xorg-server-utils
