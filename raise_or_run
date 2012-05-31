@@ -4,7 +4,7 @@ while [ $# -gt 0 ] ; do
     case "$1" in
         dwb | dwb_restore)
             CMD=dwb
-            [ "$1" = "dwb_restore" ] && CMD="$CMD -r"
+            [ "$1" = "dwb_restore" ] && CMD="$CMD -rf default"
             wid=$(lswi --class dwb | head -1 | sed 's/.*(\([0-9]\+\))$/\1/')
             if [ -n "$wid" ] ; then
                 xdotool windowactivate "$wid"
