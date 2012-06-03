@@ -5,7 +5,7 @@ do
     echo $task
     case $task in
         network)
-            # run as root
+            # as root
             echo "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=wheel" > /etc/wpa_supplicant.conf
             wpa_passphrase "*SSID*" "*SECRET*KEY*" >> /etc/wpa_supplicant.conf
             wpa_supplicant -B -Dwext -i wlan0 -c /etc/wpa_supplicant.conf
@@ -13,9 +13,9 @@ do
             pacman -S netcfg
             ;;
         user)
-            # run as root
+            # as root
             pacman -Syu
-            useradd -m -g users -G audio,lp,optical,storage,video,wheel,games,power,scanner -s /bin/bash ice
+            useradd -m -g users -G audio,lp,optical,storage,video,wheel,games,power,scanner,log -s /bin/bash ice
             ;;
         sound)
             sudo pacman -S alsa-utils 
