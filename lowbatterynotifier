@@ -1,7 +1,0 @@
-#! /bin/dash
-
-while true; do
-	lowfuel=`acpi -b | grep "Discharging, [0-5]%"`
-	[ -n "$lowfuel" ] && zenity --warning --text "Low battery power"
-    sleep 60
-done
