@@ -50,6 +50,7 @@ do
             owl install mutt-bare-git dzen2-bare-git herbstluftwm-git tint2-svn neap-svn
             owl install dfc-git compton-git
             owl install libuninameslist fontforge-bskv-git
+            owl install spdf-git jpdf-git
             ;;
         home)
             cd
