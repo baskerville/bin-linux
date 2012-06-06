@@ -26,7 +26,7 @@ elif [ -e "$@" ]; then
             document_reader "$@"
             ;;
         image/x-canon-cr2)
-            dcraw -o 0 -w -T "$@"
+            dcraw -o 1 -w -T "$@"
             ;;
         image/svg+xml|application/x-shockwave-flash)
             web_browser "$@"
