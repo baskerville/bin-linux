@@ -37,7 +37,7 @@ do
             sudo pacman -S scrot mplayer ffmpeg
             sudo pacman -S mpd mpc
             sudo pacman -S xclip xsel xdotool flashplugin
-            sudo pacman -S gimp inkscape sdlmame
+            sudo pacman -S gimp inkscape audacity
             sudo pacman -S cups gutenprint cdrkit gphoto2 dcraw
             sudo pacman -S lirc lirc-utils
             sudo pacman -S mac cuetools shntool libplist
@@ -46,17 +46,22 @@ do
             sudo pacman -S p7zip tk id3v2
             sudo pacman -S jd7-openjdk icedtea-web-java7 apache-ant
             sudo pacman -S apache php php-apache mysql
-            sudo pacman -S abiword
+            sudo pacman -S abiword sdlmame
+            owl install cower-git dmenu-hg sxiv-git dwb-hg ttf-ms-fonts
+            owl install detox duff dictd-jargon dictd-wn stderred-git z-git
             owl install mutt-bare-git dzen2-bare-git herbstluftwm-git tint2-svn neap-svn
-            owl install dfc-git compton-git
+            owl install girara-common-git girara-gtk2-git zathura-git
+            owl install zathura-pdf-poppler-git zathura-ps-git zathura-djvu-git
+            owl install dfc-git compton-git youtube-dl-git
             owl install libuninameslist fontforge-bskv-git
             owl install spdf-git jpdf-git
             ;;
         home)
             cd
-            mkdir -p art doc incoming image audio video src tmp work other
+            mkdir art doc incoming image audio video src tmp work other
             git clone git://github.com/baskerville/dotfiles.git .dotfiles
             git clone git://github.com/baskerville/bin.git .bindir
+            mkdir .sxiv
             ln -s .bindir bin
             ln -s src/aur aur
             ln -s doc/books books
