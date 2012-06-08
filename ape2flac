@@ -9,15 +9,15 @@ green_echo() {
 }
 
 get_tag() {
-    local tag="$1"
-    local file="$2"
+    tag=$1
+    file=$2
     mediainfo "--Inform=General;%$tag%" "$file"
 }
 
 set_tag() {
-    local key="$1"
-    local value="$2"
-    local file="$3"
+    key=$1
+    value=$2
+    file=$3
     [ -n "$value" ] && metaflac --set-tag=$key="$value" "$file"
 }
 
