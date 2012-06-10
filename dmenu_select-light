@@ -1,9 +1,9 @@
 #! /bin/dash
 
-fn='-*-terminus-medium-*-*-*-18-*-*-*-*-*-*-*'
+fn='-*-terminus-medium-*-*-*-20-*-*-*-*-*-*-*'
 nb='#FAF0E6'
 nf='#69717A'
 sb='#E7DFD5'
-sf='#69717A'
+sf='#5B636B'
 
 dmenu -i -fn "$fn" -nb "$nb" -nf "$nf" -sb "$sb" -sf "$sf"
