@@ -5,12 +5,9 @@
 #
 
 if [ -d "$@" ]; then
-# is it a directory?
     ncd "$@"
 elif [ -e "$@" ]; then
-# or a file?
     mime_type=$(file -L -b --mime-type "$@")
-    # filter by mime type
     # the order is important, e.g. foo/bar must appear before foo/*
     case $mime_type in
         inode/x-empty)
@@ -65,7 +62,6 @@ elif [ -e "$@" ]; then
             man -l "$@"
             ;;
         *)
-            # filter by extension
             case "$@" in
                 *.tar.gz|*.tgz)
                     tar xvzf "$@"
@@ -122,7 +118,6 @@ elif [ -e "$@" ]; then
                     amule-emc "$@"
                     ;;
                 *)
-                    # filter by mime encoding 
                     mime_encoding=$(file -L -b --mime-encoding "$@")
                     case $mime_encoding in
                         *binary)
@@ -137,7 +132,6 @@ elif [ -e "$@" ]; then
             ;;
     esac
 else
-    # or something else?
     case "$@" in
         *://*)
             web_browser "$@"
