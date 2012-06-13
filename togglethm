@@ -25,6 +25,7 @@ fi
 setthm "${name}-${bgtype}"
 setconfbg "$XDG_DOTFILES_DIR/neaprc" $bgtype
 setconfbg "$XDG_DOTFILES_DIR/tint2rc" $bgtype
+setconfbg "$XDG_DOTFILES_DIR/style.css" $bgtype
 setconfbg "$XDG_BIN_DIR/dmenu_launch" $bgtype
 setconfbg "$XDG_BIN_DIR/dmenu_select" $bgtype
 
