@@ -25,7 +25,7 @@ def main():
 
     if len(args) > 0:
         for filename in args:
-            fd = open(filename, 'r')
+            fd = open(filename, 'r', errors='ignore')
             for line in fd.readlines():
                 format_links(line)
             fd.close()

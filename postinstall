@@ -47,7 +47,7 @@ do
             sudo pacman -S jd7-openjdk icedtea-web-java7 apache-ant
             sudo pacman -S apache php php-apache mysql
             sudo pacman -S abiword sdlmame
-            owl install cower-git dmenu-hg sxiv-git dwb-hg ttf-ms-fonts
+            owl install cower-git dmenu-hg sxiv-git dwb-hg ttf-ms-fonts ttf-mac-fonts
             owl install detox duff dictd-jargon dictd-wn stderred-git z-git
             owl install mutt-bare-git dzen2-bare-git herbstluftwm-git tint2-svn neap-svn
             owl install girara-common-git girara-gtk2-git zathura-git
