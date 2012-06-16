@@ -38,7 +38,8 @@ do
             sudo pacman -S mpd mpc
             sudo pacman -S xclip xsel xdotool flashplugin
             sudo pacman -S gimp inkscape audacity
-            sudo pacman -S cups gutenprint cdrkit gphoto2 dcraw
+            sudo pacman -S cups gutenprint cedilla
+            sudo pacman -S cdrkit gphoto2 dcraw
             sudo pacman -S lirc lirc-utils
             sudo pacman -S mac cuetools shntool libplist
             sudo pacman -S fortune-mod figlet cowsay htop lsof strace words
