@@ -17,6 +17,8 @@ while [ $# -gt 0 ] ; do
             unrar l "$1" ;;
         application/x-bittorrent)
             aria2c -S "$1" | grep '\./' ;;
+        application/x-iso9660-image)
+            isoinfo -J -l -i "$1" ;;
         *)
             case "$1" in
                 *.mkv)

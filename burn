@@ -1,0 +1,38 @@
+#! /bin/dash
+
+usage() {
+    printf "%s [-l LABEL] FILE ...\n" "$(basename "$0")"
+    exit 0
+}
+
+[ $# -eq 0 ] && usage
+
+label="noname"
+iso=$(mktemp)
+
+while getopts "hl:" opt ; do
+    case $opt in
+        h)
+            usage
+            ;;
+        l)
+            label=$OPTARG
+            ;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
+genisoimage -l -r -J -f -V "$label" -o "$iso" $@
+
+isoinfo -J -l -i "$iso"
+
+printf "%s" "Ready to burn? [Y/n] "
+read answer
+[ -z "$answer" ] && answer="yes"
+
+case "$answer" in
+    y|Y|yes|Yes)
+        wodim -v "$iso"
+        ;;
+esac
