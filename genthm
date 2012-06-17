@@ -228,7 +228,19 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     'teal':  idx_to_hex(teal_i, fg_L, color_chroma),
     'azure':  idx_to_hex(azure_i, fg_L, color_chroma),
     'violet':  idx_to_hex(violet_i, fg_L, color_chroma),
-    'pink':  idx_to_hex(pink_i, fg_L, color_chroma)
+    'pink':  idx_to_hex(pink_i, fg_L, color_chroma),
+    'red_comment':  idx_to_hex(red_i, fg_cm_L, color_chroma),
+    'yellow_comment':  idx_to_hex(yellow_i, fg_cm_L, color_chroma),
+    'green_comment':  idx_to_hex(green_i, fg_cm_L, color_chroma),
+    'cyan_comment':  idx_to_hex(cyan_i, fg_cm_L, color_chroma),
+    'blue_comment':  idx_to_hex(blue_i, fg_cm_L, color_chroma),
+    'magenta_comment':  idx_to_hex(magenta_i, fg_cm_L, color_chroma),
+    'orange_comment':  idx_to_hex(orange_i, fg_cm_L, color_chroma),
+    'spring_comment':  idx_to_hex(spring_i, fg_cm_L, color_chroma),
+    'teal_comment':  idx_to_hex(teal_i, fg_cm_L, color_chroma),
+    'azure_comment':  idx_to_hex(azure_i, fg_cm_L, color_chroma),
+    'violet_comment':  idx_to_hex(violet_i, fg_cm_L, color_chroma),
+    'pink_comment':  idx_to_hex(pink_i, fg_cm_L, color_chroma)
     }
 
     rgb_color_set = {
@@ -253,7 +265,19 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     'teal':  scaled_rgb_str(idx_to_rgb(teal_i, fg_L, color_chroma)),
     'azure':  scaled_rgb_str(idx_to_rgb(azure_i, fg_L, color_chroma)),
     'violet':  scaled_rgb_str(idx_to_rgb(violet_i, fg_L, color_chroma)),
-    'pink':  scaled_rgb_str(idx_to_rgb(pink_i, fg_L, color_chroma))
+    'pink':  scaled_rgb_str(idx_to_rgb(pink_i, fg_L, color_chroma)),
+    'red_comment':  scaled_rgb_str(idx_to_rgb(red_i, fg_cm_L, color_chroma)),
+    'yellow_comment':  scaled_rgb_str(idx_to_rgb(yellow_i, fg_cm_L, color_chroma)),
+    'green_comment':  scaled_rgb_str(idx_to_rgb(green_i, fg_cm_L, color_chroma)),
+    'cyan_comment':  scaled_rgb_str(idx_to_rgb(cyan_i, fg_cm_L, color_chroma)),
+    'blue_comment':  scaled_rgb_str(idx_to_rgb(blue_i, fg_cm_L, color_chroma)),
+    'magenta_comment':  scaled_rgb_str(idx_to_rgb(magenta_i, fg_cm_L, color_chroma)),
+    'orange_comment':  scaled_rgb_str(idx_to_rgb(orange_i, fg_cm_L, color_chroma)),
+    'spring_comment':  scaled_rgb_str(idx_to_rgb(spring_i, fg_cm_L, color_chroma)),
+    'teal_comment':  scaled_rgb_str(idx_to_rgb(teal_i, fg_cm_L, color_chroma)),
+    'azure_comment':  scaled_rgb_str(idx_to_rgb(azure_i, fg_cm_L, color_chroma)),
+    'violet_comment':  scaled_rgb_str(idx_to_rgb(violet_i, fg_cm_L, color_chroma)),
+    'pink_comment':  scaled_rgb_str(idx_to_rgb(pink_i, fg_cm_L, color_chroma))
     }
 
     if translate_to_index or translate_to_hex or translate_to_rgb:

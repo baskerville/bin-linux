@@ -13,9 +13,9 @@ printf '\n'
 while [ $i -le $END_COLOR ]
 do
     if [ $only_block -eq 1 ] ; then
-        printf "\033[38;5;${i}m%b" '█'
+        printf "\033[38;5;${i}m%s" '█'
     else
-        printf "\033[38;5;${i}m%b%03u" '■' $i
+        printf "\033[38;5;${i}m%s%03u" '■' $i
     fi
     [ $(((i - START_COLOR + 1) % LINE_LENGTH)) -eq 0 -a $i -gt $START_COLOR ] && printf '\n'
     i=$((i + 1))
