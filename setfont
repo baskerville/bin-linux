@@ -2,6 +2,6 @@
 
 [ $# -eq 0 ] && exit 1
 
-for vt in /dev/pts/[0-9]* ; do
-    printf "\033]710;$@:pixelsize=16\007\033]711;$@:pixelsize=16\007\033]712;$@:pixelsize=16\007\033]713;$@:pixelsize=16\007" > "$vt"
+for p in $(seq 710 713) ; do
+    printf "\033]%i;xft:%s:pixelsize=16\007" "$p" "$@" > /dev/tty
 done
