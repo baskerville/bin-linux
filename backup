@@ -26,11 +26,11 @@ do
             filelist="doc"
             ;;
         sys)
-            filelist="/etc/rc.conf /etc/rc.local /usr/share/kbd/keymaps/extra.map /boot/grub/menu.lst /usr/local/bin/brightness /etc/pacman.conf $(ls /etc/udev/rules.d/* 2> /dev/null)"
+            filelist="/etc/hostname /etc/vconsole.conf /etc/locale.conf /etc/timezone /etc/modules-load.d/modules.conf /etc/pacman.conf /etc/conf.d/crond /usr/share/kbd/keymaps/extra.map /boot/grub/menu.lst $(ls /usr/local/bin/* 2> /dev/null) $(ls /etc/udev/rules.d/* 2> /dev/null)"
             ;;
     esac
     if [ -n "$filelist" ] ; then
-        tar -cvz -C ~ -f "${1}.tgz" $filelist
+        tar -cvz -C "$HOME" -f "${1}.tgz" $filelist
     fi
     shift
 done
