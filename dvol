@@ -27,6 +27,9 @@ gauge_label="VOL"
 muted=0
 
 case "$@" in
+    status)
+        :
+        ;;
     toggle)
         $AUDIO_TOGGLE_CMD
         ;;
