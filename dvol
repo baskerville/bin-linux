@@ -56,6 +56,7 @@ vol_per=$(grep -m 1 -o '[0-9]\+%' "$tmp_out")
 vol_per=$(printf "% 4s" "$vol_per")
 
 grep -i '\[on\]' "$tmp_out" > /dev/null 2>&1 || muted=1
+rm "$tmp_out"
 
 if [ "$muted" -eq 1 ] ; then
     gauge_fg=$MUTED_FG
