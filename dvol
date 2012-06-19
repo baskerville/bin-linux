@@ -23,7 +23,6 @@ TMP_STDOUT="/tmp/dvol_stdout"
 gauge_height=$((BAR_HEIGHT / 2))
 gauge_fg=$ACTIVE_FG
 gauge_bg=$ACTIVE_BG
-tmp_out="$(mktemp)"
 gauge_label="VOL"
 muted=0
 
