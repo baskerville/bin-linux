@@ -25,12 +25,14 @@ fi
 setthm "${name}-${bgtype}"
 setconfbg "$XDG_DOTFILES_DIR/neaprc" $bgtype
 setconfbg "$XDG_DOTFILES_DIR/tint2rc" $bgtype
+setconfbg "$XDG_DOTFILES_DIR/dzen2_Xresources" $bgtype
 setconfbg "$XDG_DOTFILES_DIR/override.css" $bgtype
 setconfbg "$XDG_BIN_DIR/dmenu_launch" $bgtype
 setconfbg "$XDG_BIN_DIR/dmenu_select" $bgtype
 
 setconfbg "$HOME/.wallpaper" $bgtype
 setconfbg "$XDG_BIN_DIR/hc_colors" $bgtype
+setconfbg "$XDG_BIN_DIR/dvol_colors" $bgtype
 
 hc_colors
 reloadpanel

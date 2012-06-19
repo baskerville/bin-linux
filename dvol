@@ -1,0 +1,74 @@
+#! /bin/dash
+
+if [ $# -eq 0 ] ; then
+    printf "%s\n" "no action given" >&2
+    exit 1
+fi
+
+FONT="-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
+. dvol_colors
+
+AUDIO_INFO_CMD="amixer get Master"
+AUDIO_RAISE_CMD="amixer -q set Master 1+"
+AUDIO_LOWER_CMD="amixer -q set Master 1-"
+AUDIO_RAISE_STRONG_CMD="amixer -q set Master 1%+"
+AUDIO_LOWER_STRONG_CMD="amixer -q set Master 1%-"
+AUDIO_TOGGLE_CMD="amixer -q set Master toggle"
+
+FADE_SEC=1.5
+BAR_HEIGHT=22
+TMP_FIFO="/tmp/dzen2_fifo"
+
+gauge_height=$((BAR_HEIGHT / 2))
+gauge_fg=$ACTIVE_FG
+gauge_bg=$ACTIVE_BG
+tmp_out="$(mktemp)"
+gauge_label="VOL"
+muted=0
+
+case "$@" in
+    toggle)
+        $AUDIO_TOGGLE_CMD
+        ;;
+    raise)
+        $AUDIO_RAISE_CMD
+        ;;
+    lower)
+        $AUDIO_LOWER_CMD
+        ;;
+    strong_raise)
+        $AUDIO_RAISE_STRONG_CMD
+        ;;
+    strong_lower)
+        $AUDIO_LOWER_STRONG_CMD
+        ;;
+    *)
+        printf "unknown action: '%s'\n" "$@" >&2
+        exit 1
+        ;;
+esac
+
+$AUDIO_INFO_CMD > "$tmp_out"
+vol_max=$(awk -F ' *- *' '/Limits:/ {print $2}' "$tmp_out")
+vol_cur=$(awk '/%/ { sub(/^[^0-9]*/, ""); print $1; }' "$tmp_out")
+vol_emp=$((vol_max - vol_cur))
+vol_per=$(grep -m 1 -o '[0-9]\+%' "$tmp_out")
+vol_per=$(printf "% 4s" "$vol_per")
+
+grep -i '\[on\]' "$tmp_out" > /dev/null 2>&1 || muted=1
+
+if [ "$muted" -eq 1 ] ; then
+    gauge_fg=$MUTED_FG
+    gauge_bg=$MUTED_BG
+    gauge_label="MUT"
+fi
+
+dzen2_cmd="$gauge_label ^fg($gauge_fg)^r(${vol_cur}x${gauge_height})^fg($gauge_bg)^r(${vol_emp}x${gauge_height})^fg() $vol_per"
+
+if [ ! -e "$TMP_FIFO" ] ; then
+  mkfifo "$TMP_FIFO"
+  (dzen2 -h "$BAR_HEIGHT" -fn "$FONT" -bg "$TEXT_BG" -fg "$TEXT_FG" < "$TMP_FIFO"
+   rm "$TMP_FIFO") &
+fi
+
+(printf "%s\n" "$dzen2_cmd" ; sleep "$FADE_SEC") > "$TMP_FIFO"

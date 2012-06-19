@@ -334,7 +334,8 @@ URxvt.color15: t_fg_ceiling'''.format(**hex_color_set), file = xres_file)
     prop_cmd(704, hex_fg_hl)
     prop_cmd(707, hex_fg_hl)
 
-    prop_cmd(12, idx_to_hex(magenta_i, fg_L, color_chroma))
+    # cursor color
+    prop_cmd(12, idx_to_hex(cyan_i, fg_L, color_chroma))
 
     redef_cmd(0, hex_bg_bp)
     redef_cmd(8, hex_fg_cm)
