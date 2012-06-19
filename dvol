@@ -15,7 +15,7 @@ AUDIO_RAISE_STRONG_CMD="amixer -q set Master 1%+"
 AUDIO_LOWER_STRONG_CMD="amixer -q set Master 1%-"
 AUDIO_TOGGLE_CMD="amixer -q set Master toggle"
 
-FADE_SEC=1.5
+FADE_SEC=1
 BAR_HEIGHT=22
 TMP_FIFO="/tmp/dzen2_fifo"
 
@@ -63,7 +63,7 @@ if [ "$muted" -eq 1 ] ; then
     gauge_label="MUT"
 fi
 
-dzen2_cmd="$gauge_label ^fg($gauge_fg)^r(${vol_cur}x${gauge_height})^fg($gauge_bg)^r(${vol_emp}x${gauge_height})^fg() $vol_per"
+dzen2_cmd="$gauge_label  ^fg($gauge_fg)^r(${vol_cur}x${gauge_height})^fg($gauge_bg)^r(${vol_emp}x${gauge_height})^fg() $vol_per"
 
 if [ ! -e "$TMP_FIFO" ] ; then
   mkfifo "$TMP_FIFO"
