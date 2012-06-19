@@ -16,13 +16,13 @@ AUDIO_LOWER_STRONG_CMD="amixer -q set Master 1%-"
 AUDIO_TOGGLE_CMD="amixer -q set Master toggle"
 
 BAR_WIDTH=200
-BAR_HEIGHT=30
+BAR_HEIGHT=40
 FADE_SEC=1
 
 TMP_FIFO="/tmp/dvol_fifo"
 TMP_STDOUT="/tmp/dvol_stdout"
 
-gauge_height=$((BAR_HEIGHT / 2))
+gauge_height=$((BAR_HEIGHT / 3))
 gauge_fg=$ACTIVE_FG
 gauge_bg=$ACTIVE_BG
 gauge_label="VOL"
