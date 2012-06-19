@@ -9,11 +9,13 @@ FONT="-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
 . dvol_colors
 
 AUDIO_INFO_CMD="amixer get Master"
+AUDIO_TOGGLE_CMD="amixer -q set Master toggle"
 AUDIO_RAISE_CMD="amixer -q set Master 1+"
 AUDIO_LOWER_CMD="amixer -q set Master 1-"
 AUDIO_RAISE_STRONG_CMD="amixer -q set Master 1%+"
 AUDIO_LOWER_STRONG_CMD="amixer -q set Master 1%-"
-AUDIO_TOGGLE_CMD="amixer -q set Master toggle"
+AUDIO_MIN_CMD="amixer -q set Master 0%"
+AUDIO_MAX_CMD="amixer -q set Master 100%"
 
 BAR_WIDTH=200
 BAR_HEIGHT=40
@@ -46,6 +48,12 @@ case "$@" in
         ;;
     strong_lower)
         $AUDIO_LOWER_STRONG_CMD
+        ;;
+    min)
+        $AUDIO_MIN_CMD
+        ;;
+    max)
+        $AUDIO_MAX_CMD
         ;;
     *)
         printf "unknown action: '%s'\n" "$@" >&2
