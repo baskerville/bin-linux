@@ -15,8 +15,10 @@ AUDIO_RAISE_STRONG_CMD="amixer -q set Master 1%+"
 AUDIO_LOWER_STRONG_CMD="amixer -q set Master 1%-"
 AUDIO_TOGGLE_CMD="amixer -q set Master toggle"
 
+BAR_WIDTH=200
+BAR_HEIGHT=30
 FADE_SEC=1
-BAR_HEIGHT=22
+
 TMP_FIFO="/tmp/dvol_fifo"
 TMP_STDOUT="/tmp/dvol_stdout"
 
@@ -68,9 +70,11 @@ fi
 
 dzen2_cmd="$gauge_label  ^fg($gauge_fg)^r(${vol_cur}x${gauge_height})^fg($gauge_bg)^r(${vol_emp}x${gauge_height})^fg() $vol_per"
 
+xy_pos=$(xdpyinfo | awk -v w=$BAR_WIDTH -v h=$BAR_HEIGHT 'BEGIN {IGNORECASE=1} /dimensions:/ {match($0, /[^0-9]+([0-9]+)x([0-9]+) pixels/, groups); print "-x", (groups[1] - w) / 2, "-y", (groups[2] - h) / 2.5;}')
+
 if [ ! -e "$TMP_FIFO" ] ; then
   mkfifo "$TMP_FIFO"
-  (dzen2 -h "$BAR_HEIGHT" -fn "$FONT" -bg "$TEXT_BG" -fg "$TEXT_FG" < "$TMP_FIFO"
+  (dzen2 -h "$BAR_HEIGHT" -w "$BAR_WIDTH" $xy_pos -fn "$FONT" -bg "$TEXT_BG" -fg "$TEXT_FG" < "$TMP_FIFO"
    rm "$TMP_FIFO") &
 fi
 
