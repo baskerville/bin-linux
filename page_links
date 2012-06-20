@@ -5,10 +5,11 @@ from urllib.parse import urljoin, urlparse
 from getopt import getopt
 
 base = None
+tag = 'href'
 
 def format_links(line):
-    global base
-    hyper_refs = re.findall('(?<=href=")[^"]+', line, flags = re.I)
+    global base, tag
+    hyper_refs = re.findall('(?<={}=")[^"]+'.format(tag), line, flags = re.I)
     for href in hyper_refs:
         if base:
             print(urljoin(base, href))
@@ -16,12 +17,14 @@ def format_links(line):
             print(href)
 
 def main():
-    global base
-    opts, args = getopt(sys.argv[1:], 'b:', ['base='])
+    global base, tag
+    opts, args = getopt(sys.argv[1:], 'b:t:', ['base=', 'tag='])
 
     for opt, val in opts:
         if opt in ('-b', '--base'):
             base = val
+        if opt in ('-t', '--tag'):
+            tag = val
 
     if len(args) > 0:
         for filename in args:
