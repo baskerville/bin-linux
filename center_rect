@@ -1,0 +1,33 @@
+#! /bin/bash
+
+if [ $# -eq 0 ] ; then
+    printf "usage: %s [-t geometrical|optical] WIDTHxHEIGHT\n" "${0##*/}" >& 2
+    exit 1
+fi
+
+centering_type="geometrical"
+k=2
+
+while getopts "t:" opt ; do
+    case $opt in
+        t)
+            centering_type="$OPTARG"
+            ;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
+w=${@%x*}
+h=${@#*x}
+
+if [ "$centering_type" = "geometrical" ] ; then
+    k=2
+elif [ "$centering_type" = "optical" ] ; then
+    k=3
+else
+    printf "unknown centering type: '%s'\n" "$centering_type" >& 2
+    exit 1
+fi
+
+xdpyinfo | awk -v w=$w -v h=$h -v k=$k 'BEGIN {IGNORECASE=1} /dimensions:/ {match($0, /[^0-9]+([0-9]+)x([0-9]+) pixels/, groups); print("+" (groups[1] - w) / 2 "+" (groups[2] - h) / k);}'
