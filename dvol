@@ -5,7 +5,6 @@ if [ $# -eq 0 ] ; then
     exit 1
 fi
 
-FONT="-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
 . dvol_colors
 
 AUDIO_INFO_CMD="amixer get Master"
@@ -17,16 +16,12 @@ AUDIO_LOWER_STRONG_CMD="amixer -q set Master 1%-"
 AUDIO_MIN_CMD="amixer -q set Master 0%"
 AUDIO_MAX_CMD="amixer -q set Master 100%"
 
-BAR_WIDTH=200
-BAR_HEIGHT=40
-FADE_DELAY=1
-
-TMP_FIFO="/tmp/dvol_fifo"
 TMP_STDOUT="/tmp/dvol_stdout"
 
-gauge_height=$((BAR_HEIGHT / 3))
 gauge_fg=$ACTIVE_FG
 gauge_bg=$ACTIVE_BG
+bar_fg=$TEXT_FG
+bar_bg=$TEXT_BG
 gauge_label="VOL"
 muted=0
 
@@ -62,11 +57,8 @@ case "$@" in
 esac
 
 $AUDIO_INFO_CMD > "$TMP_STDOUT"
-vol_max=$(awk -F ' *- *' 'BEGIN {IGNORECASE=1} /limits:/ {print $2}' "$TMP_STDOUT")
-vol_cur=$(awk '/%/ { sub(/^[^0-9]*/, ""); print $1; }' "$TMP_STDOUT")
-vol_emp=$((vol_max - vol_cur))
-vol_per=$(grep -m 1 -o '[0-9]\+%' "$TMP_STDOUT")
-vol_per=$(printf "% 4s" "$vol_per")
+gauge_cur=$(awk '/%/ { sub(/^[^0-9]*/, ""); print $1; }' "$TMP_STDOUT")
+gauge_max=$(awk -F ' *- *' 'BEGIN {IGNORECASE=1} /limits:/ {print $2}' "$TMP_STDOUT")
 
 grep -i '\[on\]' "$TMP_STDOUT" > /dev/null 2>&1 || muted=1
 
@@ -76,14 +68,4 @@ if [ "$muted" -eq 1 ] ; then
     gauge_label="MUT"
 fi
 
-dzen2_cmd="$gauge_label  ^fg($gauge_fg)^r(${vol_cur}x${gauge_height})^fg($gauge_bg)^r(${vol_emp}x${gauge_height})^fg() $vol_per"
-
-xy_pos=$(xdpyinfo | awk -v w=$BAR_WIDTH -v h=$BAR_HEIGHT 'BEGIN {IGNORECASE=1} /dimensions:/ {match($0, /[^0-9]+([0-9]+)x([0-9]+) pixels/, groups); print "-x", (groups[1] - w) / 2, "-y", (groups[2] - h) / 3;}')
-
-if [ ! -e "$TMP_FIFO" ] ; then
-  mkfifo "$TMP_FIFO"
-  (dzen2 -h "$BAR_HEIGHT" -w "$BAR_WIDTH" $xy_pos -fn "$FONT" -bg "$TEXT_BG" -fg "$TEXT_FG" < "$TMP_FIFO"
-   rm "$TMP_FIFO") &
-fi
-
-(printf "%s\n" "$dzen2_cmd" ; sleep "$FADE_DELAY") > "$TMP_FIFO"
+dgauge -l "$gauge_label" -f "$bar_fg" -b "$bar_bg" -F "$gauge_fg" -B "$gauge_bg" "$gauge_cur" "$gauge_max"

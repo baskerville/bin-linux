@@ -1,17 +1,16 @@
 #! /bin/bash
 
 if [ $# -eq 0 ] ; then
-    printf "usage: %s [-t geometrical|optical] WIDTHxHEIGHT\n" "${0##*/}" >& 2
+    printf "usage: %s [-f raw|arguments|indent] WIDTHxHEIGHT\n" "${0##*/}" >& 2
     exit 1
 fi
 
-centering_type="geometrical"
-k=2
+output_format="raw"
 
-while getopts "t:" opt ; do
+while getopts "f:" opt ; do
     case $opt in
-        t)
-            centering_type="$OPTARG"
+        f)
+            output_format="$OPTARG"
             ;;
     esac
 done
@@ -21,16 +20,22 @@ shift $(($OPTIND - 1))
 w=${@%x*}
 h=${@#*x}
 
-case "$centering_type" in
-    geometrical)
-        k=2
+set - $(xdpyinfo | awk -v w=$w -v h=$h 'BEGIN {IGNORECASE=1} /dimensions:/ {match($0, /[^0-9]+([0-9]+)x([0-9]+) pixels/, groups); printf "%i %i\n", (groups[1] - w) / 2, (groups[2] - h) / 3;}')
+
+xoffset=$1
+yoffset=$2
+
+case "$output_format" in
+    arguments)
+        printf "\055x %i \055y %i\n" "$xoffset" "$yoffset"
         ;;
-    optical)
-        k=3
+    indent)
+        printf "+%i+%i\n" "$xoffset" "$yoffset"
+        ;;
+    raw)
+        printf "%i %i\n" "$xoffset" "$yoffset"
         ;;
     *)
-        printf "unknown centering type: '%s'\n" "$centering_type" >& 2
+        printf "unknown output format: '%s'\n" "$output_format" >& 2
         exit 1
 esac
-
-xdpyinfo | awk -v w=$w -v h=$h -v k=$k 'BEGIN {IGNORECASE=1} /dimensions:/ {match($0, /[^0-9]+([0-9]+)x([0-9]+) pixels/, groups); printf "%i %i\n", (groups[1] - w) / 2, (groups[2] - h) / k;}'

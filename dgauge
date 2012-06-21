@@ -1,0 +1,91 @@
+#! /bin/dash
+
+if [ $# -lt 2 ] ; then
+    cat << EOF
+SYNOPSIS
+    ${0##*/} [OPTIONS] GAUGE_CURRENT GAUGE_MAX 
+
+OPTIONS
+    -w
+        Bar width.
+    -h
+        Bar height.
+    -t
+        Bar font.
+    -f 
+        Bar foreground color.
+    -b
+        Bar background color.
+    -F
+        Gauge full color.
+    -B
+        Gauge empty color.
+EOF
+    exit 1
+fi
+
+TMP_FIFO="/tmp/dgauge_fifo"
+FADE_DELAY=1
+bar_width=300
+bar_height=40
+bar_font="-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
+gauge_label="NIL"
+gauge_fg="white"
+gauge_bg="grey"
+bar_fg="grey"
+bar_bg="black"
+
+while getopts "w:h:l:t:f:b:F:B:" opt ; do
+    case $opt in
+        w)
+            bar_width=$OPTARG
+            ;;
+        h)
+            bar_height=$OPTARG
+            ;;
+        l)
+            gauge_label=$OPTARG
+            ;;
+        t)
+            bar_font=$OPTARG
+            ;;
+        f)
+            bar_fg=$OPTARG
+            ;;
+        b)
+            bar_bg=$OPTARG
+            ;;
+        F)
+            gauge_fg=$OPTARG
+            ;;
+        B)
+            gauge_bg=$OPTARG
+            ;;
+    esac
+done
+
+shift $(($OPTIND - 1))
+
+gauge_cur=$1
+gauge_max=$2
+
+gauge_percent=$(printf "%s\n" "$gauge_cur / $gauge_max * 100" | bc -l | sed 's/\..*//')
+[ -z "$gauge_percent" ] && gauge_percent=0
+gauge_width=$((bar_width - 3 * bar_height))
+gauge_height=$((bar_height / 3))
+gauge_fill=$(printf "%s\n" "$gauge_percent / 100 * $gauge_width" | bc -l | sed 's/\..*//')
+gauge_empty=$((gauge_width - gauge_fill))
+
+gauge_percent=$(printf "% 4s%%" "$gauge_percent")
+
+dzen2_cmd="$gauge_label   ^fg($gauge_fg)^r(${gauge_fill}x${gauge_height})^fg($gauge_bg)^r(${gauge_empty}x${gauge_height})^fg()  $gauge_percent"
+
+xy_pos=$(center_rect -f arguments "${bar_width}x${bar_height}")
+
+if [ ! -e "$TMP_FIFO" ] ; then
+  mkfifo "$TMP_FIFO"
+  (dzen2 -h "$bar_height" -w "$bar_width" $xy_pos -fn "$bar_font" -bg "$bar_bg" -fg "$bar_fg" < "$TMP_FIFO"
+   rm "$TMP_FIFO") &
+fi
+
+(printf "%s\n" "$dzen2_cmd" ; sleep "$FADE_DELAY") > "$TMP_FIFO"
