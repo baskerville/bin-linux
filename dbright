@@ -13,6 +13,14 @@ bar_fg=$TEXT_FG
 bar_bg=$TEXT_BG
 gauge_label="BRI"
 
-sudo brightness "$@"
+case "$@" in
+    status)
+        :
+        ;;
+    *)
+        sudo brightness "$@"
+        ;;
+esac
+
 
 dgauge -l "$gauge_label" -f "$bar_fg" -b "$bar_bg" -F "$gauge_fg" -B "$gauge_bg" $(sudo brightness info)
