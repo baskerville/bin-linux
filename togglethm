@@ -8,7 +8,6 @@ fi
 base=$(basename "$current")
 name=${base%-*}
 bgtype=${base##*-}
-opposite_bgtype=$bgtype
 
 if [ $# -gt 0 ] ; then
     bgtype=$1
@@ -16,11 +15,9 @@ else
     case "$bgtype" in
         dark)
             bgtype=light
-            opposite_bgtype=dark
             ;;
         light)
             bgtype=dark
-            opposite_bgtype=light
             ;;
     esac
 fi
@@ -35,8 +32,8 @@ setconfbg "$XDG_BIN_DIR/dmenu_select" $bgtype
 
 setconfbg "$HOME/.wallpaper" $bgtype
 setconfbg "$XDG_BIN_DIR/hc_colors" $bgtype
-setconfbg "$XDG_BIN_DIR/dvol_colors" $opposite_bgtype
-setconfbg "$XDG_BIN_DIR/dbright_colors" $opposite_bgtype
+setconfbg "$XDG_BIN_DIR/dvol_colors" $bgtype
+setconfbg "$XDG_BIN_DIR/dbright_colors" $bgtype
 
 hc_colors
 reloadpanel
