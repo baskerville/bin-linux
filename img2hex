@@ -1,0 +1,27 @@
+#! /usr/bin/env python2
+# -*- coding: utf-8 -*-
+
+import sys
+from PIL import Image
+from colormath.color_objects import RGBColor
+
+def get_hex(pixel):
+    (red, green, blue) = pixel
+    rgb_color = RGBColor(red, green, blue)
+    return rgb_color.get_rgb_hex()
+
+args = sys.argv[1:]
+
+for filename in args:
+    try:
+        source = Image.open(filename)
+    except IOError:
+        print >> sys.stderr, "can't open image"
+        sys.exit(1)
+
+    source = source.convert('RGB')
+    source_data = list(source.getdata())
+
+    for pixel in source_data:
+        hex_color = get_hex(pixel)
+        print hex_color

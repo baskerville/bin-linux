@@ -1,0 +1,33 @@
+#! /bin/dash
+
+top_padding=0
+bottom_padding=0
+left_padding=0
+right_padding=0
+
+while getopts "t:b:l:r:" opt ; do
+    case $opt in
+        t)
+            top_padding=$OPTARG
+            ;;
+        b)
+            bottom_padding=$OPTARG
+            ;;
+        l)
+            left_padding=$OPTARG
+            ;;
+        r)
+            right_padding=$OPTARG
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+input=$1
+ext=${input##*.}
+
+out_wdiff=$((left_padding + right_padding))
+out_hdiff=$((top_padding + bottom_padding))
+
+ffmpeg -i "$input" -vf "crop=iw-${out_wdiff}:ih-${out_hdiff}:${left_padding}:${top_padding}" "${input%.*}-out.${ext}"

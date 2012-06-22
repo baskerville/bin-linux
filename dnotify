@@ -1,0 +1,39 @@
+#! /bin/dash
+
+bar_width=300
+bar_height=100
+bar_font="Inconsolata:pixelsize=26"
+
+. dnotify_colors
+
+bar_fg=$TEXT_FG
+bar_bg=$TEXT_BG
+
+fade_after=2
+
+while getopts "w:h:t:f:b:d:" opt ; do
+    case $opt in
+        w)
+            bar_width=$OPTARG
+            ;;
+        h)
+            bar_height=$OPTARG
+            ;;
+        f)
+            bar_fg=$OPTARG
+            ;;
+        b)
+            bar_bg=$OPTARG
+            ;;
+        t)
+            bar_font=$OPTARG
+            ;;
+        d)
+            fade_after=$OPTARG
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+dzen2 $(center_rect -f arguments "${bar_width}x${bar_height}") -w $bar_width -h $bar_height -fn "$bar_font" -bg "$bar_bg" -fg "$bar_fg" -p "$fade_after"

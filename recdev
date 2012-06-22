@@ -1,0 +1,19 @@
+#! /bin/dash
+
+extra_arguments=""
+output_filename="out.mkv"
+
+while getopts "o:s:" opt ; do
+    case $opt in
+        s)
+            extra_arguments="-s $OPTARG"
+            ;;
+        o)
+            output_filename=$OPTARG
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+ffmpeg -f v4l2 $extra_arguments -i "$@" -acodec flac -vcodec libx264 "$output_filename"
