@@ -1,0 +1,3 @@
+#! /bin/dash
+
+pgrep -nx "$@" 2> /dev/null | xargs -r -I % lsof -p %
