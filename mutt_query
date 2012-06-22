@@ -2,4 +2,4 @@
 
 MUTT_ALIAS_PATH=~/.mutt/aliases
 
-grep "$@" "$MUTT_ALIAS_PATH" | sed 's/^alias \([^ ]\+\) \(.*\)$/\1\t\2/'
+grep -i "$@" "$MUTT_ALIAS_PATH" | sed 's/^alias \([^ ]\+\) \(.*\)$/\1\t\2/'
