@@ -1,5 +1,5 @@
 #! /bin/dash
 
-hc pad 0 22
+hc pad 0 24
 tint2 &
 neap -g 14x14 &
