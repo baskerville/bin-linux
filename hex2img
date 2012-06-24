@@ -37,7 +37,7 @@ def remove_duplicates(seq, idfun=None):
     return result
 
 for line in sys.stdin:
-    color_codes = re.findall('#[0-9A-F]{6}', line, flags=re.IGNORECASE)
+    color_codes = re.findall('#[0-9a-f]{6}', line, flags=re.IGNORECASE)
     palette.extend(color_codes)
 
 if ignore_duplicates:
