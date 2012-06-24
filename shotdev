@@ -1,0 +1,5 @@
+#! /bin/dash
+
+shotname="snapshot-$(date +%Y%m%d_%H%M).jpg"
+
+ffmpeg -f v4l2 -i "$@" -an -vframes 1 -vcodec mjpeg -ss 2 "$shotname"
