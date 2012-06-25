@@ -21,7 +21,7 @@ do
             sudo pacman -S alsa-utils 
             alsamixer
             speaker-test -c 2
-            sudo alsactl -f /var/lib/alsa/asound.state store
+            sudo alsactl store
             ;;
         programs)
             sudo pacman -S bash-completion dash gdb
@@ -34,7 +34,7 @@ do
             sudo pacman -S xorg-xmessage xorg-xclock xorg-xcalc xorg-xeyes
             sudo pacman -S terminus-font rxvt-unicode xscreensaver zenity gtk-engine-murrine
             sudo pacman -S ttf-droid ttf-liberation
-            sudo pacman -S scrot mplayer ffmpeg
+            sudo pacman -S scrot mplayer2 ffmpeg
             sudo pacman -S mpd mpc
             sudo pacman -S xclip xsel xdotool flashplugin
             sudo pacman -S gimp inkscape audacity
@@ -67,6 +67,7 @@ do
             ln -s .bindir bin
             ln -s src/aur aur
             ln -s doc/books books
+            ln -s src/lang lang
             ;;
     esac
 done
