@@ -3,6 +3,6 @@
 hc set frame_bg_normal_color      '#FAF0E6'
 hc set frame_bg_active_color      '#FFF9EE'
 hc set frame_border_normal_color  '#E7DFD5'
-hc set frame_border_active_color  '#77A425'
+hc set frame_border_active_color  '#DA7E34'
 hc set window_border_normal_color '#E7DFD5'
 hc set window_border_active_color '#8F98A1'
