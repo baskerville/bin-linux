@@ -14,7 +14,7 @@ while [ $# -gt 0 ] ; do
         application/x-lha)
             lha -l "$1" ;;
         application/x-rar)
-            unrar l "$1" ;;
+            unrar lb "$1" ;;
         application/x-bittorrent)
             aria2c -S "$1" | grep '\./' ;;
         application/x-iso9660-image)
