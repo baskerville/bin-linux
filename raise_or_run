@@ -9,7 +9,7 @@ while [ $# -gt 0 ] ; do
             if [ -n "$wid" ] ; then
                 xdotool windowactivate "$wid"
             else
-                $CMD
+                pgrep -x dwb > /dev/null || $CMD
             fi
             ;;
         mutt | slrn | htop | xlog | hlconf | ncmpcpp)
