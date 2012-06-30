@@ -35,7 +35,7 @@ fi
 
 while [ $# -gt 0 ] ; do
     query=$1
-    [ $exact_match -eq 1 ] && query="^$query[[:space:]]"
-    grep -i "$query" "$COLORDB" | cut -f "$sel_fields"
+    [ $exact_match -eq 1 ] && query="\\b$query\\b"
+    grep -E "$query" "$COLORDB" | cut -f "$sel_fields"
     shift
 done

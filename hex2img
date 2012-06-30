@@ -11,18 +11,10 @@ horizontal_squares = 8
 output_square_side = 30
 ignore_duplicates = False
 
-opts, args = getopt(sys.argv[1:], 'i', ['ignore-duplicates'])
 
-for opt, val in opts:
-    if opt in ('-i', '--ignore-duplicates'):
-        ignore_duplicates = True
-
-if len(args) > 0:
-    horizontal_squares = int(args[0])
-    if len(args) > 1:
-        output_square_side = int(args[1])
-
-palette = []
+def usage():
+    print 'usage: hex2img [-i][-n NUM_HORIZ][-s SQUARE_SIDE]'
+    sys.exit()
 
 def remove_duplicates(seq, idfun=None): 
     if idfun is None:
@@ -36,6 +28,19 @@ def remove_duplicates(seq, idfun=None):
         result.append(item)
     return result
 
+opts, args = getopt(sys.argv[1:], 'hin:s:', ['help', 'ignore-duplicates', 'num-horizontal-squares=', 'square-side='])
+
+for opt, val in opts:
+    if opt in ('-h', '--help'):
+        usage()
+    elif opt in ('-i', '--ignore-duplicates'):
+        ignore_duplicates = True
+    elif opt in ('-n', '--num-horizontal-squares'):
+        horizontal_squares = int(val)
+    elif opt in ('-s', '--square-side'):
+        output_square_side = int(val)
+
+palette = []
 for line in sys.stdin:
     color_codes = re.findall('#[0-9a-f]{6}', line, flags=re.IGNORECASE)
     palette.extend(color_codes)
