@@ -1,0 +1,59 @@
+#! /bin/dash
+
+SKELETONS_DIR="$XDG_DOTFILES_DIR/skeletons"
+dark_bg=$(cnq -qx crowshead)
+# light_bg=$(cnq -qx oldlace)
+light_bg=$(cnq -qx linen | sort | tail -n 1)
+scheme_name="raven"
+
+usage() {
+    printf "usage: %s [-d DARK_BG][-l LIGHT_BG]\n" "${0##*/}"
+    exit 1
+}
+
+while getopts "hd:l:" opt ; do
+    case $opt in
+        d)
+            dark_bg=$OPTARG
+            ;;
+        l)
+            light_bg=$OPTARG
+            ;;
+        h|\?)
+            usage
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+cd "$XDG_DOTFILES_DIR/colors"
+genthm -b "$dark_bg" "$scheme_name"
+genthm -b "$light_bg" "$scheme_name"
+
+refresh() {
+    dest_dir=$1
+    shift
+    for s in "$@" ; do
+        echo "$s"
+        skeleton="${SKELETONS_DIR}/${s}-skeleton"
+        dark_output="${dest_dir}/${s}-dark"
+        light_output="${dest_dir}/${s}-light"
+        cat "$skeleton" | genthm -b "$dark_bg" -t > "$dark_output"
+        cat "$skeleton" | genthm -b "$light_bg" -t > "$light_output"
+    done
+}
+
+refresh "$XDG_DOTFILES_DIR" neaprc dzen2_Xresources tint2rc
+refresh "$XDG_BIN_DIR" hc_colors
+
+echo "dwb_colors"
+tmp_out=$(mktemp)
+grep -iv '#[a-f0-9]\{6\}' "${XDG_DOTFILES_DIR}/dwb_config" > "$tmp_out"
+cat "${SKELETONS_DIR}/dwb_colors-skeleton" | genthm -b "$light_bg" -t >> "$tmp_out"
+mv "$tmp_out" "$XDG_DOTFILES_DIR/dwb_config"
+
+dark_bg=$(printf "%s\n" "{bg_bump}" | genthm -b "$dark_bg" -t)
+light_bg=$(printf "%s\n" "{bg_bump}" | genthm -b "$light_bg" -t)
+
+refresh "$XDG_BIN_DIR" dmenu_launch dmenu_select dvol_colors dbright_colors dbatt_colors
