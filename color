@@ -1,5 +1,0 @@
-#! /bin/dash
-
-COLORS=$XDG_DATA_HOME/colors.txt
-
-[ -n "$@" ] && grep -i "$@" "$COLORS"

@@ -1,0 +1,41 @@
+#! /bin/dash
+
+COLORDB="$XDG_DATA_HOME/colordb.txt"
+
+exact_match=0
+sel_fields="1-2"
+
+usage() {
+    printf "usage: %s [-q][-l][-x] PATTERN ...\n" "${0##*/}"
+    exit 1
+}
+
+while getopts "qlx" opt ; do
+    case $opt in
+        q)
+            sel_fields=2
+            ;;
+        l)
+            sel_fields=1
+            ;;
+        x)
+            exact_match=1
+            ;;
+        \?)
+            usage
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+if [ $# -eq 0 ] ; then
+    usage
+fi
+
+while [ $# -gt 0 ] ; do
+    query=$1
+    [ $exact_match -eq 1 ] && query="^$query[[:space:]]"
+    grep -i "$query" "$COLORDB" | cut -f "$sel_fields"
+    shift
+done
