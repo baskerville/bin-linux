@@ -7,7 +7,7 @@ light_bg=$(cnq -qx linen | sort | tail -n 1)
 scheme_name="raven"
 
 usage() {
-    printf "usage: %s [-d DARK_BG][-l LIGHT_BG]\n" "${0##*/}"
+    printf "usage: %s [-d DARK_BG][-l LIGHT_BG] [SCHEME_NAME]\n" "${0##*/}"
     exit 1
 }
 
@@ -27,6 +27,9 @@ done
 
 shift $((OPTIND - 1))
 
+[ $# -gt 0 ] && scheme_name=$1
+
+echo "$scheme_name"
 cd "$XDG_DOTFILES_DIR/colors"
 genthm -b "$dark_bg" "$scheme_name"
 genthm -b "$light_bg" "$scheme_name"
