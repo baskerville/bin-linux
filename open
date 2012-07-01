@@ -66,6 +66,9 @@ elif [ -e "$@" ]; then
                 *.tar.gz|*.tgz)
                     tar xvzf "$@"
                     ;;
+                *.tar.xz)
+                    tar xvJf "$@"
+                    ;;
                 *.tar.bz2)
                     tar xvjf "$@"
                     ;;
