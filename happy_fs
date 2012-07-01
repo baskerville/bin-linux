@@ -11,18 +11,19 @@ fi
 
 while true ; do
     sleep $timeout
-    awid=$(xdotool getactivewindow 2>/dev/null)
+    # awid=$(xdotool getactivewindow 2> /dev/null)
+    awid=$(xprop _NET_ACTIVE_WINDOW -root 2> /dev/null | grep -o '0x[0-9]\+')
     if [ $? -eq 0 ] ; then
-        wstate=$(xprop -id "$awid" _NET_WM_STATE)
+        wstate=$(xprop _NET_WM_STATE -id "$awid")
         current_date=$(date "+%Y/%m/%d %H:%M:%S")
         case "$wstate" in
             *_NET_WM_STATE_FULLSCREEN)
                 xset -dpms
-                # echo "$current_date dmps disabled" >> ~/.happy_fs.log
+                echo "$current_date dmps disabled" >> ~/.happy_fs.log
                 ;;
             *)
                 xset +dpms
-                # echo "$current_date dmps enabled" >> ~/.happy_fs.log
+                echo "$current_date dmps enabled" >> ~/.happy_fs.log
                 ;;
         esac
     fi
