@@ -1,0 +1,9 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    filepth=$1
+    tmp_out=$(mktemp)
+    fold -s -w 72 "$filepth" > "$tmp_out"
+    cedilla "$tmp_out" "${filepth%.*}.ps"
+    shift
+done
