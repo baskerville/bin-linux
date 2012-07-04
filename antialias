@@ -1,0 +1,12 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    filepth=$1
+    ext=${filepth##*.}
+    base=${filepth%.*}
+    scaled2x=${base}-2x.${ext}
+    antialiased=${base}-aa.${ext}
+    convert -scale 200% "$filepth" "$scaled2x"
+    convert -filter Hermite -resize 50% "$scaled2x" "$antialiased"
+    shift
+done
