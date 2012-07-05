@@ -17,9 +17,11 @@ while [ $# -gt 0 ] ; do
             case "$1" in
                 mutt)
                     CMD=m
+                    pgrep -x mutt > /dev/null && CMD=""
                     ;;
                 slrn)
                     CMD=ng
+                    pgrep -x slrn > /dev/null && CMD=""
                     ;;
                 xlog)
                     CMD="editor $HOME/.Xlog"
