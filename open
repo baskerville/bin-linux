@@ -114,6 +114,14 @@ elif [ -e "$@" ]; then
                 *.mp4|*.avi|*.mpg|*.mpeg|*.mkv|*.ogv|*.f4v|*.m2ts)
                     video_player "$@"
                     ;;
+                *.webarchive)
+                    tmp_xml=$(mktemp)
+                    tmp_html=$(mktemp)
+                    plutil -i "$@" -o "$tmp_xml"
+                    webarchive_decodemain "$tmp_xml" > "$tmp_html"
+                    web_browser "$tmp_html"
+                    rm "$tmp_xml"
+                    ;;
                 *.blend)
                     blender "$@"
                     ;;

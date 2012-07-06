@@ -1,0 +1,20 @@
+#! /usr/bin/env python
+
+import re
+import sys
+import base64
+import xml.etree.ElementTree as etree
+
+args = sys.argv[1:]
+txt = lambda x: x.text
+HTML_KEY = 'WebResourceMIMEType'
+HTML_VAL = 'text/html'
+
+for filepath in args:
+    tree = etree.parse(filepath)
+    page = tree.find('dict').find('dict')
+    if page is not None:
+        kv = dict(zip(map(txt, page[::2]), map(txt, page[1::2])))
+        if HTML_KEY in kv and kv[HTML_KEY] == HTML_VAL:
+            contents = re.sub('\t+', '', kv['WebResourceData']).encode('ascii')
+            print(base64.decodestring(contents).decode('utf-8'))
