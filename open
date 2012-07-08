@@ -102,6 +102,9 @@ elif [ -e "$@" ]; then
                 *.pps|*.PPS|*.ppt|*.PPT)
                     ppsei "$@"
                     ;;
+                *.abw)
+                    abiword "$@"
+                    ;;
                 *.rtf|*.doc)
                     catdoc -w -s cp1252 "$@"
                     ;;

@@ -1,9 +1,29 @@
 #! /bin/dash
 
+cut_at_width=72
+font_size=11
+font_set='courier'
+
+while getopts "w:s:f:" opt ; do
+    case "$opt" in
+        w)
+            cut_at_width=$OPTARG
+            ;;
+        s)
+            font_size=$OPTARG
+            ;;
+        f)
+            font_set=$OPTARG
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
 while [ $# -gt 0 ] ; do
     filepth=$1
     tmp_out=$(mktemp)
-    fold -s -w 72 "$filepth" > "$tmp_out"
-    cedilla "$tmp_out" "${filepth%.*}.ps"
+    fold -s -w "$cut_at_width" "$filepth" > "$tmp_out"
+    cedilla -fs "$font_set" -s "$font_size" "$tmp_out" "${filepth%.*}.ps"
     shift
 done
