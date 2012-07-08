@@ -108,6 +108,9 @@ elif [ -e "$@" ]; then
                 *.rtf|*.doc)
                     catdoc -w -s cp1252 "$@"
                     ;;
+                *.xls)
+                    xls2csv -s cp1252 "$@"
+                    ;;
                 *.xpm)
                     image_viewer "$@"
                     ;;
