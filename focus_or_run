@@ -1,10 +1,11 @@
 #! /bin/dash
 
 while [ $# -gt 0 ] ; do
-    case "$1" in
+    prg=$1
+    case "$prg" in
         dwb | dwb_restore)
             CMD=dwb
-            [ "$1" = "dwb_restore" ] && CMD="$CMD -rf default"
+            [ "$prg" = "dwb_restore" ] && CMD="$CMD -rf default"
             wid=$(lswi --class dwb | head -1 | sed 's/.*(\([0-9]\+\))$/\1/')
             if [ -n "$wid" ] ; then
                 xdotool windowactivate "$wid"
@@ -13,15 +14,13 @@ while [ $# -gt 0 ] ; do
             fi
             ;;
         mutt | slrn | htop | xlog | hlconf | ncmpcpp)
-            CMD=$1
-            case "$1" in
+            CMD=$prg
+            case "$prg" in
                 mutt)
                     CMD=m
-                    pgrep -x mutt > /dev/null && CMD=""
                     ;;
                 slrn)
                     CMD=ng
-                    pgrep -x slrn > /dev/null && CMD=""
                     ;;
                 xlog)
                     CMD="editor $HOME/.Xlog"
@@ -30,10 +29,15 @@ while [ $# -gt 0 ] ; do
                     CMD="editor ${XDG_CONFIG_HOME}/herbstluftwm/autostart"
                     ;;
             esac
-            xdotool search --classname "$1" windowactivate || urxvtc -title "$1" -name "$1" -e $CMD
+            case "$prg" in
+                mutt | slrn | ncmpcpp | htop)
+                    pgrep -x "$prg" > /dev/null && CMD=""
+                    ;;
+            esac
+            xdotool search --classname "$prg" windowactivate || urxvtc -title "$prg" -name "$prg" -e $CMD
             ;;
         *)
-            xdotool search --classname "$1" windowactivate || urxvtc -name "$1" -e editor "${XDG_DATA_HOME}/$1"
+            xdotool search --classname "$prg" windowactivate || urxvtc -name "$prg" -e editor "${XDG_DATA_HOME}/$prg"
             ;;
     esac
     shift
