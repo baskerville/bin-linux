@@ -3,7 +3,7 @@
 while [ $# -gt 0 ] ; do
     filepth=$1
     base=${filepth%.*}
-    paps --font Inconsolata --header "$filepth" > "${base}.ps"
+    paps --header --font "Inconsolata 11" --header-font "FreeMono 9" "$filepth" > "${base}.ps"
     shift
 done
 
