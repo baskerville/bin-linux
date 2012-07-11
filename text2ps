@@ -1,0 +1,9 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    filepth=$1
+    base=${filepth%.*}
+    paps --header --font "Courier New 11" --header-font "DejaVu Sans 9" "$filepth" > "${base}.ps"
+    shift
+done
+
