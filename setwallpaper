@@ -1,11 +1,14 @@
 #! /bin/dash
 
-if [ $# -gt 1 ] ; then
-    reloadwallpaper
+if [ $# -eq 0 ] ; then
+    printf "%s\n" "no argument given" >&2
     exit 1
 fi
 
-WP=$(readlink -nse "$WALLPAPER")
-
-cp "$@" "$WP"
-reloadwallpaper
+if [ -e "$@" ] ; then
+    cp "$@" "$WALLPAPER"
+    reloadwallpaper
+else
+    printf "%s: '%s'\n" "file not found" "$@" >&2
+    exit 1
+fi

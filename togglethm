@@ -30,7 +30,6 @@ setconfbg "$XDG_DOTFILES_DIR/override.css" $bgtype
 setconfbg "$XDG_BIN_DIR/dmenu_launch" $bgtype
 setconfbg "$XDG_BIN_DIR/dmenu_select" $bgtype
 
-setconfbg "$HOME/.wallpaper" $bgtype
 setconfbg "$XDG_BIN_DIR/hc_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/dvol_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/dbright_colors" $bgtype
@@ -39,4 +38,3 @@ setconfbg "$XDG_BIN_DIR/dnotify_colors" $bgtype
 
 hc_colors
 reloadpanel
-reloadwallpaper
