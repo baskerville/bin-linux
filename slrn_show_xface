@@ -1,0 +1,23 @@
+#! /bin/dash
+
+XFACE=/tmp/slrn_xface
+xbm_img=$(mktemp)
+tmp_out=$(mktemp)
+
+uncompface -X "$XFACE" "$xbm_img"
+size=$(grep -m 1 -o '[0-9]\+' "$xbm_img")
+size=$((size + 7))
+
+wid=$(xdotool search --classname slrn)
+[ $? -ne 0 ] && exit 1
+xwininfo -id "$wid" > "$tmp_out"
+top_x=$(awk -F ' *: *' '/Absolute upper-left X/ {print $2}' "$tmp_out")
+top_y=$(awk -F ' *: *' '/Absolute upper-left Y/ {print $2}' "$tmp_out")
+width=$(awk -F ' *: *' '/Width/ {print $2}' "$tmp_out")
+height=$(awk -F ' *: *' '/Height/ {print $2}' "$tmp_out")
+pos_x=$((top_x + width - size - 5))
+pos_y=$((top_y + height - size - 5))
+
+printf "%s\n" "^i($xbm_img)" | dzen2 -x $pos_x -y $pos_y -w $size -h $size -p 5 &
+
+rm "$tmp_out"
