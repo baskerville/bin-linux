@@ -21,6 +21,6 @@ height=$(awk -F ' *: *' '/Height/ {print $2}' "$tmp_out")
 pos_x=$((top_x + width - size - 5))
 pos_y=$((top_y + height - size - 5))
 
-printf "%s\n" "^i($xbm_img)" | dzen2 -x $pos_x -y $pos_y -w $size -h $size -p 5 &
+printf "%s\n" "^i($xbm_img)" | dzen2 -x $pos_x -y $pos_y -w $size -h $size -p 2 &
 
 rm "$tmp_out"

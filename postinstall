@@ -56,7 +56,8 @@ do
             owl install dfc-git compton-git youtube-dl-git
             owl install libuninameslist fontforge-bskv-git
             owl install spdf-git jpdf-git
-            owl install paps grabc
+            owl install paps-bskv grabc
+            owl install compface-bskv
             ;;
         home)
             cd
