@@ -5,13 +5,13 @@ do
     filelist=""
     case "$1" in
         dots)
-            filelist=".coordinates .mpoprc .msmtprc .procmailrc .jnewsrc .urlview .eatrc .castgetrc"
+            filelist=".coordinates .mpoprc .msmtprc .procmailrc .eatrc .castgetrc"
             ;;
         dirs)
             filelist=".local .config .mutt .vim .mpd .themes .colors .fonts .icons .aria2 .irssi .pal .FontForge .ssh .w3m .elinks .lftp .ncmpcpp .audacity-data .audacity-files"
             ;;
         usenet)
-            filelist=".slrn .slrnpull/slrnpull.conf"
+            filelist=".jnewsrc .slrn .slrnpull/slrnpull.conf"
             ;;
         mail)
             filelist=".maildir"
