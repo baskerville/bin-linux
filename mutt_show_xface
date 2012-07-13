@@ -1,0 +1,5 @@
+#! /bin/dash
+
+xface_pth=/tmp/mutt_xface
+extract_field_from_header "X-Face" > "$xface_pth"
+show_xface mutt "$xface_pth"

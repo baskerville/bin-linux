@@ -1,0 +1,23 @@
+#! /usr/bin/env perl
+# -*- coding: utf-8 -*-
+
+use strict;
+
+my $field = shift @ARGV;
+my $found = 0;
+
+while (<>) {
+    chomp;
+    if (/^\Q$field\E: *(.*)/) {
+        $found = 1;
+        print $1;
+    } elsif ($found == 1) {
+        if (/^ /) {
+            s/^ *//;
+            print;
+        } else {
+            print "\n";
+            last;
+        }
+    }
+}
