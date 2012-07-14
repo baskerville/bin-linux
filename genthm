@@ -11,6 +11,7 @@ from math import floor
 from getopt import getopt
 from os.path import basename
 from colormath.color_objects import LCHabColor, RGBColor
+from jinja2 import Template
 
 FIRST_EMPTY_SLOT = 16
 NUM_MONOTONES = 8
@@ -286,8 +287,9 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
             color_set = idx_color_set
         if translate_to_rgb:
             color_set = rgb_color_set
-        for line in sys.stdin:
-            print(line.format(**color_set), end='')
+        contents = sys.stdin.read()
+        t = Template(contents)
+        print(t.render(color_set))
         exit()
 
     xres_name = '%s-%s' % (scheme_name, scheme_kind)
