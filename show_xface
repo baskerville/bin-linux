@@ -19,8 +19,8 @@ top_y=$(awk -F ' *: *' '/Absolute upper-left Y/ {print $2}' "$tmp_out")
 width=$(awk -F ' *: *' '/Width/ {print $2}' "$tmp_out")
 height=$(awk -F ' *: *' '/Height/ {print $2}' "$tmp_out")
 bw=$(awk -F ' *: *' '/Border width/ {print $2}' "$tmp_out")
-pos_x=$((top_x + width - size - bw))
-pos_y=$((top_y + height - size - bw))
+pos_x=$((top_x + width - size + bw))
+pos_y=$((top_y + height - size + bw))
 
 printf "%s\n" "^i($xbm_img)" | dzen2 -x $pos_x -y $pos_y -w $size -h $size -p 2 &
 
