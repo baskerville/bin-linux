@@ -48,7 +48,7 @@ refresh() {
 }
 
 refresh "$XDG_DOTFILES_DIR" neaprc dzen2_Xresources tint2rc
-refresh "$XDG_BIN_DIR" hc_colors
+refresh "$XDG_BIN_DIR" hc_colors show_xface_colors
 
 echo "${scheme_name}.vim"
 cat "${SKELETONS_DIR}/${scheme_name}.vim-skeleton" | genthm -T > "${XDG_DOTFILES_DIR}/themes/vim/${scheme_name}.vim"
@@ -62,4 +62,4 @@ mv "$tmp_out" "$XDG_DOTFILES_DIR/dwb_config"
 dark_bg=$(printf "%s\n" "{bg_bump}" | genthm -b "$dark_bg" -t)
 light_bg=$(printf "%s\n" "{bg_bump}" | genthm -b "$light_bg" -t)
 
-refresh "$XDG_BIN_DIR" dmenu_launch dmenu_select dvol_colors dbright_colors dbatt_colors show_xface_colors
+refresh "$XDG_BIN_DIR" dmenu_launch dmenu_select dvol_colors dbright_colors dbatt_colors

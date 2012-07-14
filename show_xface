@@ -5,6 +5,7 @@ if [ $# -lt 2 ] ; then
     exit 1
 fi
 
+REMAIN_SEC=3
 classname=$1
 filepath=$2
 
@@ -29,6 +30,6 @@ bw=$(awk -F ' *: *' '/Border width/ {print $2}' "$tmp_out")
 pos_x=$((top_x + width - size + bw))
 pos_y=$((top_y + height - size + bw))
 
-printf "%s\n" "^i($xbm_img)" | dzen2 -bg "$TEXT_BG" -fg "$TEXT_FG" -x $pos_x -y $pos_y -w $size -h $size -p 2 &
+printf "%s\n" "^i($xbm_img)" | dzen2 -bg "$TEXT_BG" -fg "$TEXT_FG" -x $pos_x -y $pos_y -w $size -h $size -p "$REMAIN_SEC" &
 
 rm "$tmp_out"
