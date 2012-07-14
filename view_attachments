@@ -2,4 +2,5 @@
 
 tmp_dir="$(mktemp -d)"
 munpack -C "$tmp_dir"
-sxiv -bftZ "$tmp_dir"/*
+find "$tmp_dir" -iname "*.pps" -exec ppsei {} +
+sxiv -bftZr "$tmp_dir"
