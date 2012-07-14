@@ -1,7 +1,14 @@
 #! /bin/dash
 
+if [ $# -lt 2 ] ; then
+    printf "usage: %s CLASSNAME FILEPATH\n" "${0##*/}" >&2
+    exit 1
+fi
+
 classname=$1
 filepath=$2
+
+. show_xface_colors
 
 xface_pth=${filepath:-/tmp/xface}
 xbm_img=$(mktemp)
@@ -22,6 +29,6 @@ bw=$(awk -F ' *: *' '/Border width/ {print $2}' "$tmp_out")
 pos_x=$((top_x + width - size + bw))
 pos_y=$((top_y + height - size + bw))
 
-printf "%s\n" "^i($xbm_img)" | dzen2 -x $pos_x -y $pos_y -w $size -h $size -p 2 &
+printf "%s\n" "^i($xbm_img)" | dzen2 -bg "$TEXT_BG" -fg "$TEXT_FG" -x $pos_x -y $pos_y -w $size -h $size -p 2 &
 
 rm "$tmp_out"

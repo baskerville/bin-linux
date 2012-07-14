@@ -62,4 +62,4 @@ mv "$tmp_out" "$XDG_DOTFILES_DIR/dwb_config"
 dark_bg=$(printf "%s\n" "{bg_bump}" | genthm -b "$dark_bg" -t)
 light_bg=$(printf "%s\n" "{bg_bump}" | genthm -b "$light_bg" -t)
 
-refresh "$XDG_BIN_DIR" dmenu_launch dmenu_select dvol_colors dbright_colors dbatt_colors
+refresh "$XDG_BIN_DIR" dmenu_launch dmenu_select dvol_colors dbright_colors dbatt_colors show_xface_colors
