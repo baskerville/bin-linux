@@ -51,7 +51,7 @@ refresh "$XDG_DOTFILES_DIR" neaprc dzen2_Xresources tint2rc override.css
 refresh "$XDG_BIN_DIR" hc_colors show_xface_colors
 
 echo "${scheme_name}.vim"
-cat "${SKELETONS_DIR}/${scheme_name}.vim-skeleton" | genthm -T > "${XDG_DOTFILES_DIR}/themes/vim/${scheme_name}.vim"
+cat "${SKELETONS_DIR}/${scheme_name}.vim-skeleton" | genthm -T "$scheme_name" > "${XDG_DOTFILES_DIR}/themes/vim/${scheme_name}.vim"
 
 for prg in mutt slrn; do
     echo "${prg}_colors"
