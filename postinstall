@@ -55,9 +55,9 @@ do
             owl install zathura-pdf-poppler-git zathura-ps-git zathura-djvu-git
             owl install dfc-git compton-git youtube-dl-git
             owl install libuninameslist fontforge-bskv-git
-            owl install spdf-git jpdf-git
+            owl install ncmpcpp-git spdf-git jpdf-git
             owl install paps-bskv grabc
-            owl install compface-bskv
+            owl install compface-bskv ppsei
             ;;
         home)
             cd
