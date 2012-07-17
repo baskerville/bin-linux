@@ -1,3 +1,6 @@
 #! /bin/dash
 
-xsetroot -solid '#32312E'
+xsetroot -solid '#2B2B28'
+
+hc set frame_bg_transparent 0
+hc set frame_bg_transparent 1

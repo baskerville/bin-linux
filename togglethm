@@ -32,6 +32,7 @@ setconfbg "$XDG_BIN_DIR/dmenu_launch" $bgtype
 setconfbg "$XDG_BIN_DIR/dmenu_select" $bgtype
 
 setconfbg "$XDG_BIN_DIR/hc_colors" $bgtype
+setconfbg "$XDG_BIN_DIR/setrootbg" $bgtype
 setconfbg "$XDG_BIN_DIR/show_xface_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/dvol_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/dbright_colors" $bgtype
@@ -41,5 +42,6 @@ setconfbg "$XDG_BIN_DIR/dnotify_colors" $bgtype
 setconfbg "$XDG_DOTFILES_DIR/dzen2_Xresources" $bgtype
 xrdb -merge "$XDG_DOTFILES_DIR/dzen2_Xresources"
 
+setrootbg
 hc_colors
 reloadpanel
