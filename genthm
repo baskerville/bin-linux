@@ -134,11 +134,13 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     fg_L = bg_L + bg_fg_gap
     fg_cm_L = fg_L - 5 * small_jump
     fg_hl_L = fg_L + 2 * small_jump
+    bg_pt_L = bg_L - 3 * small_jump
     bg_dp_L = bg_L - small_jump
     bg_bp_L = bg_L + 2 * small_jump
     bg_sb_L = bg_L + 5 * small_jump
 
     lch_bg_fl = LCHabColor(bg_fl_L, bg_C, bg_h)
+    lch_bg_pt = LCHabColor(bg_pt_L, bg_C, bg_h)
     lch_bg_dp = LCHabColor(bg_dp_L, bg_C, bg_h)
     lch_bg_bp = LCHabColor(bg_bp_L, bg_C, bg_h)
     lch_bg_sb = LCHabColor(bg_sb_L, bg_C, bg_h)
@@ -148,6 +150,7 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     lch_fg_cl = LCHabColor(fg_cl_L, bg_C, fg_h)
 
     rgb_bg_fl = lch_bg_fl.convert_to('rgb')
+    rgb_bg_pt = lch_bg_pt.convert_to('rgb')
     rgb_bg_dp = lch_bg_dp.convert_to('rgb')
     rgb_bg_bp = lch_bg_bp.convert_to('rgb')
     rgb_bg_sb = lch_bg_sb.convert_to('rgb')
@@ -157,6 +160,7 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     rgb_fg_cl = lch_fg_cl.convert_to('rgb')
 
     hex_bg_fl = rgb_bg_fl.get_rgb_hex().upper()
+    hex_bg_pt = rgb_bg_pt.get_rgb_hex().upper()
     hex_bg_dp = rgb_bg_dp.get_rgb_hex().upper()
     hex_bg_bp = rgb_bg_bp.get_rgb_hex().upper()
     hex_bg_sb = rgb_bg_sb.get_rgb_hex().upper()
@@ -210,6 +214,7 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     hex_color_set = {
     'scheme_name':  scheme_name,
     'bg_floor':  hex_bg_fl,
+    'bg_pit':  hex_bg_pt,
     'bg_dip':  hex_bg_dp,
     'background':  hex_bg,
     'bg_bump':  hex_bg_bp,
@@ -247,6 +252,7 @@ def make_scheme(hex_bg, standard_hues, scheme_name):
     rgb_color_set = {
     'scheme_name':  scheme_name,
     'bg_floor':  scaled_rgb_str(rgb_bg_fl),
+    'bg_pit':  scaled_rgb_str(rgb_bg_pt),
     'bg_dip':  scaled_rgb_str(rgb_bg_dp),
     'background':  scaled_rgb_str(rgb_bg),
     'bg_bump':  scaled_rgb_str(rgb_bg_bp),
