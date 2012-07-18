@@ -7,13 +7,13 @@ from PIL import Image, ImageDraw
 from math import ceil
 from getopt import getopt
 
+output_name = 'output.png'
 horizontal_squares = 8
 output_square_side = 30
 ignore_duplicates = False
 
-
 def usage():
-    print 'usage: hex2img [-i][-n NUM_HORIZ][-s SQUARE_SIDE]'
+    print 'usage: hex2img [-i|--ignore-duplicates][-n|--num-horizontal-squares NUM_HORIZ][-s|--square-side SQUARE_SIDE] [OUTPUT_NAME]'
     sys.exit()
 
 def remove_duplicates(seq, idfun=None): 
@@ -39,6 +39,9 @@ for opt, val in opts:
         horizontal_squares = int(val)
     elif opt in ('-s', '--square-side'):
         output_square_side = int(val)
+
+if len(args) > 0:
+    output_name = args[0]
 
 palette = []
 for line in sys.stdin:
@@ -71,5 +74,5 @@ for c in palette:
         i = 0
         j = j + 1
 
-output.save("output.png")
+output.save(output_name)
 
