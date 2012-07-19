@@ -118,6 +118,8 @@ def make_scheme(scheme_name, hex_bg, color_hues):
     bg_h = lch_bg.lch_h
     fg_h = (bg_h + 180) % 360
 
+    fg_C = 2 * small_jump
+
     if len(color_hues) == 0:
         color_hues = sorted([(bg_h + 30 * i) % 360 for i in range(12)])
         color_hues = tuple(map(approx_hue, color_hues))
@@ -151,10 +153,10 @@ def make_scheme(scheme_name, hex_bg, color_hues):
     lch_bg_dp = LCHabColor(bg_dp_L, bg_C, bg_h)
     lch_bg_bp = LCHabColor(bg_bp_L, bg_C, bg_h)
     lch_bg_sb = LCHabColor(bg_sb_L, bg_C, bg_h)
-    lch_fg_cm = LCHabColor(fg_cm_L, bg_C, fg_h)
-    lch_fg = LCHabColor(fg_L, bg_C, fg_h)
-    lch_fg_hl = LCHabColor(fg_hl_L, bg_C, fg_h)
-    lch_fg_cl = LCHabColor(fg_cl_L, bg_C, fg_h)
+    lch_fg_cm = LCHabColor(fg_cm_L, fg_C, fg_h)
+    lch_fg = LCHabColor(fg_L, fg_C, fg_h)
+    lch_fg_hl = LCHabColor(fg_hl_L, fg_C, fg_h)
+    lch_fg_cl = LCHabColor(fg_cl_L, fg_C, fg_h)
 
     rgb_bg_fl = lch_bg_fl.convert_to('rgb')
     rgb_bg_pt = lch_bg_pt.convert_to('rgb')

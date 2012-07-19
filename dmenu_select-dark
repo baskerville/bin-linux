@@ -2,8 +2,8 @@
 
 fn='-*-terminus-medium-*-*-*-22-*-*-*-*-*-*-*'
 nb='#173844'
-nf='#BEA597'
+nf='#B3A8A1'
 sb='#2A4552'
-sf='#CFB5A6'
+sf='#C4B8B2'
 
 dmenu -i -fn "$fn" -nb "$nb" -nf "$nf" -sb "$sb" -sf "$sf"
