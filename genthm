@@ -440,8 +440,8 @@ OPTIONS
         Produce multiple versions of the color scheme by shifting
         the background lightness.
 
-    -a, --canonical-hues
-        Use canonical standard hues.
+    -a, --adaptative-hues
+        Deduce color hues from the background color's hue.
 
     -b, --background-color HEX_BG
         Use the specified hex color as background color.
@@ -458,10 +458,10 @@ OPTIONS
 
 def main():
     global scheme_name, fgbg_contrast, is_bg_dark, translate_to_index, translate_to_hex, translate_to_rgb, make_variations
-    opts, args = getopt(sys.argv[1:], 'hldtTrvab:c:u:', ['help', 'light', 'dark', 'translate-to-index', 'translate-to-hex', 'translate-to-rgb', 'make-variations', 'canonical-hues', 'background-color=', 'fgbg-contrast=', 'color-hues=', ])
+    opts, args = getopt(sys.argv[1:], 'hldtTrvab:c:u:', ['help', 'light', 'dark', 'translate-to-index', 'translate-to-hex', 'translate-to-rgb', 'make-variations', 'adaptative-hues', 'background-color=', 'fgbg-contrast=', 'color-hues=', ])
 
     hex_bg = None
-    color_hues = []
+    color_hues = CANONICAL_HUES
 
     for opt, val in opts:
         if opt in ('-h', '--help'):
@@ -482,8 +482,8 @@ def main():
             translate_to_rgb = True
         elif opt in ('-v', '--make-variations'):
             make_variations = True
-        elif opt in ('-a', '--canonical-hues'):
-            color_hues = CANONICAL_HUES
+        elif opt in ('-a', '--adaptative-hues'):
+            color_hues = []
         elif opt in ('-c', '--fgbg-constrast'):
             fgbg_contrast = float(val)
         elif opt in ('-u', '--color-hues'):

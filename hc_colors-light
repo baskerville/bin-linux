@@ -1,8 +1,8 @@
 #! /bin/dash
 
-hc set frame_bg_normal_color      '#FFFFFE'
-hc set frame_bg_active_color      '#FFFFFE'
-hc set frame_border_normal_color  '#E6D9D3'
-hc set frame_border_active_color  '#88949A'
-hc set window_border_normal_color '#E6D9D3'
-hc set window_border_active_color '#88949A'
+hc set frame_bg_normal_color      '#FFFFFF'
+hc set frame_bg_active_color      '#FFFFFF'
+hc set frame_border_normal_color  '#EAE5D6'
+hc set frame_border_active_color  '#969BA9'
+hc set window_border_normal_color '#EAE5D6'
+hc set window_border_active_color '#969BA9'

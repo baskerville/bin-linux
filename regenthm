@@ -1,9 +1,11 @@
 #! /bin/dash
 
 SKELETONS_DIR="$XDG_DOTFILES_DIR/skeletons"
-dark_bg=$(cnq -qx crowshead)
+dark_bg="#002B36"
+light_bg="#FDF6E7"
+# dark_bg=$(cnq -qx crowshead)
 # light_bg=$(cnq -qx oldlace)
-light_bg=$(cnq -qx linen | sort | tail -n 1)
+# light_bg=$(cnq -qx linen | sort | tail -n 1)
 scheme_name="raven"
 
 usage() {
