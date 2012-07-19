@@ -1,0 +1,6 @@
+#! /bin/bash
+
+rgb_col=$(printf '%s' "$@" | sed 's:#\(..\)\(..\)\(..\):\1/\2/\3:')
+
+printf '\033]11;rgb:%s\007' "$rgb_col"
+printf '\033]708;rgb:%s\007' "$rgb_col"
