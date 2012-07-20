@@ -54,11 +54,14 @@ refresh "$XDG_DOTFILES_DIR" neaprc dzen2_Xresources tint2rc override.css
 refresh "$XDG_BIN_DIR" hc_colors show_xface_colors setrootbg
 
 echo "raven.vim"
-cat "${SKELETONS_DIR}/raven.vim-skeleton" | genthm -b "$dark_bg" -T raven > "${XDG_DOTFILES_DIR}/themes/vim/raven.vim"
+cat "${SKELETONS_DIR}/raven.vim-skeleton" | genthm -T raven > "${XDG_DOTFILES_DIR}/themes/vim/raven.vim"
+
+echo "sxiv_config"
+cat "${SKELETONS_DIR}/sxiv_config-skeleton" | genthm -b "$dark_bg" -t > "${XDG_DOTFILES_DIR}/sxiv_config"
 
 for prg in mutt slrn; do
     echo "${prg}_colors"
-    cat "${SKELETONS_DIR}/${prg}_colors-skeleton" | genthm -b "$dark_bg" -T > "${XDG_DOTFILES_DIR}/themes/${prg}/${prg}_theme"
+    cat "${SKELETONS_DIR}/${prg}_colors-skeleton" | genthm -T > "${XDG_DOTFILES_DIR}/themes/${prg}/${prg}_theme"
 done
 
 echo "dwb_colors"

@@ -30,7 +30,7 @@ do
             sudo pacman -S zip unzip unrar
             sudo pacman -S pm-utils vim mutt msmtp ed
             sudo pacman -S rlwrap w3m elinks tmux duff ack surfraw dictd bc
-            sudo pacman -S xorg-server xorg-xinit xorg-utils xorg-server-utils
+            sudo pacman -S xorg-server xorg-xinit xorg-utils xorg-server-utils xorg-docs
             sudo pacman -S xorg-xmessage xorg-xclock xorg-xcalc xorg-xeyes
             sudo pacman -S terminus-font rxvt-unicode xscreensaver zenity gtk-engine-murrine
             sudo pacman -S ttf-droid ttf-liberation
