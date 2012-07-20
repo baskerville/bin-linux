@@ -2,6 +2,6 @@
 
 tmp_out=$(mktemp --suffix .png)
 
-curl -s "http://kuler-api.adobe.com//feeds/rss/get.cfm?timeSpan=0&listType=rating" | grep -o '\([0-9A-F]\{6\}\(, \)\?\)\{5\}' | sed 's/, / /g;s/\([0-9A-F]\{6\}\)/#\1/g' | hex2img -n 5 "$tmp_out"
+curl -s "http://kuler-api.adobe.com//feeds/rss/get.cfm?timeSpan=0&listType=rating" | grep -o '\([0-9A-F]\{6\}\(, \)\?\)\{5\}' | sed 's/, / /g;s/\([0-9A-F]\{6\}\)/#\1/g' | hex2img -g 3 -n 5 "$tmp_out"
 
 image_viewer "$tmp_out"
