@@ -313,22 +313,22 @@ def make_scheme(scheme_name, hex_bg, color_hues):
 
     print(file = xres_file)
 
-    print('''URxvt.background: t_background
-URxvt.foreground: t_foreground
+    print('''*background: t_background
+*foreground: t_foreground
 
-URxvt.colorBD: t_fg_highlight
-URxvt.colorIT: t_fg_highlight
-URxvt.colorUL: t_fg_highlight
+*colorBD: t_fg_highlight
+*colorIT: t_fg_highlight
+*colorUL: t_fg_highlight
 
-URxvt.cursorColor: {cyan}
+*cursorColor: {cyan}
 
 ! BLK
-URxvt.color0: t_bg_bump
-URxvt.color8: t_fg_comment
+*color0: t_bg_bump
+*color8: t_fg_comment
 
 ! WHT
-URxvt.color7: t_fg_highlight
-URxvt.color15: t_fg_ceiling'''.format(**hex_color_set), file = xres_file)
+*color7: t_fg_highlight
+*color15: t_fg_ceiling'''.format(**hex_color_set), file = xres_file)
 
     toggle_buffer()
     erase_buffer()
@@ -364,18 +364,18 @@ URxvt.color15: t_fg_ceiling'''.format(**hex_color_set), file = xres_file)
         redef_cmd(slot_cm, hex_color_cm)
         redef_cmd(slot_hl, hex_color_hl)
         print('! %s' % label, file = xres_file)
-        print('URxvt.color%s: %s' % (slot_cm, hex_color_cm), file = xres_file)
-        print('URxvt.color%s: %s' % (slot_hl, hex_color_hl), file = xres_file)
+        print('*color%s: %s' % (slot_cm, hex_color_cm), file = xres_file)
+        print('*color%s: %s' % (slot_hl, hex_color_hl), file = xres_file)
         print(file = xres_file)
 
-    print('''URxvt.color%s: t_bg_floor
-URxvt.color%s: t_bg_dip
-URxvt.color%s: t_background
-URxvt.color%s: t_bg_bump
-URxvt.color%s: t_fg_comment
-URxvt.color%s: t_foreground
-URxvt.color%s: t_fg_highlight
-URxvt.color%s: t_fg_ceiling''' % tuple(MONOTONES_SLOTS), file = xres_file)
+    print('''*color%s: t_bg_floor
+*color%s: t_bg_dip
+*color%s: t_background
+*color%s: t_bg_bump
+*color%s: t_fg_comment
+*color%s: t_foreground
+*color%s: t_fg_highlight
+*color%s: t_fg_ceiling''' % tuple(MONOTONES_SLOTS), file = xres_file)
 
     for slot, hex_color in zip(MONOTONES_SLOTS, monotones):
         redef_cmd(slot, hex_color)
@@ -385,7 +385,7 @@ URxvt.color%s: t_fg_ceiling''' % tuple(MONOTONES_SLOTS), file = xres_file)
     for slot in range(COLORS_START, COLORS_START + NUM_COLORS):
         hex_color = idx_to_hex(slot, fg_L, color_chroma)
         redef_cmd(slot, hex_color)
-        print('URxvt.color%s: %s' % (slot, hex_color), file = xres_file)
+        print('*color%s: %s' % (slot, hex_color), file = xres_file)
 
     print(file = xres_file)
     print('! %s: set ft=xdefaults:' % 'vim', file = xres_file)
