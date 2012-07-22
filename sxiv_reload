@@ -1,0 +1,3 @@
+#! /bin/dash
+
+xdotool search --name "sxiv - $@" key r
