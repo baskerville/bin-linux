@@ -24,6 +24,7 @@ do
             sudo alsactl store
             ;;
         programs)
+            sudo pacman -S linux-docs
             sudo pacman -S bash-completion dash gdb
             sudo pacman -S curl yajl perl inetutils openssh openssl
             sudo pacman -S git mercurial subversion cvs bzr
@@ -48,6 +49,7 @@ do
             sudo pacman -S jd7-openjdk icedtea-web-java7 apache-ant
             sudo pacman -S apache php php-apache mysql
             sudo pacman -S abiword gnumeric sdlmame
+            sudo pacman -S hfsprogs dosfstools
             owl install cower-git dmenu-hg sxiv-git dwb-hg ttf-ms-fonts ttf-mac-fonts
             owl install detox duff dictd-jargon dictd-wn stderred-git z-git
             owl install mutt-bare-git dzen2-bare-git herbstluftwm-git tint2-svn neap-svn
