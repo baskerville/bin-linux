@@ -20,7 +20,7 @@ shift $((OPTIND - 1))
 w=${@%x*}
 h=${@#*x}
 
-set - $(xdpyinfo | awk -v w=$w -v h=$h 'BEGIN {IGNORECASE=1} /dimensions:/ {match($0, /[^0-9]+([0-9]+)x([0-9]+) pixels/, groups); printf "%i %i\n", (groups[1] - w) / 2, (groups[2] - h) / 3;}')
+set - $(sres | awk -v w=$w -v h=$h '{match($0, /([0-9]+)x([0-9]+)/, groups); printf "%i %i\n", (groups[1] - w) / 2, (groups[2] - h) / 3;}')
 
 xoffset=$1
 yoffset=$2

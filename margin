@@ -1,0 +1,9 @@
+#! /bin/dash
+
+ibw=$1
+bw=$((ibw + 1))
+
+hc set window_border_width $bw
+hc set window_border_inner_width $ibw
+hc set frame_border_width $bw
+hc set frame_border_inner_width $ibw

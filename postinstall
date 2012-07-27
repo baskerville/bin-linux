@@ -60,6 +60,7 @@ do
             owl install ncmpcpp-git spdf-git jpdf-git
             owl install paps-bskv grabc
             owl install compface-bskv ppsei
+            owl install sres-git
             ;;
         home)
             cd
