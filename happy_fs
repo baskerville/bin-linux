@@ -12,21 +12,21 @@ fi
 while true ; do
     sleep $timeout
     awid=$(xprop _NET_ACTIVE_WINDOW -root 2> /dev/null | grep -io '0x[0-9a-f]\+')
-    date_stamp=$(date "+%H:%M")
+    # date_stamp=$(date "+%H:%M")
     if [ $? -eq 0 ] ; then
         wstate=$(xprop _NET_WM_STATE -id "$awid")
         case "$wstate" in
             *_NET_WM_STATE_FULLSCREEN)
                 xset -dpms
-                printf "%s dpms deactivated\n" "$date_stamp" >> ~/.happy_fs.log
+                # printf "%s dpms deactivated\n" "$date_stamp" >> ~/.happy_fs.log
                 ;;
             *)
                 xset +dpms
-                printf "%s dpms activated\n" "$date_stamp" >> ~/.happy_fs.log
+                # printf "%s dpms activated\n" "$date_stamp" >> ~/.happy_fs.log
                 ;;
         esac
     else
         xset +dpms
-        printf "%s dpms activated\n" "$date_stamp" >> ~/.happy_fs.log
+        # printf "%s dpms activated\n" "$date_stamp" >> ~/.happy_fs.log
     fi
 done
