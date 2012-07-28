@@ -28,7 +28,7 @@ TMP_FIFO="/tmp/dgauge_fifo"
 FADE_DELAY=1
 bar_width=300
 bar_height=40
-bar_font="sans-serif:pixelsize=11px"
+bar_font="inconsolata:pixelsize=13px"
 gauge_label="NIL"
 gauge_fg="white"
 gauge_bg="grey"
