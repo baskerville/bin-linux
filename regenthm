@@ -61,7 +61,6 @@ cat "${SKELETONS_DIR}/sxiv_config-skeleton" | genthm -b "$dark_bg" -t > "${XDG_D
 
 echo "zathura_colors"
 cat "${SKELETONS_DIR}/zathura_colors-skeleton" | genthm -b "$light_bg" -t > "${XDG_DOTFILES_DIR}/zathura_colors"
-cat "${XDG_DOTFILES_DIR}/zathura_config" "${XDG_DOTFILES_DIR}/zathura_colors" > "${XDG_DOTFILES_DIR}/zathurarc"
 
 echo "startpage.html"
 cat "${SKELETONS_DIR}/startpage.html-skeleton" | genthm -b "$light_bg" -t > "${XDG_DOTFILES_DIR}/startpage.html"
