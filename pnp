@@ -57,7 +57,7 @@ case $action in
                 if [ -n "$device_label" ] ; then
                     mount_point="$MEDIA_DIR/$device_label"
                 else
-                    mount_point=$(mktemp -d --tmpdir $MEDIA_DIR nonameXXX)
+                    mount_point=$(sudo mktemp -ud --tmpdir="$MEDIA_DIR" nonameXXX)
                 fi
                 ;;
         esac
