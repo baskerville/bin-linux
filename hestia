@@ -162,7 +162,7 @@ def view_downloads():
         (network, filename, size, completed, percent, comment, source, active, availability, age, last, rate, eta, blur) = dl
         filename = clean_name(filename)
         (fid, priority) = map(lambda x: x.strip(), fp)
-        line = '%3s %-50s %6s%% %8s %6s %3s %3s %8s %5s' % (fid, filename, percent, size, rate, active, source, eta, priority)
+        line = '%3s %-50s %6s%% %8s %8s %6s %3s %3s %8s %5s' % (fid, filename, percent, completed, size, rate, active, source, eta, priority)
         if sys.stdout.isatty():
             if rate == 'Paused':
                 line = magenta(line)
