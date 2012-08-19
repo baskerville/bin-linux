@@ -92,6 +92,9 @@ case $action in
             sudo rmdir "$mount_point"
         fi
         ;;
+    d|devices)
+        ls --color=auto -1drtc /dev/* 2> /dev/null
+        ;;
     l|list)
         cd "$MEDIA_DIR"
         ls --color=auto -1dtc * 2> /dev/null

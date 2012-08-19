@@ -111,7 +111,6 @@ def view_results(args):
     data = response()
     names = re.findall('popLayer\(\\\\\'([^<]+)', data, re.I)
     values = re.findall('<td[^>]*class="sr a."[^>]*>([^<]*)', data, re.I)
-    # fns = re.findall('<a[^>]*href=results\?d=\d+[^>]*>([^<]*)', data, re.I)
     values = list(map(lambda x: x.strip(), values))
     infos = chunks(values, RESULT_COLUMNS)
     ids = range(1, len(infos) + 1)
