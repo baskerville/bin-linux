@@ -136,6 +136,14 @@ def preview_download(args):
     file_path = get_path(args)
     check_call([PREVIEW_COMMAND, file_path])
 
+def file_magic(args):
+    path = ACT_REQ_MAP['info']
+    request(path, args)
+    data = response()
+    magic = re.findall('>file magic<[^>]+><[^>]+>([^<]+)', data, re.I)
+    for m in magic:
+        print(m)
+
 def view_names(args):
     path = ACT_REQ_MAP['info']
     request(path, args)
@@ -267,6 +275,9 @@ ACTIONS
     names FID
         Display all the known names for FID.
 
+    magic FID
+        Display the file magic informations for FID.
+
     path FID
         Return the path of the file holding FID's content.
 
@@ -306,9 +317,9 @@ def main():
     args = args[1:]
     args = list(chain.from_iterable(map(expand_option, args)))
 
-    if action in ['add', 'pause', 'resume', 'cancel', 'forget', 'search', 'preview', 'path', 'info', 'names'] and len(args) < 1 \
+    if action in ['add', 'pause', 'resume', 'cancel', 'forget', 'search', 'preview', 'path', 'info', 'names', 'magic'] and len(args) < 1 \
     or action in ['priority'] and len(args) < 2 \
-    or action in ['preview', 'path', 'info', 'names'] and len(args) > 1 \
+    or action in ['preview', 'path', 'info', 'names', 'magic'] and len(args) > 1 \
     or action in ['list', 'servers', 'queries', 'kill'] and len(args) > 0:
         print('wrong number of arguments', file=sys.stderr)
         sys.exit(1)
@@ -328,6 +339,8 @@ def main():
         view_path(args)
     elif action == 'names':
         view_names(args)
+    elif action == 'magic':
+        file_magic(args)
     elif action == 'preview':
         preview_download(args)
     elif action == 'info':
