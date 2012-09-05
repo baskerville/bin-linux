@@ -3,7 +3,8 @@
 while [ $# -gt 0 ] ; do
     filepth=$1
     base=${filepth%.*}
-    paps --header --paper A4 --font "Nimbus Mono L 11" --header-font "DejaVu Sans 9" --header-date-format "%Y %m %d %H:%M" --header-rule-thickness 0.66 "$filepth" > "${base}.ps"
+    # paps --header --paper A4 --font "Nimbus Mono L 11" --header-font "DejaVu Sans 9" --header-date-format "%Y %m %d %H:%M" --header-rule-thickness 0.66 "$filepth" > "${base}.ps"
+    paps --paper A4 --font "Nimbus Mono L 11" "$filepth" > "${base}.ps"
     shift
 done
 
