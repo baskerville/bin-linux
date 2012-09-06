@@ -1,5 +1,10 @@
 #! /bin/dash
 
+if [ $# -eq 0 ] ; then
+    printf "usage: %s [-H] TEXT_FILE ...\n" "${0##*/}"
+    exit 1
+fi
+
 draw_header=0
 
 while getopts "H" opt ; do
