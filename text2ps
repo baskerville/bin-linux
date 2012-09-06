@@ -1,10 +1,24 @@
 #! /bin/dash
 
+draw_header=0
+
+while getopts "H" opt ; do
+    case $opt in
+        H)
+            draw_header=1
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
 while [ $# -gt 0 ] ; do
     filepth=$1
     base=${filepth%.*}
-    # paps --header --paper A4 --font "Nimbus Mono L 11" --header-font "DejaVu Sans 9" --header-date-format "%Y %m %d %H:%M" --header-rule-thickness 0.66 "$filepth" > "${base}.ps"
-    paps --paper A4 --font "Nimbus Mono L 11" "$filepth" > "${base}.ps"
+    if [ $draw_header -eq 1 ] ; then
+        paps --paper A4 --font "Nimbus Mono L 11" --header --header-font "DejaVu Sans 9" --header-date-format "%Y %m %d %H:%M" --header-rule-thickness 0.66 "$filepth" > "${base}.ps"
+    else
+        paps --paper A4 --font "Nimbus Mono L 11" "$filepth" > "${base}.ps"
+    fi
     shift
 done
-
