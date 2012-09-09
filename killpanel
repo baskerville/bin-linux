@@ -1,5 +1,5 @@
 #! /bin/dash
 
-pkill -x neap
-pkill -x tint2
+pkill -x clock
+pkill -x bsps
 hc pad 0 0

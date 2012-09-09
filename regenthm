@@ -50,7 +50,7 @@ refresh() {
     done
 }
 
-refresh "$XDG_DOTFILES_DIR" neaprc dzen2_Xresources tint2rc override.css
+refresh "$XDG_DOTFILES_DIR" dzen2_Xresources override.css
 refresh "$XDG_BIN_DIR" hc_colors show_xface_colors setrootbg
 
 echo "raven.vim"

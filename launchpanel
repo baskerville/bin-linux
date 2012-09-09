@@ -1,5 +1,5 @@
 #! /bin/dash
 
 hc pad 0 24
-tint2 &
-neap -g 14x14 &
+bsps 2> "$HOME/.bsps.log" | dzen2 -h 24 -fn 'sans-serif:pixelsize=11' -ta l &
+clock '%H:%M' 1 > "$BSPWM_FIFO" &

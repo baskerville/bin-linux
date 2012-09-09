@@ -7,3 +7,5 @@ show_xface_colors
 dmenu_launch
 dmenu_select
 setrootbg
+bsps
+clock
