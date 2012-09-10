@@ -1,5 +1,6 @@
 #! /bin/dash
 
+pgrep -x bsps > /dev/null 2>&1 && exit 1
 hc pad 0 24
 bsps 2> "$HOME/.bsps.log" | dzen2 -h 24 -fn 'sans-serif:pixelsize=11' -ta l &
 clock '%H:%M' 1 > "$BSPWM_FIFO" &
