@@ -1,9 +1,9 @@
 #! /bin/dash
 
-if [ $# -lt 2 ]; then
+if [ $# -lt 2 ] ; then
     echo "no arguments given" >&2
     exit 1
-elif [ $# -lt 1 ]; then
+elif [ $# -lt 1 ] ; then
     echo "no basename given" >&2
     exit 1
 fi
@@ -12,7 +12,7 @@ counter=1
 basename=$1
 shift
 
-for item in "$@"; do
+for item in "$@" ; do
     ext=${item##*.}
     parent=$(dirname "$item")
     full_parent="$parent/$basename"

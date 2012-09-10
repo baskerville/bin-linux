@@ -3,4 +3,5 @@
 pgrep -x bsps > /dev/null 2>&1 || exit 1
 pkill -x clock
 pkill -x bsps
+rm "$BSPWM_FIFO"
 hc pad 0 0
