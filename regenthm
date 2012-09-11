@@ -51,7 +51,7 @@ refresh() {
 }
 
 refresh "$XDG_DOTFILES_DIR" dzen2_Xresources override.css
-refresh "$XDG_BIN_DIR" hc_colors show_xface_colors setrootbg
+refresh "$XDG_BIN_DIR" hc_colors bspwm_colors show_xface_colors setrootbg
 
 echo "raven.vim"
 cat "${SKELETONS_DIR}/raven.vim-skeleton" | genthm -T raven > "${XDG_DOTFILES_DIR}/themes/vim/raven.vim"
