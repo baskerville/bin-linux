@@ -82,10 +82,11 @@ dzen2_cmd="$gauge_label   ^fg($gauge_fg)^r(${gauge_fill}x${gauge_height})^fg($ga
 
 xy_pos=$(center_rect -f arguments "${bar_width}x${bar_height}")
 
-if [ ! -e "$TMP_FIFO" ] ; then
-  mkfifo "$TMP_FIFO"
-  (dzen2 -h "$bar_height" -w "$bar_width" $xy_pos -fn "$bar_font" -bg "$bar_bg" -fg "$bar_fg" < "$TMP_FIFO"
-   rm "$TMP_FIFO") &
+if [ ! -p "$TMP_FIFO" ] ; then
+    [ -e "$TMP_FIFO" ] && rm "$TMP_FIFO"
+    mkfifo "$TMP_FIFO"
+    (dzen2 -h "$bar_height" -w "$bar_width" $xy_pos -fn "$bar_font" -bg "$bar_bg" -fg "$bar_fg" < "$TMP_FIFO"
+    rm "$TMP_FIFO") &
 fi
 
 (printf "%s\n" "$dzen2_cmd" ; sleep "$FADE_DELAY") > "$TMP_FIFO"
