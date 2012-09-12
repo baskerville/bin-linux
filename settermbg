@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/dash
 
 rgb_col=$(printf '%s' "$@" | sed 's:#\(..\)\(..\)\(..\):\1/\2/\3:')
 

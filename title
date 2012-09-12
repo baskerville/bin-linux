@@ -1,6 +1,5 @@
 #! /bin/bash
 
-
 case "$TERM" in 
     rxvt*|xterm*)
         tit=${@//$HOME/\~}

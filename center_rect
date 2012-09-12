@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/dash
 
 if [ $# -eq 0 ] ; then
     printf "usage: %s [-f raw|arguments|indent] WIDTHxHEIGHT\n" "${0##*/}" >& 2
