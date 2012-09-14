@@ -1,8 +1,9 @@
 #! /bin/dash
 
-pgrep -x esta > /dev/null 2>&1 && exit 1
+[ -z "$EWMHSTATUS_FIFO" ] && exit 1
+pgrep -x ewmhstatus > /dev/null 2>&1 && exit 1
 hc pad 0 24
-[ -e "$ESTA_FIFO" ] && rm "$ESTA_FIFO"
-mkfifo "$ESTA_FIFO"
-esta 2> "$HOME/.esta.log" | dzen2 -h 24 -fn 'sans-serif:pixelsize=11' -ta l &
-sclock '%H:%M' 1 > "$ESTA_FIFO" &
+[ -e "$EWMHSTATUS_FIFO" ] && rm "$EWMHSTATUS_FIFO"
+mkfifo "$EWMHSTATUS_FIFO"
+ewmhstatus 2> "$HOME/.ewmhstatus.log" | dzen2 -h 24 -fn 'sans-serif:pixelsize=11' -ta l &
+clock '%H:%M' 5 > "$EWMHSTATUS_FIFO" &

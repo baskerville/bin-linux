@@ -62,7 +62,7 @@ do
             owl install paps-bskv grabc
             owl install compface-bskv ppsei
             owl install sres-git xbindkeys-minimal-git keydouble-git
-            owl install esta-git sclock-git
+            owl install ewmhstatus-git
             ;;
         home)
             cd

@@ -1,7 +1,7 @@
 #! /bin/dash
 
-pgrep -x esta > /dev/null 2>&1 || exit 1
-pkill -x sclock
-pkill -x esta
-rm "$ESTA_FIFO"
+pgrep -x ewmhstatus > /dev/null 2>&1 || exit 1
+pkill -x clock
+pkill -x ewmhstatus
+[ -z "$EWMHSTATUS_FIFO" ] || rm "$EWMHSTATUS_FIFO"
 hc pad 0 0
