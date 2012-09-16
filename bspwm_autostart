@@ -1,7 +1,9 @@
 #! /bin/dash
 
-# bspwm_colors
+bspwm_colors
 
 for d in Two Three Four Five Six Seven Eight Nine Ten ; do
     bspc add "$d"
 done
+
+reloadwallpaper
