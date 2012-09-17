@@ -1,0 +1,19 @@
+#! /bin/bash
+
+hc --idle '(tag_changed|goto_last_tag|reload)' \
+    | \
+    while read line ; do
+        ARGS=($line)
+        case ${ARGS[0]} in
+            tag_changed)
+                LASTTAG="$TAG"
+                TAG=${ARGS[1]}
+                ;;
+            goto_last_tag)
+                ! [ -z "$LASTTAG" ] && hc use "$LASTTAG"
+                ;;
+            reload)
+                exit
+                ;;
+        esac
+    done
