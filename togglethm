@@ -44,5 +44,6 @@ setconfbg "$XDG_DOTFILES_DIR/dzen2_Xresources" $bgtype
 xrdb -merge "$XDG_DOTFILES_DIR/dzen2_Xresources"
 
 setrootbg
-hc_colors
+# hc_colors
+bspwm_colors
 reloadpanel

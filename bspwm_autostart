@@ -6,4 +6,11 @@ for d in Two Three Four Five Six Seven Eight Nine Ten ; do
     bspc add "$d"
 done
 
+bspc rule Gimp floating
+bspc rule Inkscape floating
+bspc rule fontforge floating
+
 reloadwallpaper
+launchpanel
+
+compton -bCcfF -O .1 -I .1 -D 1 -t -8 -l -9 -r 6 -o 0.8

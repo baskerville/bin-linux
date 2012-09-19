@@ -1,7 +1,6 @@
 #! /bin/dash
 
-pgrep -x ewmhstatus > /dev/null 2>&1 || exit 1
 pkill -x clock
 pkill -x ewmhstatus
+
 [ -z "$EWMHSTATUS_FIFO" ] || rm "$EWMHSTATUS_FIFO"
-hc pad 0 0
