@@ -6,5 +6,5 @@ pkill -x clock
 [ -e "$EWMHSTATUS_FIFO" ] && rm "$EWMHSTATUS_FIFO"
 
 mkfifo "$EWMHSTATUS_FIFO"
-ewmhstatus 2> "$HOME/.ewmhstatus.log" | dzen2 -h 24 -fn 'sans-serif:pixelsize=11' -ta l -p &
+ewmhstatus 2> "$HOME/.ewmhstatus.log" | dzen2 -h 24 -fn 'sans-serif:pixelsize=11' -ta l &
 clock '%H:%M' 5 > "$EWMHSTATUS_FIFO" &
