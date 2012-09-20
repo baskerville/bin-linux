@@ -1,7 +1,7 @@
 #! /bin/dash
 
-bspc set normal_border_color        "#3F3E3B"
 bspc set active_border_color        "#7D7F8A"
+bspc set normal_border_color        "#3F3E3B"
 bspc set inner_border_color         "#32312E"
 bspc set outer_border_color         "#32312E"
 bspc set presel_border_color        "#97AE71"
