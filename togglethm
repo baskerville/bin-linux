@@ -25,13 +25,11 @@ fi
 
 setthm "${name}-${bgtype}"
 
-# setconfbg "$XDG_DOTFILES_DIR/neaprc" $bgtype
-# setconfbg "$XDG_DOTFILES_DIR/tint2rc" $bgtype
 setconfbg "$XDG_DOTFILES_DIR/override.css" $bgtype
+setconfbg "$XDG_DOTFILES_DIR/dzen2_Xresources" $bgtype
+
 setconfbg "$XDG_BIN_DIR/dmenu_launch" $bgtype
 setconfbg "$XDG_BIN_DIR/dmenu_select" $bgtype
-
-setconfbg "$XDG_BIN_DIR/hc_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/bspwm_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/setrootbg" $bgtype
 setconfbg "$XDG_BIN_DIR/show_xface_colors" $bgtype
@@ -40,10 +38,8 @@ setconfbg "$XDG_BIN_DIR/dbright_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/dbatt_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/dnotify_colors" $bgtype
 
-setconfbg "$XDG_DOTFILES_DIR/dzen2_Xresources" $bgtype
 xrdb -merge "$XDG_DOTFILES_DIR/dzen2_Xresources"
 
 setrootbg
-# hc_colors
 bspwm_colors
 reloadpanel

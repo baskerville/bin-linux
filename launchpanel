@@ -1,9 +1,6 @@
 #! /bin/dash
 
 [ -z "$EWMHSTATUS_FIFO" ] && exit 1
-pkill -x ewmhstatus
-pkill -x clock
-[ -e "$EWMHSTATUS_FIFO" ] && rm "$EWMHSTATUS_FIFO"
 
 mkfifo "$EWMHSTATUS_FIFO"
 ewmhstatus 2> "$HOME/.ewmhstatus.log" | dzen2 -h 24 -fn 'sans-serif:pixelsize=11' -ta l &

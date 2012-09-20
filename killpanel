@@ -1,6 +1,8 @@
 #! /bin/dash
 
+[ -z "$EWMHSTATUS_FIFO" ] && exit 1
+
 pkill -x clock
 pkill -x ewmhstatus
 
-[ -z "$EWMHSTATUS_FIFO" ] || rm "$EWMHSTATUS_FIFO"
+[ -e "$EWMHSTATUS_FIFO" ] && rm "$EWMHSTATUS_FIFO"

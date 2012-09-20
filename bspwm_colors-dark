@@ -1,8 +1,10 @@
 #! /bin/dash
 
-bspc set normal_border_color "#3F3E3B"
-bspc set active_border_color "#7D7F8A"
-bspc set locked_border_color "#A46D9D"
-bspc set inner_border_color "#32312E"
-bspc set outer_border_color "#2B2B28"
-bspc set presel_border_color "#97AE71"
+bspc set normal_border_color        "#3F3E3B"
+bspc set active_border_color        "#7D7F8A"
+bspc set inner_border_color         "#32312E"
+bspc set outer_border_color         "#32312E"
+bspc set presel_border_color        "#97AE71"
+bspc set active_locked_border_color "#B6A56A"
+bspc set normal_locked_border_color "#8D7E45"
+bspc set urgent_border_color        "#DE928B"
