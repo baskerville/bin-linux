@@ -1,0 +1,6 @@
+#! /bin/dash
+
+{ xvattr -a XV_BRIGHTNESS -v 0 ;
+  xvattr -a XV_CONTRAST -v 0 ;
+  xvattr -a XV_SATURATION -v 0 ;
+  xvattr -a XV_HUE -v 0 ; } > /dev/null
