@@ -11,4 +11,4 @@ bspc rule fontforge floating
 updatethm
 reloadwallpaper
 
-compton -bCcfF -O .1 -I .1 -D 1 -t -8 -l -9 -r 6 -o 0.8
+# compton -bc -t -8 -l -9 -r 6 -o 0.8
