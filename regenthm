@@ -51,7 +51,7 @@ refresh() {
 }
 
 refresh "$XDG_DOTFILES_DIR" dzen2_Xresources override.css
-refresh "$XDG_BIN_DIR" hc_colors bspwm_colors show_xface_colors setrootbg dmenu_launch dmenu_select dvol_colors dbright_colors dbatt_colors
+refresh "$XDG_BIN_DIR" hc_colors bspwm_colors show_xface_colors setrootbg dmenu_launch dmenu_select
 
 echo "raven.vim"
 cat "${SKELETONS_DIR}/raven.vim-skeleton" | genthm -T raven > "${XDG_DOTFILES_DIR}/themes/vim/raven.vim"
@@ -76,5 +76,7 @@ grep -iv '#[a-f0-9]\{6\}' "${XDG_DOTFILES_DIR}/dwb_config" > "$tmp_out"
 cat "${SKELETONS_DIR}/dwb_colors-skeleton" | genthm -b "$light_bg" -t >> "$tmp_out"
 mv "$tmp_out" "$XDG_DOTFILES_DIR/dwb_config"
 
-# dark_bg=$(printf "%s\n" "{{bg_bump}}" | genthm -b "$dark_bg" -t)
-# light_bg=$(printf "%s\n" "{{bg_bump}}" | genthm -b "$light_bg" -t)
+dark_bg=$(printf "%s\n" "{{bg_bump}}" | genthm -b "$dark_bg" -t)
+light_bg=$(printf "%s\n" "{{bg_bump}}" | genthm -b "$light_bg" -t)
+
+refresh "$XDG_BIN_DIR" dvol_colors dbright_colors dbatt_colors
