@@ -1,9 +1,9 @@
 #! /bin/dash
 
-fn='-*-terminus-medium-*-*-*-22-*-*-*-*-*-*-*'
+fn='sans-serif:pixelsize=11'
 nb='#FDF6E7'
 nf='#71757F'
 sb='#EAE5D6'
 sf='#626670'
 
-dmenu_run -i -fn "$fn" -nb "$nb" -nf "$nf" -sb "$sb" -sf "$sf" -p '>' -q
+dmenu_run -i -h "$PANEL_HEIGHT" -fn "$fn" -nb "$nb" -nf "$nf" -sb "$sb" -sf "$sf" -p '>' -q
