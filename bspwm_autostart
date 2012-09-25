@@ -7,6 +7,7 @@ done
 bspc rule Gimp floating
 bspc rule Inkscape floating
 bspc rule fontforge floating
+bspc rule processing-app-Base floating
 
 updatethm
 reloadwallpaper
