@@ -38,20 +38,23 @@ OPTIONS
 def make_palette(img):
     global num_colors, min_lightness, max_lightness, min_chroma, max_chroma, min_hue, max_hue
 
-    palette = []
-
     random.seed()
-    img = img.convert('RGB')
+    img = img.convert('RGBA')
     data = list(img.getdata())
+    palette = set()
 
     while len(palette) < num_colors and len(data) > 0:
         randindex = random.randint(0, len(data) - 1)
         pixel = data.pop(randindex)
 
         if type(pixel) is int:
-            pixel = [pixel, pixel, pixel]
+            pixel = [pixel, pixel, pixel, 255]
 
-        (red, green, blue) = pixel
+        (red, green, blue, alpha) = pixel
+
+        if alpha < 255:
+            continue
+
         rgb_color = RGBColor(red, green, blue)
         lch_color = rgb_color.convert_to('lchab')
         L, C, H = lch_color.get_value_tuple()
@@ -59,8 +62,11 @@ def make_palette(img):
         if (min_lightness <= L <= max_lightness
                 and min_chroma <= C <= max_chroma
                 and min_hue <= H <= max_hue):
-            palette.append(rgb_color)
-            print rgb_color.get_rgb_hex().upper()
+            hex_color = rgb_color.get_rgb_hex().upper()
+            palette.add(hex_color)
+
+    for hex_color in palette:
+        print hex_color
 
 def main():
     global num_colors, min_lightness, max_lightness, min_chroma, max_chroma, min_hue, max_hue
