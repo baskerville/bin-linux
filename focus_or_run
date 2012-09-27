@@ -26,7 +26,7 @@ while [ $# -gt 0 ] ; do
                     CMD="editor $HOME/.Xlog"
                     ;;
                 bspwm_config)
-                    CMD="editor ${XDG_CONFIG_HOME}/bspwm/bspwmrc"
+                    CMD="editor ${XDG_CONFIG_HOME}/bspwm/autostart"
                     ;;
             esac
             case "$prg" in
