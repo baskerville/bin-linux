@@ -34,7 +34,6 @@ do
             sudo pacman -S xorg-server xorg-xinit xorg-utils xorg-server-utils xorg-docs
             sudo pacman -S xorg-xmessage xorg-xclock xorg-xcalc xorg-xeyes
             sudo pacman -S terminus-font rxvt-unicode xscreensaver zenity gtk-engine-murrine
-            sudo pacman -S ttf-droid ttf-liberation
             sudo pacman -S scrot mplayer2 ffmpeg
             sudo pacman -S mpd mpc
             sudo pacman -S xclip xsel xdotool flashplugin
@@ -51,7 +50,7 @@ do
             sudo pacman -S abiword gnumeric sdlmame
             sudo pacman -S hfsprogs dosfstools
             sudo pacman -S libxcb xcb-proto xcb-util xcb-util-wm xcb-util-keysyms xcb-util-image
-            owl install cower-git sxiv-git dwb-hg ttf-ms-fonts ttf-mac-fonts dmenu-q-xywh-xft-git
+            owl install cower-git sxiv-git dwb-hg dmenu-q-xywh-xft-git
             owl install detox duff dictd-jargon dictd-wn stderred-git z-git
             owl install mutt-bare-git dzen2-bare-git herbstluftwm-git tint2-svn neap-svn
             owl install girara-common-git girara-gtk2-git zathura-git
