@@ -1,0 +1,10 @@
+#! /bin/dash
+
+for pid in $(pgrep -x cp) ; do
+    for fd in 4 3 ; do
+        symlink="/proc/${pid}/fd/${fd}"
+        if [ -L "$symlink" ] ; then
+            ls -sh "$(readlink "$symlink")"
+        fi
+    done
+done

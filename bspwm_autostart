@@ -4,8 +4,8 @@ for d in Two Three Four Five Six Seven Eight Nine Ten ; do
     bspc add "$d"
 done
 
-bspc rule Gimp floating
 bspc rule Inkscape floating
+bspc rule Gimp floating
 bspc rule fontforge floating
 bspc rule processing-app-Base floating
 
