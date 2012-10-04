@@ -10,7 +10,7 @@ do
             wpa_passphrase "*SSID*" "*SECRET*KEY*" >> /etc/wpa_supplicant.conf
             wpa_supplicant -B -Dwext -i wlan0 -c /etc/wpa_supplicant.conf
             dhcpcd wlan0
-            pacman -S netcfg
+            pacman -S netcfg wpa_actiond
             ;;
         user)
             # as root
