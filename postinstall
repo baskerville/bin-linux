@@ -66,7 +66,7 @@ do
             ;;
         home)
             cd
-            mkdir art doc incoming image audio video src tmp work other
+            mkdir art doc incoming image audio video src tmp work misc public_html
             git clone git://github.com/baskerville/dotfiles.git .dotfiles
             git clone git://github.com/baskerville/bin.git .bindir
             mkdir .sxiv
