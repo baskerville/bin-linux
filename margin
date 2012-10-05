@@ -1,0 +1,3 @@
+#! /bin/dash
+
+bspc set inner_border_width "$@"
