@@ -50,6 +50,7 @@ do
             sudo pacman -S abiword gnumeric sdlmame
             sudo pacman -S hfsprogs dosfstools
             sudo pacman -S libxcb xcb-proto xcb-util xcb-util-wm xcb-util-keysyms xcb-util-image
+            owl install urxvt-autocomplete-all-the-things-git
             owl install cower-git sxiv-git dwb-hg dmenu-q-xywh-xft-git
             owl install detox duff dictd-jargon dictd-wn stderred-git z-git
             owl install mutt-bare-git dzen2-bare-git herbstluftwm-git tint2-svn neap-svn
