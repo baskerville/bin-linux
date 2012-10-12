@@ -61,7 +61,7 @@ do
             owl install libuninameslist fontforge-bskv-git
             owl install ncmpcpp-git spdf-git jpdf-git
             owl install paps-bskv compface-bskv
-            owl install grabc ppsei
+            owl install grabc ppsei darcs-bin
             owl install sres-git xbindkeys-minimal-git keydouble-git
             owl install ewmhstatus-git
             owl install ttf-anonymous-pro ttf-dejavu ttf-droid ttf-envy-code-r ttf-freefont ttf-junicode ttf-liberation ttf-linux-libertine ttf-ms-fonts
