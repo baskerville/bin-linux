@@ -26,7 +26,7 @@ do
         programs)
             sudo pacman -S linux-docs
             sudo pacman -S bash-completion dash gdb
-            sudo pacman -S curl yajl perl inetutils openssh openssl
+            sudo pacman -S curl yajl perl inetutils openssh openssl pkgfile
             sudo pacman -S git mercurial subversion cvs bzr
             sudo pacman -S zip unzip unrar
             sudo pacman -S pm-utils vim mutt msmtp ed
@@ -38,18 +38,19 @@ do
             sudo pacman -S mpd mpc
             sudo pacman -S xclip xsel xdotool flashplugin
             sudo pacman -S gimp inkscape audacity
-            sudo pacman -S cups gutenprint cedilla
+            sudo pacman -S cups gutenprint
             sudo pacman -S cdrkit gphoto2 dcraw
             sudo pacman -S lirc lirc-utils
             sudo pacman -S mac cuetools shntool libplist
-            sudo pacman -S fortune-mod figlet cowsay htop lsof strace words
+            sudo pacman -S htop lsof strace words
             sudo pacman -S gnuplot gtk
             sudo pacman -S p7zip tk id3v2
             sudo pacman -S jd7-openjdk icedtea-web-java7 apache-ant
             sudo pacman -S apache php php-apache mysql
-            sudo pacman -S abiword gnumeric sdlmame
+            sudo pacman -S abiword gnumeric sdlmame libreoffice-impress
             sudo pacman -S hfsprogs dosfstools
             sudo pacman -S libxcb xcb-proto xcb-util xcb-util-wm xcb-util-keysyms xcb-util-image
+            sudo pacman -S fortune-mod figlet cowsay
             owl install urxvt-autocomplete-all-the-things-git
             owl install cower-git sxiv-git dwb-hg dmenu-q-xywh-xft-git
             owl install detox duff dictd-jargon dictd-wn stderred-git z-git
@@ -59,11 +60,11 @@ do
             owl install dfc-git compton-git youtube-dl-git
             owl install libuninameslist fontforge-bskv-git
             owl install ncmpcpp-git spdf-git jpdf-git
-            owl install paps-bskv grabc
-            owl install compface-bskv ppsei
+            owl install paps-bskv compface-bskv
+            owl install grabc ppsei
             owl install sres-git xbindkeys-minimal-git keydouble-git
             owl install ewmhstatus-git
-            owl install ttf-anonymous-pro ttf-dejavu ttf-droid ttf-envy-code-r ttf-freefont ttf-junicode ttf-liberation ttf-linux-libertine ttf-mac-fonts ttf-ms-fonts
+            owl install ttf-anonymous-pro ttf-dejavu ttf-droid ttf-envy-code-r ttf-freefont ttf-junicode ttf-liberation ttf-linux-libertine ttf-ms-fonts
             ;;
         home)
             cd
