@@ -10,6 +10,6 @@ ln -sf "$theme_name" current
 xrdb -merge current
 
 ln -sf "redef-$theme_name" redef-current
-for vt in /dev/pts/[0-9]* ; do
-    ./redef-current > "$vt"
+for vt in $(find /dev/pts/ -maxdepth 1 -type c -group tty) ; do
+    [ -w "$vt" ] && ./redef-current > "$vt"
 done
