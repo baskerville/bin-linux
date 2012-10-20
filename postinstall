@@ -51,6 +51,7 @@ do
             sudo pacman -S hfsprogs dosfstools
             sudo pacman -S libxcb xcb-proto xcb-util xcb-util-wm xcb-util-keysyms xcb-util-image
             sudo pacman -S fortune-mod figlet cowsay
+            owl install python-colormath-git
             owl install urxvt-autocomplete-all-the-things-git
             owl install cower-git sxiv-git dwb-hg dmenu-q-xywh-xft-git
             owl install detox duff dictd-jargon dictd-wn stderred-git z-git
