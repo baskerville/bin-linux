@@ -1,8 +1,7 @@
 #! /bin/dash
 
-for d in Two Three Four Five Six Seven Eight Nine Ten ; do
-    bspc add "$d"
-done
+bspc rename Desktop01 One
+bspc add Two Three Four Five Six Seven Eight Nine Ten
 
 bspc rule Inkscape floating
 bspc rule Gimp floating
@@ -16,7 +15,7 @@ bspc set inner_border_width  3
 bspc set window_gap          15
 bspc set top_padding         24
 
-bspc set borderless_monocle true
+bspc set borderless_monocle  true
 
 updatethm
 reloadwallpaper
