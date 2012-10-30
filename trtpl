@@ -96,10 +96,10 @@ def translate_templates():
     
     for tpl_pth in env.list_templates(filter_func=template_filter):
         tpl = env.get_template(tpl_pth)
-        output_pth = tpl_pth
+        output_root = tpl_pth
         if not preserve_extensions:
-            output_pth, ext = splitext(tpl_pth)
-        output_pth = '{}/{}{}'.format(output_dir, output_pth, filename_suffix)
+            output_root, ext = splitext(tpl_pth)
+        output_pth = '{}/{}{}'.format(output_dir, output_root, filename_suffix)
         with open(output_pth, 'w') as f:
             f.write(tpl.render(color_scheme))
 

@@ -55,11 +55,9 @@ def make_scheme():
     hue_step = 360 / num_colors
     color_hues = [hue_step * i for i in range(num_colors)]
 
-    col_idx = 0
     for name, col_h in zip(color_names, color_hues):
         lch_col = LCHabColor(fg_L + color_delta, color_chroma, col_h)
         print('{}: "{}"'.format(name, lch_to_hex(lch_col)))
-        col_idx = col_idx + 1
 
 def usage():
     print('''
