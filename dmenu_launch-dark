@@ -4,6 +4,6 @@ fn='sans-serif:pixelsize=11'
 nb='#32312E'
 nf='#A4A6B1'
 sb='#3F3E3B'
-sf='#B4B7C2'
+sf='#CECFDB'
 
 dmenu_run -i -h "$PANEL_HEIGHT" -fn "$fn" -nb "$nb" -nf "$nf" -sb "$sb" -sf "$sf" -p '>' -q

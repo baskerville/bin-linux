@@ -1,16 +1,17 @@
 #! /bin/dash
 
-pattern="██"
+pattern='██'
+range=$(seq 30 37)
 
 printf "\n"
 
-for fg_color in $(seq 31 36) ; do
+for fg_color in $range ; do
     printf " \033[%sm%s\033[0m" "$fg_color" "$pattern"
 done
 
 printf "\n"
 
-for fg_color in $(seq 31 36) ; do
+for fg_color in $range ; do
     printf " \033[1;%sm%s\033[0m" "$fg_color" "$pattern"
 done
 

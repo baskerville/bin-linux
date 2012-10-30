@@ -26,7 +26,7 @@ fi
 setthm "${name}-${bgtype}"
 
 setconfbg "$XDG_DOTFILES_DIR/override.css" $bgtype
-setconfbg "$XDG_DOTFILES_DIR/dzen2_Xresources" $bgtype
+setconfbg "$XDG_DOTFILES_DIR/dzen2_xresources" $bgtype
 
 setconfbg "$XDG_BIN_DIR/dmenu_launch" $bgtype
 setconfbg "$XDG_BIN_DIR/dmenu_select" $bgtype
@@ -37,7 +37,7 @@ setconfbg "$XDG_BIN_DIR/dbright_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/dbatt_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/dnotify_colors" $bgtype
 
-xrdb -merge "$XDG_DOTFILES_DIR/dzen2_Xresources"
+xrdb -merge "$XDG_DOTFILES_DIR/dzen2_xresources"
 
 bspwm_colors
 reloadpanel

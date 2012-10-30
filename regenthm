@@ -1,82 +1,19 @@
 #! /bin/dash
 
-SKELETONS_DIR="$XDG_DOTFILES_DIR/skeletons"
-# dark_bg="#002B36"
-light_bg="#FDF6E7"
-dark_bg=$(cnq -qx crowshead)
-# light_bg=$(cnq -qx oldlace)
-# light_bg=$(cnq -qx linen | sort | tail -n 1)
-scheme_name="raven"
+TEMPLATES_DIR="$XDG_DOTFILES_DIR/templates"
+COLOR_SCHEMES_DIR="$XDG_DOTFILES_DIR/color_schemes"
+OUTPUT_DIR=$(mktemp -d)
 
-usage() {
-    printf "usage: %s [-d DARK_BG][-l LIGHT_BG] [SCHEME_NAME]\n" "${0##*/}"
-    exit 1
-}
+trtpl -s '-dark' -c "${COLOR_SCHEMES_DIR}/current-dark" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid"
+trtpl -s '-light' -c "${COLOR_SCHEMES_DIR}/current-light" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid"
+trtpl -c "${COLOR_SCHEMES_DIR}/current-dark" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/dark_only"
+trtpl -c "${COLOR_SCHEMES_DIR}/current-light" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/light_only"
+trtpl -c "${COLOR_SCHEMES_DIR}/current-symbolic" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/symbolic"
 
-while getopts "hd:l:" opt ; do
-    case $opt in
-        d)
-            dark_bg=$OPTARG
-            ;;
-        l)
-            light_bg=$OPTARG
-            ;;
-        h|\?)
-            usage
-            ;;
-    esac
-done
+cp -r -t "$XDG_DOTFILES_DIR" "${OUTPUT_DIR}"/dotfiles/*
+cp -r -t "$XDG_BIN_DIR" "${OUTPUT_DIR}"/bin/*
 
-shift $((OPTIND - 1))
-
-[ $# -gt 0 ] && scheme_name=$1
-
-echo "$scheme_name"
-cd "$XDG_DOTFILES_DIR/colors"
-genthm -b "$dark_bg" "$scheme_name"
-genthm -b "$light_bg" "$scheme_name"
-ln -sf "${scheme_name}-dark" current
-
-refresh() {
-    dest_dir=$1
-    shift
-    for s in "$@" ; do
-        echo "$s"
-        skeleton="${SKELETONS_DIR}/${s}-skeleton"
-        dark_output="${dest_dir}/${s}-dark"
-        light_output="${dest_dir}/${s}-light"
-        cat "$skeleton" | genthm -b "$dark_bg" -t > "$dark_output"
-        cat "$skeleton" | genthm -b "$light_bg" -t > "$light_output"
-    done
-}
-
-refresh "$XDG_DOTFILES_DIR" dzen2_Xresources override.css
-refresh "$XDG_BIN_DIR" bspwm_colors show_xface_colors setrootbg dmenu_launch dmenu_select
-
-echo "raven.vim"
-cat "${SKELETONS_DIR}/raven.vim-skeleton" | genthm -T raven > "${XDG_DOTFILES_DIR}/themes/vim/raven.vim"
-
-echo "sxiv_config"
-cat "${SKELETONS_DIR}/sxiv_config-skeleton" | genthm -b "$dark_bg" -t > "${XDG_DOTFILES_DIR}/sxiv_config"
-
-echo "zathura_colors"
-cat "${SKELETONS_DIR}/zathura_colors-skeleton" | genthm -b "$light_bg" -t > "${XDG_DOTFILES_DIR}/zathura_colors"
-
-echo "startpage.html"
-cat "${SKELETONS_DIR}/startpage.html-skeleton" | genthm -b "$light_bg" -t > "${XDG_DOTFILES_DIR}/startpage.html"
-
-for prg in mutt slrn; do
-    echo "${prg}_colors"
-    cat "${SKELETONS_DIR}/${prg}_colors-skeleton" | genthm -T > "${XDG_DOTFILES_DIR}/themes/${prg}/${prg}_theme"
-done
-
-echo "dwb_colors"
 tmp_out=$(mktemp)
 grep -iv '#[a-f0-9]\{6\}' "${XDG_DOTFILES_DIR}/dwb_config" > "$tmp_out"
-cat "${SKELETONS_DIR}/dwb_colors-skeleton" | genthm -b "$light_bg" -t >> "$tmp_out"
+cat "${XDG_DOTFILES_DIR}/dwb_colors" >> "$tmp_out"
 mv "$tmp_out" "$XDG_DOTFILES_DIR/dwb_config"
-
-dark_bg=$(printf "%s\n" "{{bg_bump}}" | genthm -b "$dark_bg" -t)
-light_bg=$(printf "%s\n" "{{bg_bump}}" | genthm -b "$light_bg" -t)
-
-refresh "$XDG_BIN_DIR" dvol_colors dbright_colors dbatt_colors

@@ -9,7 +9,9 @@ cd "$XDG_COLORS_DIR"
 ln -sf "$theme_name" current
 xrdb -merge current
 
-ln -sf "redef-$theme_name" redef-current
-for vt in $(find /dev/pts/ -maxdepth 1 -type c -group tty) ; do
-    [ -w "$vt" ] && ./redef-current > "$vt"
+ln -sf "redef-${theme_name}" redef-current
+for pts in $(find /dev/pts/ -maxdepth 1 -type c -group tty) ; do
+    [ -w "$pts" ] && ./redef-current > "$pts"
 done
+
+ln -sf "redef_console-${theme_name}" redef_console-current

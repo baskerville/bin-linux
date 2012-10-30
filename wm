@@ -1,0 +1,6 @@
+#!/bin/dash
+
+while true ; do
+  bspwm
+  zenity --question --text 'Restart?' || break
+done
