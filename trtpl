@@ -13,6 +13,7 @@ color_scheme = {}
 output_dir = 'outputs'
 templates_dir = 'templates'
 filename_suffix = ''
+preserve_extensions = False
 exclude_pattern = None
 
 def lch_to_hex(lch_color):
@@ -37,8 +38,6 @@ def alter_lch(hex_color, value, component='L', relative=True):
     lch_lst = list(lch_color.get_value_tuple())
     comp_idx = ('L', 'C', 'H').index(component)
     if relative:
-        if component == 'L' and lch_color.lch_l > 50:
-            value = -value
         lch_lst[comp_idx] = lch_lst[comp_idx] + value
     else:
         lch_lst[comp_idx] = value
@@ -97,8 +96,10 @@ def translate_templates():
     
     for tpl_pth in env.list_templates(filter_func=template_filter):
         tpl = env.get_template(tpl_pth)
-        tpl_raw, ext = splitext(tpl_pth)
-        output_pth = '{}/{}{}'.format(output_dir, tpl_raw, filename_suffix)
+        output_pth = tpl_pth
+        if not preserve_extensions:
+            output_pth, ext = splitext(tpl_pth)
+        output_pth = '{}/{}{}'.format(output_dir, output_pth, filename_suffix)
         with open(output_pth, 'w') as f:
             f.write(tpl.render(color_scheme))
 
@@ -122,12 +123,15 @@ OPTIONS
 
     -e, --exclude-templates REGEXP
         Exclude templates matching the given pattern.
+
+    -p, --preserve-extensions
+        Preserve templates file name extensions in outputs.
 '''.format(basename(sys.argv[0])))
     sys.exit(1)
 
 def main():
-    global color_scheme, output_dir, templates_dir, filename_suffix, exclude_pattern
-    opts, args = getopt(sys.argv[1:], 'hc:o:s:e:', ['help', 'color-scheme=', 'output-directory=', 'filename-suffix=', 'exclude-templates='])
+    global color_scheme, output_dir, templates_dir, filename_suffix, exclude_pattern, preserve_extensions
+    opts, args = getopt(sys.argv[1:], 'hpc:o:s:e:', ['help', 'preserve-extensions', 'color-scheme=', 'output-directory=', 'filename-suffix=', 'exclude-templates='])
 
     if len(args) < 1:
         usage()
@@ -146,6 +150,8 @@ def main():
             filename_suffix = val
         elif opt in ('-e', '--exclude-templates'):
             exclude_pattern = val
+        elif opt in ('-p', '--preserve-extensions'):
+            preserve_extensions = True
 
     translate_templates()
 

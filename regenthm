@@ -6,6 +6,8 @@ OUTPUT_DIR=$(mktemp -d)
 
 trtpl -s '-dark' -c "${COLOR_SCHEMES_DIR}/current-dark" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid"
 trtpl -s '-light' -c "${COLOR_SCHEMES_DIR}/current-light" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid"
+trtpl -s '-dark' -c "${COLOR_SCHEMES_DIR}/current-bump-dark" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid_bump"
+trtpl -s '-light' -c "${COLOR_SCHEMES_DIR}/current-bump-light" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid_bump"
 trtpl -c "${COLOR_SCHEMES_DIR}/current-dark" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/dark_only"
 trtpl -c "${COLOR_SCHEMES_DIR}/current-light" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/light_only"
 trtpl -c "${COLOR_SCHEMES_DIR}/current-symbolic" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/symbolic"
