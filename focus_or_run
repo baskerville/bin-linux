@@ -13,7 +13,7 @@ while [ $# -gt 0 ] ; do
                 pgrep -x dwb > /dev/null || $CMD
             fi
             ;;
-        mutt | slrn | htop | xlog | bspwm_config | xbindkeys_config | ncmpcpp)
+        mutt | slrn | htop | bspwm_config | xbindkeys_config | ncmpcpp)
             CMD=$prg
             case "$prg" in
                 mutt)
@@ -21,9 +21,6 @@ while [ $# -gt 0 ] ; do
                     ;;
                 slrn)
                     CMD=ng
-                    ;;
-                xlog)
-                    CMD="editor $HOME/.Xlog"
                     ;;
                 bspwm_config)
                     CMD="editor ${XDG_CONFIG_HOME}/bspwm/autostart"
