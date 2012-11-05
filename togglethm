@@ -38,7 +38,10 @@ setconfbg "$XDG_BIN_DIR/dbright_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/dbatt_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/dnotify_colors" $bgtype
 
+setconfbg "$WALLPAPER" $bgtype
+
 xrdb -merge "$XDG_DOTFILES_DIR/dzen2_xresources"
 
 bspwm_colors
 reloadpanel
+reloadwallpaper
