@@ -51,11 +51,12 @@ do
             sudo pacman -S hfsprogs dosfstools
             sudo pacman -S libxcb xcb-proto xcb-util xcb-util-wm xcb-util-keysyms xcb-util-image
             sudo pacman -S fortune-mod figlet cowsay
+            owl install bspwm-git ewmhstatus-git
             owl install python-colormath-git
             owl install urxvt-autocomplete-all-the-things-git
             owl install cower-git sxiv-git dwb-hg dmenu-q-xywh-xft-git
             owl install detox duff dictd-jargon dictd-wn stderred-git z-git
-            owl install mutt-bare-git dzen2-bare-git herbstluftwm-git tint2-svn neap-svn
+            owl install mutt-bare-git dzen2-bare-git
             owl install girara-common-git girara-gtk2-git zathura-git
             owl install zathura-pdf-poppler-git zathura-ps-git zathura-djvu-git
             owl install dfc-git compton-git youtube-dl-git
@@ -64,7 +65,6 @@ do
             owl install paps-bskv compface-bskv
             owl install grabc ppsei darcs-bin
             owl install sres-git xbindkeys-minimal-git keydouble-git
-            owl install ewmhstatus-git
             owl install ttf-anonymous-pro ttf-dejavu ttf-droid ttf-envy-code-r ttf-freefont ttf-junicode ttf-liberation ttf-linux-libertine ttf-ms-fonts
             ;;
         home)
