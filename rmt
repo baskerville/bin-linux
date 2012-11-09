@@ -6,7 +6,7 @@ then
 
     if [ -n "$real" ]; then
         echo -n "Remove $real?"
-        read answer 
+        read answer
         case $answer in
             yes|Yes|y|Y)
                 if [ -f "$real" ]; then

@@ -8,7 +8,7 @@
     # fi
     bspc list_windows
 } | {
-    while read wid ; do 
+    while read wid ; do
             echo $(xprop -notype -f WM_CLASS 8s ' $0 $1 ' WM_CLASS WM_NAME -id "$wid" | sed 's/^[^"]\+"\([^"]\+\)"[^"]\+"\([^"]\+\)"[^"]\+"\([^"]\+\)"/\2\/\1: \3/') "($wid)"
         # if xprop _NET_WM_DESKTOP -id "$wid" | grep '= [0-9]$' > /dev/null 2>&1; then
         # fi

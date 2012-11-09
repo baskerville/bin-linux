@@ -52,7 +52,7 @@ def main():
     opts, args = getopt(sys.argv[1:], 'miv', ['monotones', 'index', 'verbose'])
 
     compare_to_monotones = COMPARE_TO_MONOTONES
-    show_color_index = SHOW_COLOR_INDEX 
+    show_color_index = SHOW_COLOR_INDEX
     verbose_output = VERBOSE_OUTPUT
 
     for opt, val in opts:

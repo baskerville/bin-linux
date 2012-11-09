@@ -15,7 +15,7 @@ def translate_value(match_obj):
     m = match_obj.group(0)
     islot = int(m)
     if islot >= START_OF_COLORS and islot < START_OF_MONOTONES:
-        color_index = islot - START_OF_COLORS 
+        color_index = islot - START_OF_COLORS
         color = COLORS[color_index]
         hex_color = ('#%02X%02X%02X' % color)
         rgb_color = RGBColor()

@@ -3,7 +3,7 @@
 if [ $# -lt 2 ] ; then
     cat << EOF
 SYNOPSIS
-    ${0##*/} [OPTIONS] GAUGE_CURRENT GAUGE_MAX 
+    ${0##*/} [OPTIONS] GAUGE_CURRENT GAUGE_MAX
 
 OPTIONS
     -w
@@ -12,7 +12,7 @@ OPTIONS
         Bar height.
     -t
         Bar font.
-    -f 
+    -f
         Bar foreground color.
     -b
         Bar background color.

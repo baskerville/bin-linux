@@ -17,7 +17,7 @@ def usage():
     print('usage: hex2img [-i|--ignore-duplicates][-n|--num-horizontal-squares NUM_HORIZ][-s|--square-side SQUARE_SIDE] [OUTPUT_NAME]')
     sys.exit()
 
-def remove_duplicates(seq, idfun=None): 
+def remove_duplicates(seq, idfun=None):
     if idfun is None:
         def idfun(x): return x
     seen = {}
@@ -81,4 +81,3 @@ for c in palette:
         y = y + output_square_side + square_gap
 
 output.save(output_name)
-

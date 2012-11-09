@@ -16,7 +16,7 @@ def expand_value(match_obj):
     color = int(match_obj.group(0))
     if color >= START_OF_COLORS and color <= END_OF_MONOTONES:
         if color < START_OF_MONOTONES:
-            idx = color - START_OF_COLORS 
+            idx = color - START_OF_COLORS
             html = COLORS[idx]
         else:
             idx = color - START_OF_MONOTONES

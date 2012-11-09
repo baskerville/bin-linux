@@ -124,7 +124,7 @@ def locate_item(action, pattern):
             if 'title' in s:
                 title = s['title']
                 if spattern.search(title):
-                    print("'%s' %s" % (title, share_name)) 
+                    print("'%s' %s" % (title, share_name))
         elif action == 'find':
             for f in s['files']:
                 file_name = f['filename']
@@ -303,7 +303,7 @@ def shake_hands(req_params):
     action = '!login'
     make_connection(action)
     msg, short_url = ACT_REQ_MAP[action]
-    request(msg, short_url, req_params) 
+    request(msg, short_url, req_params)
 
 def load_config(path=CONFIG_PATH):
     global settings
@@ -324,7 +324,7 @@ def help():
 SYNOPSIS
     %s <action> [arguments]
 
-ACTIONS 
+ACTIONS
     list
         Output a list of all the shares and files.
 
@@ -338,7 +338,7 @@ ACTIONS
         Make a new share with optional title TITLE.
 
     change SHARENAME TITLE
-        Change the title of the share SHARENAME to TITLE. 
+        Change the title of the share SHARENAME to TITLE.
 
     remove SHARENAME
         Remove the share SHARENAME.

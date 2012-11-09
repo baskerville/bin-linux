@@ -7,7 +7,7 @@ while [ $# -ne 0 ]; do
 
     [ "$ext" = "$1" ] && tagged_name=${1}_$flag
 
-    [ -e "$tagged_name" ] || cp -r "$1" "$tagged_name" 
+    [ -e "$tagged_name" ] || cp -r "$1" "$tagged_name"
 
     shift
 done

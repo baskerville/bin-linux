@@ -90,7 +90,7 @@ def translate_templates():
         sys.exit(1)
 
     copy_dirs(templates_dir, output_dir)
-    
+
     for tpl_pth in env.list_templates(filter_func=template_filter):
         tpl = env.get_template(tpl_pth)
         output_root = tpl_pth if preserve_extensions else splitext(tpl_pth)[0]

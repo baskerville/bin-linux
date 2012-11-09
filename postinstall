@@ -18,7 +18,7 @@ do
             useradd -m -g users -G audio,lp,optical,storage,video,wheel,games,power,scanner,log -s /bin/bash ice
             ;;
         sound)
-            sudo pacman -S alsa-utils 
+            sudo pacman -S alsa-utils
             alsamixer
             speaker-test -c 2
             sudo alsactl store

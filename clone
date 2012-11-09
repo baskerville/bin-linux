@@ -17,5 +17,5 @@ while [ $counter -le $numclones ] ; do
     else
         ln "$original" "${name}-${suffix}.${ext}"
     fi
-    counter=$((counter+1)) 
+    counter=$((counter+1))
 done

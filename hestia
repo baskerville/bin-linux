@@ -16,7 +16,7 @@ LIST_COLUMNS = 14
 SERVER_COLUMNS = 21
 RESULT_COLUMNS = 6
 FILENAME_MAX_LEN = 80
-FILENAME_TAIL_LEN = 5 
+FILENAME_TAIL_LEN = 5
 FILENAME_ELLIPSIS = '…'
 INFO_COMMAND = 'fileinfo'
 PREVIEW_COMMAND = 'open'
@@ -118,7 +118,7 @@ def view_results(args):
         (size, availability, source, duration, codec, bitrate) = res
         filename = clean_name(filename.strip())
         filename = truncate_filename(filename, FILENAME_MAX_LEN, FILENAME_TAIL_LEN, FILENAME_ELLIPSIS)
-        print('%3s %-80s %7s %4s %4s %5s' % (fid, filename, size, availability, source, codec)) 
+        print('%3s %-80s %7s %4s %4s %5s' % (fid, filename, size, availability, source, codec))
 
 def get_path(args):
     path = ACT_REQ_MAP['info']
@@ -132,7 +132,7 @@ def download_info(args):
     file_path = get_path(args)
     check_call([INFO_COMMAND, file_path])
 
-def preview_download(args): 
+def preview_download(args):
     file_path = get_path(args)
     check_call([PREVIEW_COMMAND, file_path])
 
@@ -156,7 +156,7 @@ def view_names(args):
 def view_path(args):
     file_path = get_path(args)
     print(file_path)
- 
+
 def view_downloads():
     path = ACT_REQ_MAP['list']
     request(path)
@@ -229,7 +229,7 @@ def help():
 SYNOPSIS
     %s <action> [arguments]
 
-ACTIONS 
+ACTIONS
     list
         View current downloads.
 
@@ -264,7 +264,7 @@ ACTIONS
         Cancel the given downloads.
 
     preview FID
-        Preview a download. 
+        Preview a download.
 
     rename FID NAME
         Set FID's filename to NAME.
@@ -293,7 +293,7 @@ OPTIONS
         PDF, DJVU, PS, DOC, TXT, ...
 
     -p, --program
-        TAR, BZ2, ZIP, RAR, EXE, ... 
+        TAR, BZ2, ZIP, RAR, EXE, ...
 
     -i, --image
         JPG, PNG, TIFF, ...

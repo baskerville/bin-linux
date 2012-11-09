@@ -1,4 +1,4 @@
 #! /bin/dash
 
-title mutt 
+title mutt
 mutt "$@"
