@@ -13,7 +13,14 @@ case $scheme in
         urxvtc -e mutt "$uri"
         ;;
     ftp)
-        urxvtc -e lftp "$uri"
+        case "$uri" in
+            */)
+                urxvtc -e lftp "$uri"
+                ;;
+            *)
+                urxvtc -e wget -P "$XDG_DOWNLOAD_DIR" "$uri"
+                ;;
+        esac
         ;;
     magnet)
         diana_add "$uri"

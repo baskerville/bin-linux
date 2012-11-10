@@ -1,5 +1,7 @@
 #! /bin/dash
 
+[ -z "$DISPLAY" ] && exit 0
+
 if [ $# -lt 2 ] ; then
     cat << EOF
 SYNOPSIS
