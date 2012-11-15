@@ -26,7 +26,7 @@ do
             filelist="doc"
             ;;
         sys)
-            filelist="/etc/hostname /etc/vconsole.conf /etc/locale.conf /etc/timezone /etc/modules-load.d/modules.conf /etc/pacman.conf $(find /etc/network.d/ -maxdepth 1 -type f) /etc/conf.d/crond /usr/share/kbd/keymaps/extra.map /boot/grub/menu.lst $(ls /usr/modprobe.d/* 2> /dev/null) $(ls /usr/local/bin/* 2> /dev/null) $(ls /etc/udev/rules.d/* 2> /dev/null)"
+            filelist="/etc/hostname /etc/vconsole.conf /etc/locale.conf /etc/timezone /etc/modules-load.d/modules.conf /etc/pacman.conf $(find /etc/network.d/ -maxdepth 1 -type f) /etc/conf.d/crond /usr/share/kbd/keymaps/extra.map /etc/default/grub $(ls /usr/modprobe.d/* 2> /dev/null) $(ls /usr/local/bin/* 2> /dev/null) $(ls /etc/udev/rules.d/* 2> /dev/null)"
             ;;
     esac
     if [ -n "$filelist" ] ; then
