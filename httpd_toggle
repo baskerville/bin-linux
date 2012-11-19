@@ -1,0 +1,10 @@
+#! /bin/dash
+
+sudo systemctl load httpd
+systemctl is-active --quiet httpd
+
+if [ $? -eq 0 ] ; then
+    sudo systemctl stop httpd
+else
+    sudo systemctl start httpd
+fi

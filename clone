@@ -4,6 +4,9 @@
 
 original=$1
 numclones=${2:-1}
+
+[ -e "$original" ] || exit 1 
+
 counter=1
 bsnm=$(basename "$original")
 name=${bsnm%.*}

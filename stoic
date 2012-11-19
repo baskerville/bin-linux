@@ -1,0 +1,218 @@
+#! /usr/bin/env python3
+
+import re
+import sys
+import shutil
+import yaml
+import jinja2
+import misaka
+from bs4 import BeautifulSoup as bs
+from copy import copy
+from getopt import getopt
+from os import curdir, makedirs, listdir
+from os.path import join, isdir, basename, dirname 
+from os.path import splitext, relpath, normpath, abspath
+
+HEAD_BODY_REGEX = '\A(?:^---$(.*)^---$)?\s*(.*)\Z'
+
+title = 'Untitled'
+site_dir = 'site'
+layouts_dir = 'layouts'
+output_dir = 'output'
+
+default_layout = 'base.j2'
+source_extension = 'md'
+source_index = 'index.md'
+destination_index = 'index.html'
+
+home = abspath(output_dir)
+items_per_page = 5
+custom_filters = {}
+exclude = []
+
+copy_mode = False
+env = mkd = root = None
+
+try:
+    sys.path.append(curdir)
+    from settings import *
+    sys.path.pop()
+except ImportError:
+    pass
+
+class PageItem:
+    def __init__(self, filepath):
+        url, content, meta = self.parse(filepath)
+        self.ignore = False
+        self.paginate = False
+        self.parent = self.prev = self.next = None
+        self.children = []
+        self.url = url
+        self.content = content
+        self.__dict__.update(meta)
+        if 'layout' in meta and 'title' in meta:
+            return
+        if not hasattr(self, 'layout'):
+            self.layout = default_layout
+        if not hasattr(self, 'title'):
+            self.title = title
+
+    def parse(self, filepath):
+        if isdir(filepath):
+            filepath = join(filepath, source_index)
+        try:
+            with open(filepath, 'r') as f:
+                head, body = re.search(HEAD_BODY_REGEX, f.read(), re.M | re.S).groups()
+        except FileNotFoundError as exc:
+            print('file not found: {}'.format(filepath), file=sys.stderr)
+            return (None, None, {})
+        if head is None:
+            meta = {}
+        else:
+            meta = yaml.load(head)
+            if not isinstance(meta, dict):
+                meta = {}
+        content = mkd.render(body)
+        filename = basename(filepath)
+        filedir = dirname(relpath(filepath, site_dir))
+        if filename == source_index:
+            url = filedir
+        else:
+            fn_base, fn_ext = splitext(filename)
+            url = join(filedir, fn_base)
+        return (url, content, meta)
+
+    def build(self, top_dir=site_dir):
+        for filename in sorted(listdir(top_dir)):
+            filepath = join(top_dir, filename)
+            filedir = relpath(filepath, site_dir)
+            if filename.startswith('.') or any([filedir.startswith(s) for s in exclude]):
+                continue
+            if isdir(filepath):
+                subtree = PageItem(filepath)
+                self.add_child(subtree)
+                subtree.build(filepath)
+            else:
+                if (filename == source_index):
+                    continue
+                if filename.endswith('.{}'.format(source_extension)):
+                    child = PageItem(filepath)
+                    self.add_child(child)
+                elif copy_mode:
+                    dst = normpath(join(output_dir, relpath(filepath, site_dir)))
+                    try:
+                        makedirs(dirname(dst))
+                    except FileExistsError:
+                        pass
+                    print(dst)
+                    shutil.copy(filepath, dst)
+
+    def foliate(self):
+        if self.paginate and not self.parent is None:
+            children_chunks = chunks(self.children, items_per_page)
+            self.children.clear()
+            container = copy(self)
+            container.ignore = True
+            for mark, children in enumerate(children_chunks):
+                child = copy(self)
+                child.children = children
+                attribute = 'url'
+                if mark == 0:
+                    attribute = 'symlink'
+                setattr(child, attribute, '{}/{}'.format(self.url, mark + 1))
+                container.add_child(child)
+                for subchild in children:
+                    subchild.parent = child
+                    subchild.url = join(child.url, relpath(subchild.url, self.url))
+            for child in container.children:
+                child.children[0].prev = child.children[-1].next = None
+            brothers = self.parent.children
+            brothers[brothers.index(self)] = container
+        else:
+            for child in self.children:
+                child.foliate()
+
+    def render(self, trail=[]):
+        trail.append(self)
+        if self.ignore or self.url is None:
+            pass
+        else:
+            tpl = env.get_template(self.layout)
+            urls = [self.url]
+            if hasattr(self, 'symlink'):
+                urls.append(self.symlink)
+            for url in urls:
+                self.url = url
+                dst = normpath(join(output_dir, url, destination_index))
+                print(dst)
+                try:
+                    makedirs(dirname(dst))
+                except FileExistsError:
+                    pass
+                with open(dst, 'w') as f:
+                    html = tpl.render(item=self, root=root, trail=trail, home=home, title=title)
+                    soup = bs(html)
+                    f.write(soup.prettify())
+            self.url = urls[0]
+            print(self.url, file=sys.stderr)
+        for child in self.children:
+            child.render(trail)
+        trail.pop()
+
+    def add_child(self, child):
+        if self.url is None:
+            return
+        if self.paginate and len(self.children) > 0:
+            last = self.children[-1]
+            last.next = child
+            child.prev = last
+        self.children.append(child)
+        child.parent = self
+        if self.paginate and not hasattr(child, 'mark'):
+            child.mark = len(self.children)
+
+    def relurl(self, other):
+        if re.match('[a-z]+:[^/].*', self.url):
+            return self.url
+        else:
+            return relpath(self.url, other.url)
+
+def chunks(a, n):
+    return [a[i:i + n] for i in range(0, len(a), n)]
+
+def usage():
+    print('''
+    SYNOPSIS
+        {} [OPTIONS]
+
+    OPTIONS
+        -h, --help
+            Show this help message.
+
+        -c, --copy-mode
+            Copy the unknown files to the output directory.
+    '''.format(basename(sys.argv[0])))
+    sys.exit(0)
+
+def main():
+    global env, mkd, root, copy_mode
+    options, args = getopt(sys.argv[1:], 'hc', ['help', 'verbose', 'copy-mode'])
+    for opt, val in options:
+        if opt in ('-h', '--help'):
+            usage()
+        elif opt in ('-c', '--copy-mode'):
+            copy_mode = True
+    ldr = jinja2.FileSystemLoader([layouts_dir])
+    env = jinja2.Environment(loader=ldr)
+    env.filters.update(custom_filters)
+    rndr = misaka.HtmlRenderer()
+    mkd = misaka.Markdown(rndr)
+    root = PageItem(site_dir)
+    root.build()
+    if items_per_page > 0:
+        root.foliate()
+    if not copy_mode:
+        root.render()
+
+if __name__ == '__main__':
+    main()

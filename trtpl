@@ -10,11 +10,19 @@ from getopt import getopt
 from colormath.color_objects import RGBColor, LCHabColor
 
 color_scheme = {}
+custom_filters = {}
 output_dir = 'outputs'
 templates_dir = 'templates'
 filename_suffix = ''
 preserve_extensions = False
 exclude_pattern = None
+
+try:
+    sys.path.append('.')
+    from settings import *
+    sys.path.pop()
+except ImportError as err:
+    pass
 
 def lch_to_hex(lch_color):
     return lch_color.convert_to('rgb').get_rgb_hex().upper()
@@ -82,6 +90,7 @@ def translate_templates():
     env.filters['_C'] = set_chroma
     env.filters['H'] = tune_hue
     env.filters['_H'] = set_hue
+    env.filters.update(custom_filters)
 
     if not exists(output_dir):
         mkdir(output_dir)
