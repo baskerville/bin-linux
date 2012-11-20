@@ -23,4 +23,4 @@ bspc set focus_follows_mouse true
 # bspc adopt_orphans
 
 updatethm
-# compton -bc -t -8 -l -9 -r 6 -o 0.7
+# compton --respect-attr-shadow -bc -t -8 -l -9 -r 6 -o 0.7
