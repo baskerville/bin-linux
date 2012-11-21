@@ -27,7 +27,7 @@ default_layout = 'base.j2'
 source_extension = 'md'
 source_index = 'index.md'
 destination_index = 'index.html'
-thumbnail_fmt = '{}/thumbnails/th_{}.jpg'
+thumbnail_fmt = '{}/thumbnails/tn_{}.jpg'
 
 home = abspath(output_dir)
 items_per_page = 5
