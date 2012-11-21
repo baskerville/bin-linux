@@ -7,11 +7,11 @@ import jinja2
 import misaka
 import shutil
 from copy import copy
-from haslib import md5
+from hashlib import md5
 from getopt import getopt
 from mimetypes import guess_type
 from bs4 import BeautifulSoup as bs
-from os import curdir, makedirs, listdir
+from os import curdir, makedirs, listdir, walk
 from os.path import join, isdir, basename, dirname 
 from os.path import splitext, relpath, normpath, abspath
 
@@ -21,6 +21,7 @@ title = 'Untitled'
 site_dir = 'site'
 layouts_dir = 'layouts'
 output_dir = 'output'
+assets_dir = 'site/assets'
 
 default_layout = 'base.j2'
 source_extension = 'md'
@@ -45,8 +46,9 @@ except ImportError:
 
 class PageItem:
     def __init__(self, filepath):
-        url, body, head = PageItem.parse(filepath)
+        url, body, head = parse(filepath)
         self.url = url
+        self.filepath = filepath
         if url is None:
             return
         if head is None:
@@ -55,7 +57,8 @@ class PageItem:
             meta = yaml.load(head)
             if not isinstance(meta, dict):
                 meta = {}
-        content = mdk.render(body)
+        body = jinja2.Template(body).render(home=home, title=title)
+        content = mkd.render(body)
         self.ignore = False
         self.paginate = False
         self.parent = self.prev = self.next = None
@@ -68,24 +71,6 @@ class PageItem:
             self.layout = default_layout
         if not hasattr(self, 'title'):
             self.title = title
-
-    @staticmethod
-    def parse(filepath):
-        if isdir(filepath):
-            filepath = join(filepath, source_index)
-        try:
-            with open(filepath, 'r') as f:
-                head, body = re.search(HEAD_BODY_REGEX, f.read(), re.M | re.S).groups()
-        except FileNotFoundError as exc:
-            return (None, None, None)
-        filename = basename(filepath)
-        filedir = dirname(relpath(filepath, site_dir))
-        if filename == source_index:
-            url = filedir
-        else:
-            fn_base, fn_ext = splitext(filename)
-            url = join(filedir, fn_base)
-        return (url, body, head)
 
     def build(self, top_dir=site_dir):
         for filename in sorted(listdir(top_dir)):
@@ -113,6 +98,8 @@ class PageItem:
                     shutil.copy(filepath, dst)
 
     def foliate(self):
+        if self.url is None:
+            return
         if self.paginate and not self.parent is None:
             children_chunks = chunks(self.children, items_per_page)
             self.children.clear()
@@ -164,7 +151,7 @@ class PageItem:
         trail.pop()
 
     def add_child(self, child):
-        if self.url is None:
+        if child.url is None:
             return
         if self.paginate and len(self.children) > 0:
             last = self.children[-1]
@@ -181,10 +168,29 @@ class PageItem:
         else:
             return relpath(self.url, other.url)
 
+def parse(filepath):
+    if isdir(filepath):
+        filepath = join(filepath, source_index)
+    try:
+        with open(filepath, 'r') as f:
+            head, body = re.search(HEAD_BODY_REGEX, f.read(), re.M | re.S).groups()
+    except FileNotFoundError as exc:
+        return (None, None, None)
+    filename = basename(filepath)
+    filedir = dirname(relpath(filepath, site_dir))
+    if filename == source_index:
+        url = filedir
+    else:
+        fn_base, fn_ext = splitext(filename)
+        url = join(filedir, fn_base)
+    url = normpath(url)
+    return (url, body, head)
+
 def save(body, head, filepath):
     try:
-        with open(filepath, 'w') as f:
-            print('---\n{}---\n{}'.format(head, body), file=f, end='')
+        # with open(filepath, 'w') as fileobj:
+            # print('---\n{}---\n{}'.format(head, body), file=fileobj, end='')
+        print('---\n{}---\n{}'.format(head, body))
     except Exception:
         pass
 
@@ -208,8 +214,8 @@ def synchronize_assets(filepaths):
         for filename in filenames:
             filepath = join(top_dir, filename)
             if filename.endswith(source_extension):
-                url, body, head = PageItem.parse(filepath)
-                if head is None
+                url, body, head = parse(filepath)
+                if head is None:
                     continue
                 meta = yaml.load(head)
                 if not isinstance(meta, dict):
@@ -226,20 +232,28 @@ def synchronize_assets(filepaths):
                             meta['thumbnail'] = thumbnail_fmt.format(asset_dir, asset_base)
                         del md5_to_path[source_md5]
                         del path_to_md5[asset_path]
-                        save(body, yaml.dump(meta), filepath)
+                        save(body, yaml.dump(meta), filepath=filepath)
                     elif source_path in path_to_md5:
                         asset_md5 = path_to_md5[source_path]
                         meta['md5'] = asset_md5
                         del path_to_md5[source_path]
                         del md5_to_path[asset_md5]
-                        save(body, yaml.dump(meta), filepath)
+                        save(body, yaml.dump(meta), filepath=filepath)
 
-    for asset_md5, asset_path in md5_to_path:
-        source_path = 
-
-                
-
-
+    for asset_md5, asset_path in md5_to_path.items():
+        filepath = join(site_dir, asset_path)
+        filename = basename(asset_path)
+        fn_base, fn_ext = splitext(filename)
+        source_dir = dirname(join(site_dir, relpath(filepath, assets_dir)))
+        source_path = join(source_dir, '{}.{}'.format(fn_base, source_extension))
+        print(source_path, file=sys.stderr)
+        date = None
+        date_query = re.search('^(\d{4})', fn_base)
+        if not date_query is None:
+            date = int(date_query.groups()[0])
+        source_body = '\n'
+        source_head = yaml.dump({'title': 'Untitled', 'date': date, 'md5': asset_md5, 'asset': asset_path}, default_flow_style=False)
+        save(source_body, source_head, filepath=source_path)
     # fn_type, fn_encoding = guess_type(join(top_dir, filename))
     #     print(filename, filetype)
     sys.exit(0)
@@ -255,6 +269,9 @@ def usage():
 
         -c, --copy-mode
             Copy the unknown files to the output directory.
+
+        -a, --sync-assets FILE ...
+            Synchronize the given assets.
 
         -o, --output-dir OUTPUT_DIR
             Set the output directory.

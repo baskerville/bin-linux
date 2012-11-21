@@ -36,7 +36,11 @@ if [ "$action" = "repeat" ]; then
     exit
 fi
 
-destination=$(cat "$move_places" | dmenu_select)
+if  [ "$action" != "rename" ] ; then
+    destination=$(cat "$move_places" | dmenu_select)
+else
+    destination=$(echo -n "$(basename "$@")" | dmenu_select)
+fi
 
 if [ -n "$destination" -a -$? -eq 0 ]; then
     destination=${destination//\~/$HOME}
@@ -48,7 +52,7 @@ if [ -n "$destination" -a -$? -eq 0 ]; then
             mv -t "$destination" "$@"
             ;;
         rename)
-            mv "$@" "$destination"
+            mv "$@" "$(dirname "$@")/$destination"
             ;;
         *)
             echo "action '$action' is unknown" >&2

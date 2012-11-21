@@ -4,7 +4,7 @@ ext='jpg'
 side=80
 quality=75
 gravity='North'
-pixel=0
+pixel=1
 
 while getopts 's:e:p:q:g:' opt ; do
     case $opt in
@@ -33,7 +33,8 @@ if [ $# -lt 1 ] ; then
     exit 1
 fi
 
-small=$((side / 4))
+shrink=$(((100 * pixel) / side))
+grow=$(((100 * side) / pixel))
 
 while [ $# -gt 0 ] ; do
     imagepath=$1
@@ -44,10 +45,9 @@ while [ $# -gt 0 ] ; do
     mkdir -p "$thumbdir"
     thumbpath="$thumbdir/tn_$imagebase.$ext"
     convert -resize ${side}x${side}^ -gravity $gravity -extent ${side}x${side} -quality $quality -interlace Line "$imagepath" "$thumbpath"
-    if [ $pixel -gt 0 ] ; then
-        shrink=$((side / pixel))
-        grow=$((10000 / shrink))
-        mogrify -filter Catrom -resize ${shrink}% -scale ${grow}% "$thumbpath"
+    if [ $pixel -gt 1 ] ; then
+        # mogrify -scale ${shrink}% -scale ${grow}% "$thumbpath"
+        mogrify -filter Lanczos -resize ${shrink}% -scale ${grow}% "$thumbpath"
     fi
     shift
 done

@@ -24,7 +24,7 @@ while [ $# -gt 0 ] ; do
                 document_reader "$1"
                 ;;
             image/x-canon-cr2)
-                dcraw -T "$1"
+                dcraw -T -w "$1"
                 ;;
             image/svg+xml|application/x-shockwave-flash)
                 web_browser "$1"
