@@ -27,7 +27,7 @@ default_layout = 'base.j2'
 source_extension = 'md'
 source_index = 'index.md'
 destination_index = 'index.html'
-thumbnail_format = 'th_{}'
+thumbnail_fmt = '{}/thumbnails/th_{}.jpg'
 
 home = abspath(output_dir)
 items_per_page = 5
@@ -246,13 +246,14 @@ def synchronize_assets(filepaths):
         fn_base, fn_ext = splitext(filename)
         source_dir = dirname(join(site_dir, relpath(filepath, assets_dir)))
         source_path = join(source_dir, '{}.{}'.format(fn_base, source_extension))
+        thumbnail_path = thumbnail_fmt.format(dirname(asset_path), fn_base)
         print(source_path, file=sys.stderr)
         date = None
         date_query = re.search('^(\d{4})', fn_base)
         if not date_query is None:
             date = int(date_query.groups()[0])
         source_body = '\n'
-        source_head = yaml.dump({'title': 'Untitled', 'date': date, 'md5': asset_md5, 'asset': asset_path}, default_flow_style=False)
+        source_head = yaml.dump({'title': 'Untitled', 'date': date, 'md5': asset_md5, 'asset': asset_path, 'thumbnail': thumbnail_path}, default_flow_style=False)
         save(source_body, source_head, filepath=source_path)
     # fn_type, fn_encoding = guess_type(join(top_dir, filename))
     #     print(filename, filetype)
