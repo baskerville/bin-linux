@@ -46,7 +46,7 @@ while [ $# -gt 0 ] ; do
     thumbpath="$thumbdir/tn_$imagebase.$ext"
     convert -resize ${side}x${side}^ -gravity $gravity -extent ${side}x${side} -quality $quality -interlace Line "$imagepath" "$thumbpath"
     if [ $pixel -gt 1 ] ; then
-        mogrify -filter Box -resize ${shrink}% -scale ${grow}% "$thumbpath"
+        mogrify -filter Box -resize ${shrink}% -auto-level -scale ${grow}% "$thumbpath"
     fi
     shift
 done
