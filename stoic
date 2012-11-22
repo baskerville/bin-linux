@@ -9,7 +9,6 @@ import shutil
 from copy import copy
 from hashlib import md5
 from getopt import getopt
-from mimetypes import guess_type
 from bs4 import BeautifulSoup as bs
 from os import curdir, makedirs, listdir, walk
 from os.path import join, isdir, basename, dirname 
@@ -34,7 +33,6 @@ items_per_page = 5
 custom_filters = {}
 exclude = []
 
-copy_mode = False
 env = mkd = root = None
 
 try:
@@ -88,14 +86,6 @@ class PageItem:
                 if filename.endswith('.{}'.format(source_extension)):
                     child = PageItem(filepath)
                     self.add_child(child)
-                elif copy_mode:
-                    dst = normpath(join(output_dir, relpath(filepath, site_dir)))
-                    try:
-                        makedirs(dirname(dst))
-                    except FileExistsError:
-                        pass
-                    print(dst)
-                    shutil.copy(filepath, dst)
 
     def foliate(self):
         if self.url is None:
@@ -137,10 +127,7 @@ class PageItem:
                 self.url = url
                 dst = normpath(join(output_dir, url, destination_index))
                 print(dst)
-                try:
-                    makedirs(dirname(dst))
-                except FileExistsError:
-                    pass
+                mkdir(dst)
                 with open(dst, 'w') as f:
                     html = tpl.render(item=self, root=root, trail=trail, home=home, title=title)
                     soup = bs(html)
@@ -186,10 +173,30 @@ def parse(filepath):
     url = normpath(url)
     return (url, body, head)
 
+def copy_unkown():
+    for top_dir, dirnames, filenames in walk(site_dir):
+        for filename in filenames:
+            if filename.endswith('.{}'.format(source_extension)):
+                continue
+            filepath = join(top_dir, filename)
+            dst = normpath(join(output_dir, relpath(filepath, site_dir)))
+            print(dst)
+            mkdir(dst)
+            shutil.copy(filepath, dst)
+
+def mkdir(filepath):
+    if not isdir(filepath):
+        filepath = dirname(filepath)
+    try:
+        makedirs(filepath)
+    except FileExistsError:
+        pass
+
 def save(body, head, filepath):
     try:
         # with open(filepath, 'w') as fileobj:
             # print('---\n{}---\n{}'.format(head, body), file=fileobj, end='')
+        # mkdir(filepath)
         print('---\n{}---\n{}'.format(head, body))
     except Exception:
         pass
@@ -208,7 +215,7 @@ def synchronize_assets(filepaths):
                 md5_to_path[asset_md5] = asset_path
                 path_to_md5[asset_path] = asset_md5
         except FileNotFoundError:
-            print('file missing: {}' % filepath, file=sys.stderr)
+            print('file missing: {}'.format(filepath), file=sys.stderr)
             continue
     for top_dir, dirnames, filenames in walk(site_dir):
         for filename in filenames:
@@ -226,19 +233,21 @@ def synchronize_assets(filepaths):
                     if source_md5 in md5_to_path:
                         asset_path = md5_to_path[source_md5]
                         if source_path != asset_path:
+                            print('path changed: {} -> {}'.format(source_path, asset_path))
                             meta['asset'] = asset_path
                             asset_dir = dirname(asset_path)
                             asset_base, asset_ext = splitext(basename(asset_path))
                             meta['thumbnail'] = thumbnail_fmt.format(asset_dir, asset_base)
                         del md5_to_path[source_md5]
                         del path_to_md5[asset_path]
-                        save(body, yaml.dump(meta), filepath=filepath)
+                        save(body, yaml.dump(meta, default_flow_style=False), filepath=filepath)
                     elif source_path in path_to_md5:
                         asset_md5 = path_to_md5[source_path]
+                        print('md5 changed: {} -> {}'.format(source_md5, asset_md5))
                         meta['md5'] = asset_md5
                         del path_to_md5[source_path]
                         del md5_to_path[asset_md5]
-                        save(body, yaml.dump(meta), filepath=filepath)
+                        save(body, yaml.dump(meta, default_flow_style=False), filepath=filepath)
 
     for asset_md5, asset_path in md5_to_path.items():
         filepath = join(site_dir, asset_path)
@@ -247,17 +256,14 @@ def synchronize_assets(filepaths):
         source_dir = dirname(join(site_dir, relpath(filepath, assets_dir)))
         source_path = join(source_dir, '{}.{}'.format(fn_base, source_extension))
         thumbnail_path = thumbnail_fmt.format(dirname(asset_path), fn_base)
-        print(source_path, file=sys.stderr)
         date = None
-        date_query = re.search('^(\d{4})', fn_base)
+        date_query = re.search('^(\d{4})\D', fn_base)
         if not date_query is None:
             date = int(date_query.groups()[0])
         source_body = '\n'
         source_head = yaml.dump({'title': 'Untitled', 'date': date, 'md5': asset_md5, 'asset': asset_path, 'thumbnail': thumbnail_path}, default_flow_style=False)
+        print('new content: {}'.format(source_path))
         save(source_body, source_head, filepath=source_path)
-    # fn_type, fn_encoding = guess_type(join(top_dir, filename))
-    #     print(filename, filetype)
-    sys.exit(0)
 
 def usage():
     print('''
@@ -280,16 +286,17 @@ def usage():
     sys.exit(0)
 
 def main():
-    global env, mkd, root, copy_mode, exclude, output_dir
+    global env, mkd, root, exclude, output_dir
     options, args = getopt(sys.argv[1:], 'hcao:', ['help', 'verbose', 'copy-mode', 'sync-assets', 'output-dir='])
     for opt, val in options:
         if opt in ('-h', '--help'):
             usage()
         elif opt in ('-a', '--sync-assets'):
             synchronize_assets(args)
+            sys.exit(0)
         elif opt in ('-c', '--copy-mode'):
-            copy_mode = True
-            exclude = []
+            copy_unkown()
+            sys.exit(0)
         elif opt in ('-o', '--output-dir'):
             output_dir = val
     ldr = jinja2.FileSystemLoader([layouts_dir])
@@ -301,8 +308,7 @@ def main():
     root.build()
     if items_per_page > 0:
         root.foliate()
-    if not copy_mode:
-        root.render()
+    root.render()
 
 if __name__ == '__main__':
     main()
