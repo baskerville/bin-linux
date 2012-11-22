@@ -1,0 +1,28 @@
+#! /bin/dash
+
+density=150
+background='16#ffffff'
+
+while getopts 'd:b:' opt ; do
+    case $opt in
+        d)
+            density=$OPTARG
+            ;;
+        b)
+            background="16$OPTARG"
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+if [ $# -lt 1 ] ; then
+    printf "%s [-d DENSITY|-b BACKGROUND] PDFFILE ...\n" "${0##*/}" >&2
+    exit 1
+fi
+
+while [ $# -gt 0 ] ; do
+    output=${1%.*}.png
+    gs -q -r$density -dSAFER -dNOPAUSE -dBATCH -dTextAlphaBits=4 -dGraphicsAlphaBits=4 -dBackgroundColor="$background" -sDEVICE=pngalpha -sOutputFile="$output" "$1"
+    shift
+done
