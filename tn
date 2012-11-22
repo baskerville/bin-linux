@@ -6,8 +6,9 @@ quality=75
 gravity='Center'
 pixel=1
 filter='Cubic'
+colorspace='sRGB'
 
-while getopts 's:e:p:q:g:f:' opt ; do
+while getopts 's:e:p:q:g:f:c:' opt ; do
     case $opt in
         s)
             side=$OPTARG
@@ -27,13 +28,16 @@ while getopts 's:e:p:q:g:f:' opt ; do
         f)
             filter=$OPTARG
             ;;
+        c)
+            colorspace=$OPTARG
+            ;;
     esac
 done
 
 shift $(($OPTIND - 1))
 
 if [ $# -lt 1 ] ; then
-    printf "usage: %s [-s SIDE|-e EXT|-p PIXEL|-q QUALITY|-g GRAVITY|-f FILTER] FILE ...\n" "${0##*/}"
+    printf "usage: %s [-s SIDE|-e EXT|-p PIXEL|-q QUALITY|-g GRAVITY|-f FILTER|-c COLORSPACE] FILE ...\n" "${0##*/}"
     exit 1
 fi
 
@@ -48,9 +52,8 @@ while [ $# -gt 0 ] ; do
     thumbdir="$imagedir/thumbnails"
     mkdir -p "$thumbdir"
     thumbpath="$thumbdir/tn_$imagebase.$ext"
-    convert -filter "$filter" -resize ${side}x${side}^ -gravity $gravity -extent ${side}x${side} -quality $quality -interlace Line "$imagepath" "$thumbpath"
+    convert -filter "$filter" -colorspace "$colorspace" -resize ${side}x${side}^ -gravity $gravity -extent ${side}x${side} -quality $quality -interlace Line "$imagepath" "$thumbpath"
     if [ $pixel -gt 1 ] ; then
-        # mogrify -filter "$filter" -colorspace LAB -resize ${shrink}% -colorspace sRGB -auto-level -scale ${grow}% "$thumbpath"
         mogrify -filter "$filter" -resize ${shrink}% -auto-level -scale ${grow}% "$thumbpath"
     fi
     shift
