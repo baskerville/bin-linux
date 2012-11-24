@@ -27,11 +27,11 @@ for item in "$@" ; do
     full_parent="$parent/$basename"
     mkdir -p "$full_parent"
     num=$(printf "%02d" $counter)
-    target="$full_parent/$basename-$num.$ext"
+    target="$full_parent/$basename$num.$ext"
 
     if [ "$ext" = "$item" ]
     then
-        target="$full_parent/$basename-$num"
+        target="$full_parent/$basename$num"
     elif [ ${#ext} -gt 6 ]
     then
         mime_type=$(file -b --mime-type $item)
@@ -49,7 +49,7 @@ for item in "$@" ; do
             *)
                 ext='unk';;
         esac
-        target="$full_parent/$basename-$num.$ext"
+        target="$full_parent/$basename$num.$ext"
     fi
 
     $cmd -v "$item" "$target"

@@ -34,7 +34,7 @@ while [ $# -gt 0 ] ; do
     imagedir=$(dirname "$imagepath")
     imagebase=$(basename "$imagepath")
     imagebase=${imagebase%.*}
-    previewdir="$imagedir/preview"
+    previewdir="$imagedir/previews"
     mkdir -p "$previewdir"
     previewpath="$previewdir/pv_$imagebase.$ext"
     convert -filter "$filter" -resize ${area}@\> -quality $quality -interlace Line "$imagepath" "$previewpath"

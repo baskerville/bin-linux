@@ -9,6 +9,7 @@ import shutil
 from copy import copy
 from hashlib import md5
 from getopt import getopt
+from mimetypes import guess_type
 from bs4 import BeautifulSoup as bs
 from os import curdir, makedirs, listdir, walk
 from os.path import join, isdir, basename, dirname 
@@ -55,14 +56,15 @@ class PageItem:
             meta = yaml.load(head)
             if not isinstance(meta, dict):
                 meta = {}
-        body = jinja2.Template(body).render(home=home, title=title)
-        content = mkd.render(body)
-        self.ignore = False
-        self.paginate = False
         self.parent = self.prev = self.next = None
         self.children = []
-        self.content = content
+        self.title = title
+        self.ignore = False
+        self.paginate = False
         self.__dict__.update(meta)
+        body = jinja2.Template(body).render(home=home, title=title)
+        content = mkd.render(body)
+        self.content = content
         if 'layout' in meta and 'title' in meta:
             return
         if not hasattr(self, 'layout'):
@@ -78,6 +80,8 @@ class PageItem:
                 continue
             if isdir(filepath):
                 subtree = PageItem(filepath)
+                if subtree.url is None:
+                    continue
                 self.add_child(subtree)
                 subtree.build(filepath)
             else:
@@ -149,6 +153,9 @@ class PageItem:
         if self.paginate and not hasattr(child, 'mark'):
             child.mark = len(self.children)
 
+    def has_brothers(self):
+        return not self.parent is None and len(self.parent.children) > 1
+
     def relurl(self, other):
         if re.match('[a-z]+:[^/].*', self.url):
             return self.url
@@ -194,11 +201,10 @@ def mkdir(filepath):
 
 def save(body, head, filepath):
     try:
-        # with open(filepath, 'w') as fileobj:
-            # print('---\n{}---\n{}'.format(head, body), file=fileobj, end='')
-        # mkdir(filepath)
-        print('---\n{}---\n{}'.format(head, body))
-    except Exception:
+        mkdir(filepath)
+        with open(filepath, 'w') as fileobj:
+            print('---\n{}---\n\n{}'.format(head, body), file=fileobj, end='')
+    except Exception as exc:
         pass
 
 def chunks(a, n):
@@ -211,7 +217,7 @@ def synchronize_assets(filepaths):
         try:
             with open(filepath, 'rb') as f:
                 asset_md5 = md5(f.read()).hexdigest()
-                asset_path = relpath(filepath, site_dir) 
+                asset_path = relpath(filepath, site_dir)
                 md5_to_path[asset_md5] = asset_path
                 path_to_md5[asset_path] = asset_md5
         except FileNotFoundError:
@@ -229,7 +235,7 @@ def synchronize_assets(filepaths):
                     continue
                 if 'asset' in meta and 'md5' in meta:
                     source_md5 = meta['md5']
-                    source_path = relpath(meta['asset'], site_dir)
+                    source_path = relpath(join(site_dir, meta['asset']), site_dir)
                     if source_md5 in md5_to_path:
                         asset_path = md5_to_path[source_md5]
                         if source_path != asset_path:
@@ -256,12 +262,17 @@ def synchronize_assets(filepaths):
         source_dir = dirname(join(site_dir, relpath(filepath, assets_dir)))
         source_path = join(source_dir, '{}.{}'.format(fn_base, source_extension))
         thumbnail_path = thumbnail_fmt.format(dirname(asset_path), fn_base)
+        filetype, fileencoding = guess_type(filepath)
+        if filetype is None:
+            layout = default_layout
+        else:
+            layout = '{}.j2'.format(re.search('^[^/]+', filetype).group(0))
         date = None
         date_query = re.search('^(\d{4})\D', fn_base)
         if not date_query is None:
             date = int(date_query.groups()[0])
         source_body = '\n'
-        source_head = yaml.dump({'title': 'Untitled', 'date': date, 'md5': asset_md5, 'asset': asset_path, 'thumbnail': thumbnail_path}, default_flow_style=False)
+        source_head = yaml.dump({'layout': layout, 'date': date, 'md5': asset_md5, 'asset': asset_path, 'thumbnail': thumbnail_path}, default_flow_style=False)
         print('new content: {}'.format(source_path))
         save(source_body, source_head, filepath=source_path)
 
