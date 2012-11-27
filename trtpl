@@ -11,7 +11,7 @@ from colormath.color_objects import RGBColor, LCHabColor
 
 color_scheme = {}
 custom_filters = {}
-output_dir = 'outputs'
+output_dir = 'output'
 templates_dir = 'templates'
 filename_suffix = ''
 preserve_extensions = False
