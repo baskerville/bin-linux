@@ -5,9 +5,8 @@ bspc add Two Three Four Five Six Seven Eight Nine Ten
 bspc layout monocle One Two Three Four Five Six Seven Eight Nine Ten
 
 bspc rule Gimp Eight floating
-bspc rule Inkscape floating
+bspc rule Inkscape Seven floating
 bspc rule fontforge floating
-bspc rule MyPaint floating
 bspc rule Download floating
 # bspc rule processing-app-Base floating
 
