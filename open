@@ -85,6 +85,9 @@ while [ $# -gt 0 ] ; do
                     *.ace)
                         unace x "$1"
                         ;;
+                    *.7z)
+                        7z x "$1"
+                        ;;
                     *.chm)
                         xchm "$1"
                         ;;
