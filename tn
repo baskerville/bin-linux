@@ -4,20 +4,16 @@ ext='jpg'
 side=80
 quality=75
 gravity='Center'
-pixel=1
 filter='Cubic'
 colorspace='sRGB'
 
-while getopts 's:e:p:q:g:f:c:' opt ; do
+while getopts 's:e:q:g:f:c:' opt ; do
     case $opt in
         s)
             side=$OPTARG
             ;;
         e)
             ext=$OPTARG
-            ;;
-        p)
-            pixel=$OPTARG
             ;;
         q)
             quality=$OPTARG
@@ -37,12 +33,9 @@ done
 shift $(($OPTIND - 1))
 
 if [ $# -lt 1 ] ; then
-    printf "usage: %s [-s SIDE|-e EXT|-p PIXEL|-q QUALITY|-g GRAVITY|-f FILTER|-c COLORSPACE] FILE ...\n" "${0##*/}"
+    printf "usage: %s [-s SIDE|-e EXT|-q QUALITY|-g GRAVITY|-f FILTER|-c COLORSPACE] FILE ...\n" "${0##*/}"
     exit 1
 fi
-
-shrink=$(((100 * pixel) / side))
-grow=$(((100 * side) / pixel))
 
 while [ $# -gt 0 ] ; do
     imagepath=$1
@@ -52,9 +45,7 @@ while [ $# -gt 0 ] ; do
     thumbdir="$imagedir/thumbnails"
     mkdir -p "$thumbdir"
     thumbpath="$thumbdir/tn_$imagebase.$ext"
-    convert -filter "$filter" -colorspace "$colorspace" -resize ${side}x${side}^ -gravity $gravity -extent ${side}x${side} -quality $quality -interlace Line "$imagepath" "$thumbpath"
-    if [ $pixel -gt 1 ] ; then
-        mogrify -filter "$filter" -resize ${shrink}% -auto-level -scale ${grow}% "$thumbpath"
-    fi
+    # convert -filter "$filter" -colorspace "$colorspace" -resize ${side}x${side}^ -gravity $gravity -extent ${side}x${side} -quality $quality -interlace Line "$imagepath" "$thumbpath"
+    convert -scale ${side}x${side}^ -gravity $gravity -extent ${side}x${side} -quality $quality -interlace Line "$imagepath" "$thumbpath"
     shift
 done
