@@ -8,15 +8,15 @@ fi
 action=$1
 shift
 
-MAX_LINES=128
-move_places="$XDG_DATA_HOME/wuwei_places"
-places_temp="$XDG_DATA_HOME/wuwei_places.tmp"
-last_action="$XDG_DATA_HOME/wuwei_last_action"
+MAX_LINES=512
+move_places="$XDG_DATA_HOME/catapult_places"
+places_temp="$XDG_DATA_HOME/catapult_places.tmp"
+last_action="$XDG_DATA_HOME/catapult_last_action"
 
-if [ "$action" = "repeat" ]; then
+if [ "$action" = "repeat" ] ; then
     destination=$(head -n 1 "$move_places")
     destination=${destination//\~/$HOME}
-    if [ -z "$destination" ]; then
+    if [ -z "$destination" ] ; then
         echo 'last destination is missing' >&2
         exit 1
     fi
@@ -34,6 +34,10 @@ if [ "$action" = "repeat" ]; then
             ;;
     esac
     exit
+elif [ "$action" = "purge" ] ; then
+    cat "$move_places" | sed 's:~:'$HOME':' | xargs -d '\n' ls -d | sed 's:'$HOME':~:' > "$places_temp"
+    mv "$places_temp" "$move_places"
+    exit 0
 fi
 
 if  [ "$action" != "rename" ] ; then

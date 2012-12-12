@@ -19,18 +19,19 @@ while true ; do
             case "$wstate" in
                 *_NET_WM_STATE_FULLSCREEN)
                     xset -dpms
-                    # printf "%s dpms deactivated\n" "$date_stamp" >> ~/.happy_fs.log
+                    # printf "%s dpms deactivated (fullscreen)\n" "$date_stamp" >> ~/.happy_fs.log
                     ;;
                 *)
                     xset +dpms
-                    # printf "%s dpms activated\n" "$date_stamp" >> ~/.happy_fs.log
+                    # printf "%s dpms activated (wrong state)\n" "$date_stamp" >> ~/.happy_fs.log
                     ;;
             esac
         else
             xset +dpms
+            # printf "%s dpms activated (can't get state)\n" "$date_stamp" >> ~/.happy_fs.log
         fi
     else
         xset +dpms
-        # printf "%s dpms activated\n" "$date_stamp" >> ~/.happy_fs.log
+        # printf "%s dpms activated (no active window)\n" "$date_stamp" >> ~/.happy_fs.log
     fi
 done
