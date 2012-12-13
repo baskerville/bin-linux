@@ -19,6 +19,7 @@ bspc set top_padding         24
 bspc set borderless_monocle  true
 bspc set gapless_monocle     true
 bspc set focus_follows_mouse true
+bspc set adaptative_raise    true
 # bspc adopt_orphans
 
 updatethm
