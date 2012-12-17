@@ -5,44 +5,65 @@ CONNECT_QUERY="sqlite3 $URLS_DB"
 BASE_QUERY="sqlite3 -line $URLS_DB"
 RAW_QUERY="sqlite3 -list $URLS_DB"
 
-if [ $# -lt 1 ]; then
-    echo 'no arguments given' >&2
+if [ $# -lt 1 ] ; then
+    printf "%s\n" 'no arguments given' >&2
     exit 1
 fi
 
 case "$1" in
     ids)
-        $BASE_QUERY 'select rowid,* from urls;';;
+        $BASE_QUERY 'select rowid,* from urls;'
+        ;;
     list)
-        $BASE_QUERY 'select * from urls;';;
+        $BASE_QUERY 'select * from urls;'
+        ;;
     raw)
-        $RAW_QUERY 'select uri,title from urls;';;
+        $RAW_QUERY 'select uri,title from urls;'
+        ;;
     find)
-        $RAW_QUERY "select uri from urls where uri like '%$2%';";;
+        $RAW_QUERY "select uri from urls where uri like '%$2%';"
+        ;;
     title)
-        $BASE_QUERY "select * from urls where title like '%$2%';";;
+        $BASE_QUERY "select * from urls where title like '%$2%';"
+        ;;
     search)
-        $BASE_QUERY "select * from urls where uri like '%$2%' or title like '%$2%';";;
+        $BASE_QUERY "select * from urls where uri like '%$2%' or title like '%$2%';"
+        ;;
     day)
-        $RAW_QUERY "select uri from urls where date(\"now\") < date(\"when_added\", \"+${2:-1} days\");";;
+        $RAW_QUERY "select uri from urls where date(\"now\") < date(\"when_added\", \"+${2:-1} days\");"
+        ;;
+    range)
+        $RAW_QUERY "select uri from urls where rowid >= $2 and rowid < $3;"
+        ;;
+    first)
+        $RAW_QUERY "select uri from urls order by rowid asc limit ${2:-1};"
+        ;;
     last)
-        $RAW_QUERY "select uri from urls order by rowid desc limit ${2:-1};";;
+        $RAW_QUERY "select uri from urls order by rowid desc limit ${2:-1};"
+        ;;
     view)
-        $RAW_QUERY "select uri from urls where uri like '%$2%';" | xargs w3m;;
+        $RAW_QUERY "select uri from urls where uri like '%$2%';" | xargs w3m
+        ;;
     open)
-        $BASE_QUERY "select * from urls where uri like '%$2%';" | urlview;;
+        $BASE_QUERY "select * from urls where uri like '%$2%';" | urlview
+        ;;
     prune)
-        $BASE_QUERY "delete from urls where uri like '%$2%';";;
+        $BASE_QUERY "delete from urls where uri like '%$2%';"
+        ;;
     remove_url)
-        $BASE_QUERY "delete from urls where uri='$2';";;
+        $BASE_QUERY "delete from urls where uri='$2';"
+        ;;
     remove)
-        $BASE_QUERY "delete from urls where rowid='$2';";;
+        $BASE_QUERY "delete from urls where rowid='$2';"
+        ;;
     connect)
-        $CONNECT_QUERY;;
+        $CONNECT_QUERY
+        ;;
     query)
-        $BASE_QUERY "$2";;
+        $BASE_QUERY "$2"
+        ;;
     *)
-      printf "action '%b' is unknown\n" "$1" >&2
-      exit 1
-      ;;
+        printf "unknown action: '%s'\n" "$1" >&2
+        exit 1
+        ;;
 esac
