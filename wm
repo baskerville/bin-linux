@@ -1,6 +1,5 @@
 #! /bin/dash
 
 while true ; do
-  bspwm
-  [ $? -eq 0 ] || break
+  bspwm || break
 done
