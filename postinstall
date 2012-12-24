@@ -1,6 +1,6 @@
 #! /bin/sh
 
-select task in network user sound applications homestructure
+select task in network user sound programs home
 do
     echo $task
     case $task in
@@ -66,6 +66,7 @@ do
             owl install grabc ppsei darcs-bin
             owl install sres-git xbindkeys-minimal-git keydouble-git
             owl install ttf-anonymous-pro ttf-dejavu ttf-droid ttf-envy-code-r ttf-freefont ttf-junicode ttf-liberation ttf-linux-libertine ttf-ms-fonts
+            owl install gnome-themes-standard faenza-icon-theme thunar
             ;;
         home)
             cd

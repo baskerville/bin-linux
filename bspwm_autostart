@@ -20,7 +20,8 @@ bspc set borderless_monocle  true
 bspc set gapless_monocle     true
 bspc set focus_follows_mouse true
 bspc set adaptative_raise    true
-# bspc adopt_orphans
+
+bspc adopt_orphans
 
 updatethm
 # compton --respect-attr-shadow -bc -t -8 -l -9 -r 6 -o 0.7
