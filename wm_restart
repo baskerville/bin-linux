@@ -1,0 +1,4 @@
+#! /bin/dash
+
+bspc list_monitors > "$BSPWM_BACKUP"
+bspc quit

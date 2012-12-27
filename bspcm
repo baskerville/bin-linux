@@ -1,0 +1,6 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    bspc $1
+    shift
+done
