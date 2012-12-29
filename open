@@ -47,6 +47,9 @@ while [ $# -gt 0 ] ; do
             application/zip)
                 unzip -d "${@%.*}" "$1"
                 ;;
+            application/x-tar)
+                tar xvf "$1"
+                ;;
             application/x-rar)
                 unrar -ad x "$1"
                 ;;
