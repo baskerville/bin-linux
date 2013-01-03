@@ -16,7 +16,7 @@ AUDIO_LOWER_STRONG_CMD="amixer -q set Master 1%-"
 AUDIO_MIN_CMD="amixer -q set Master 0%"
 AUDIO_MAX_CMD="amixer -q set Master 100%"
 
-TMP_STDOUT="/tmp/dvol_stdout"
+TMP_STDOUT=$(mktemp)
 
 gauge_fg=$ACTIVE_FG
 gauge_bg=$ACTIVE_BG
@@ -57,10 +57,13 @@ case "$@" in
 esac
 
 $AUDIO_INFO_CMD > "$TMP_STDOUT"
+
 gauge_cur=$(awk '/%/ { sub(/^[^0-9]*/, ""); print $1; }' "$TMP_STDOUT")
 gauge_max=$(awk -F ' *- *' 'BEGIN {IGNORECASE=1} /limits:/ {print $2}' "$TMP_STDOUT")
 
 grep -i '\[on\]' "$TMP_STDOUT" > /dev/null 2>&1 || muted=1
+
+rm "$TMP_STDOUT"
 
 if [ "$muted" -eq 1 ] ; then
     gauge_fg=$MUTED_FG

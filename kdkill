@@ -1,9 +1,0 @@
-#! /bin/dash
-
-kdpid=$(pgrep -x keydouble)
-
-if [ -n "$kdpid" ] ; then
-    kill -TERM "$kdpid"
-else
-    printf "keydouble is not running\n" >&2
-fi
