@@ -13,7 +13,7 @@ while [ $# -gt 0 ] ; do
                 pgrep -x dwb > /dev/null || $CMD
             fi
             ;;
-        mutt | slrn | htop | bspwm_config | xbindkeys_config | ncmpcpp)
+        mutt | slrn | htop | bspwm_config | sxhkd_config | ncmpcpp)
             CMD=$prg
             case "$prg" in
                 mutt)
@@ -25,8 +25,8 @@ while [ $# -gt 0 ] ; do
                 bspwm_config)
                     CMD="editor ${XDG_CONFIG_HOME}/bspwm/autostart"
                     ;;
-                xbindkeys_config)
-                    CMD="editor ${XDG_DOTFILES_DIR}/xbindkeysrc"
+                sxhkd_config)
+                    CMD="editor ${XDG_DOTFILES_DIR}/sxhkdrc"
                     ;;
             esac
             case "$prg" in
