@@ -8,6 +8,7 @@ bspc rule Gimp Eight floating
 bspc rule Inkscape Seven floating
 bspc rule fontforge floating
 bspc rule Download floating
+bspc rule Gifview floating
 # bspc rule processing-app-Base floating
 
 bspc set outer_border_width  3
