@@ -1,5 +1,10 @@
 #! /bin/dash
 
+if ! [ -e "$XDG_TRASH_DIR" ] ; then
+    printf "%s\n" "The 'XDG_TRASH_DIR' environment variable is not defined." >&2
+    exit 1
+fi
+
 for raw in *.CR2; do
     base=${raw%.*}
     good=$(ls $base.* | grep -v $raw)
