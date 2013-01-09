@@ -13,15 +13,15 @@ bspc rule Download floating
 bspc rule Gifview floating
 
 bspc set outer_border_width  3
-bspc set main_border_width   1
+bspc set main_border_width   6
 bspc set inner_border_width  3
-bspc set window_gap          6
+bspc set window_gap          12
 bspc set top_padding         24
 
-bspc set borderless_monocle    true
-bspc set gapless_monocle       true
-bspc set focus_follows_pointer true
-bspc set adaptative_raise    true
+bspc set borderless_monocle     true
+bspc set gapless_monocle        true
+bspc set focus_follows_pointer  true
+bspc set adaptative_raise       true
 
 if [ -e "$BSPWM_BACKUP" ] ; then
     bspc restore "$BSPWM_BACKUP"
@@ -31,4 +31,4 @@ else
 fi
 
 updatethm
-# compton -bc -t -8 -l -9 -r 6 -o 0.7
+compton -bc -t -8 -l -9 -r 6 -o 0.7
