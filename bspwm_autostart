@@ -31,4 +31,4 @@ else
 fi
 
 updatethm
-compton -bc -t -8 -l -9 -r 6 -o 0.7
+# pgrep -x compton || compton -bc -t -8 -l -9 -r 6 -o 0.7
