@@ -1,5 +1,0 @@
-#! /bin/dash
-
-while true ; do
-    cat "$NOTIF_FIFO"
-done
