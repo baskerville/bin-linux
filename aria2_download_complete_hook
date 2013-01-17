@@ -2,13 +2,11 @@
 
 tmp_dir="$XDG_TMP_DIR"
 file_path=$3
-number_of_files=$2
-gid=$1
+# number_of_files=$2
+# gid=$1
 
 after_tmp=${file_path#"$tmp_dir/"}
 top_base=${after_tmp%%/*}
 top_elt="$tmp_dir/$top_base"
 
-# diana remove "$gid"
-# mv -t "$XDG_DOWNLOAD_DIR" "$top_dir"
 ln -s -t "$XDG_DOWNLOAD_DIR" "$top_elt"
