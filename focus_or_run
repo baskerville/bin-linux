@@ -13,7 +13,7 @@ while [ $# -gt 0 ] ; do
                 pgrep -x dwb > /dev/null || $CMD
             fi
             ;;
-        mutt | slrn | htop | bspwm_config | sxhkd_config | ncmpcpp)
+        mutt | slrn | top | bspwm_config | sxhkd_config | ncmpcpp)
             CMD=$prg
             case "$prg" in
                 mutt)
@@ -30,7 +30,7 @@ while [ $# -gt 0 ] ; do
                     ;;
             esac
             case "$prg" in
-                mutt | slrn | ncmpcpp | htop)
+                mutt | slrn | ncmpcpp | top)
                     pgrep -x "$prg" > /dev/null && CMD=""
                     ;;
             esac
