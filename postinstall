@@ -42,7 +42,7 @@ do
             sudo pacman -S cdrkit gphoto2 dcraw
             sudo pacman -S lirc lirc-utils
             sudo pacman -S mac cuetools shntool libplist
-            sudo pacman -S htop lsof strace words
+            sudo pacman -S lsof strace words
             sudo pacman -S gnuplot gtk
             sudo pacman -S p7zip tk id3v2
             sudo pacman -S jd7-openjdk icedtea-web-java7 apache-ant
@@ -51,7 +51,7 @@ do
             sudo pacman -S hfsprogs dosfstools
             sudo pacman -S libxcb xcb-proto xcb-util xcb-util-wm xcb-util-keysyms xcb-util-image
             sudo pacman -S fortune-mod figlet cowsay
-            owl install bspwm-git ewmhstatus-git backlight-git
+            owl install sxhkd-git bspwm-git ewmhstatus-git backlight-git sres-git
             owl install python-colormath-git
             owl install urxvt-autocomplete-all-the-things-git
             owl install cower-git sxiv-git dwb-hg dmenu-q-xywh-xft-git
@@ -64,7 +64,6 @@ do
             owl install ncmpcpp-git spdf-git jpdf-git
             owl install paps-bskv compface-bskv
             owl install grabc ppsei darcs-bin
-            owl install sres-git sxhkd-git
             owl install ttf-anonymous-pro ttf-dejavu ttf-droid ttf-envy-code-r ttf-freefont ttf-junicode ttf-liberation ttf-linux-libertine ttf-ms-fonts
             owl install gnome-themes-standard faenza-icon-theme thunar
             ;;
