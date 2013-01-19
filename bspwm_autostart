@@ -22,6 +22,7 @@ bspc set borderless_monocle     true
 bspc set gapless_monocle        true
 bspc set focus_follows_pointer  true
 bspc set adaptative_raise       true
+bspc set apply_shadow_property  true
 
 if [ -e "$BSPWM_BACKUP" ] ; then
     bspc restore "$BSPWM_BACKUP"
@@ -31,4 +32,4 @@ else
 fi
 
 updatethm
-# pgrep -x compton > /dev/null || compton -bc -t -8 -l -9 -r 6 -o 0.7
+pgrep -x compton > /dev/null || compton --respect-prop-shadow -bc -t -8 -l -9 -r 6 -o 0.7
