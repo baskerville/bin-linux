@@ -1,3 +1,5 @@
 #! /bin/dash
 
+[ $# -gt 0 ] && exit 1
+
 mlnet &
