@@ -17,6 +17,12 @@ case "$@" in
     status)
         :
         ;;
+    min)
+        backlight 0
+        ;;
+    max)
+        backlight $(backlight m)
+        ;;
     *)
         backlight "$@"
         ;;
