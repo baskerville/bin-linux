@@ -32,4 +32,4 @@ else
 fi
 
 updatethm
-pgrep -x compton > /dev/null || compton --respect-prop-shadow -bc -t -8 -l -9 -r 6 -o 0.7
+pgrep -x compton > /dev/null || compton --shadow-exclude '_COMPTON_SHADOW:32c = 0' -bc -t -8 -l -9 -r 6 -o 0.7
