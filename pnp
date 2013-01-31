@@ -23,7 +23,7 @@ done
 shift $(($OPTIND - 1))
 
 if [ $# -lt 1 ] ; then
-    printf "no arguments given\n" >&2
+    printf "No arguments given.\n" >&2
     exit 1
 fi
 
@@ -35,9 +35,12 @@ case $action in
         if [ -z "$device" ] ; then
             device=$(ls -1td /dev/s* | head -n 1 | grep '/dev/s\(d[b-z]\|r\)[0-9]\+' )
             if [ -z "$device" ] ; then
-                printf "no device matched\n" >&2
+                printf "No device matched.\n" >&2
                 exit 1
             fi
+        elif ! [ -e "$device" ] ; then
+            printf "Device not found: '%s'.\n" "$device" >&2
+            exit 1
         fi
         mount_point=''
         mount_options=''
@@ -62,11 +65,11 @@ case $action in
                 ;;
         esac
         if [ -e "$mount_point" ] ; then
-            printf "mount point exists: '%s'\n" "$mount_point" >&2
+            printf "Mount point exists: '%s'.\n" "$mount_point" >&2
             exit 1
         fi
         if [ $verbose_output -eq 1 ] ; then
-            printf "mounting '%s' to '%s'\n" "$device" "$mount_point"
+            printf "Mounting '%s' to '%s'.\n" "$device" "$mount_point"
         else
             printf "%s\n" "$mount_point"
         fi
@@ -84,7 +87,7 @@ case $action in
         fi
         if [ -n "$mount_point" ] ; then
             if [ $verbose_output -eq 1 ] ; then
-                printf "unmounting '%s'\n" "$mount_point"
+                printf "Unmounting '%s'.\n" "$mount_point"
             else
                 printf "%s\n" "$mount_point"
             fi
@@ -100,7 +103,7 @@ case $action in
         ls --color=auto -1dtc * 2> /dev/null
         ;;
     *)
-        printf "unknown action: '%s'\n" $action >&2
+        printf "Unknown action: '%s'.\n" $action >&2
         exit 1
         ;;
 esac
