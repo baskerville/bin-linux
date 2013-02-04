@@ -1,7 +1,7 @@
 #! /bin/dash
 # color chart by baskerville
 
-test_pattern='bYd'
+test_pattern='└┬┘'
 fill_pattern=$(printf "$test_pattern" | sed 's/./ /g')
 
 print_color() {

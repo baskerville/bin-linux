@@ -23,7 +23,8 @@ def make_scheme():
     hex_fg = settings['foreground']
     num_colors = settings['num_colors']
     color_chroma = settings['color_chroma']
-    color_delta = settings['color_delta']
+    color_deltas = settings['color_deltas']
+    delta_prefixes = settings['delta_prefixes']
     color_names = settings['color_names']
 
     lch_bg = hex_to_lch(hex_bg)
@@ -56,8 +57,9 @@ def make_scheme():
     color_hues = [hue_step * i for i in range(num_colors)]
 
     for name, col_h in zip(color_names, color_hues):
-        lch_col = LCHabColor(fg_L + color_delta, color_chroma, col_h)
-        print('{}: "{}"'.format(name, lch_to_hex(lch_col)))
+        for prefix, delta in zip(delta_prefixes, color_deltas):
+            lch_col = LCHabColor(fg_L + delta, color_chroma, col_h)
+            print('{}{}: "{}"'.format(prefix, name, lch_to_hex(lch_col)))
 
 def usage():
     print('''

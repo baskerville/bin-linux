@@ -1,3 +1,0 @@
-#! /bin/dash
-
-printf '%s %s' "$@" "$(date '+%H:%M')" > "$EWMHSTATUS_FIFO" &

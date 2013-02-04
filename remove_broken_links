@@ -7,7 +7,7 @@ do
         target=$(readlink -fn "$itm")
         if [ ! -e "$target" ]
         then
-            echo "$itm"
+            echo "$itm -/-> $target"
             rm "$itm"
         fi
     fi
