@@ -5,4 +5,4 @@
 mkfifo "$EWMHSTATUS_FIFO"
 ewmhstatus "DejaDroid Sans" 11 9 2> "$HOME/.ewmhstatus.log" | dzen2 -title-name bar -dock -h 24 -fn 'DejaDroid Sans:pixelsize=11' -ta l &
 clock '%H:%M' 5 > "$EWMHSTATUS_FIFO" &
-compton-trans -w "$(xdotool search --sync --class dzen)" 80 &
+compton-trans -w "$(xdotool search --sync --class dzen)" 90 &
