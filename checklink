@@ -1,0 +1,9 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    target=$(readlink -en "$1")
+    if ! [ -e "$target" ] ; then
+        printf "Broken link: %s -/-> %s\n" "$1" "$target" >&2
+    fi
+    shift
+done

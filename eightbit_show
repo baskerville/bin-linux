@@ -8,19 +8,19 @@ only_index=0
 [ $# -gt 0 ] && [ $@ = '-b' ] && only_block=1
 [ $# -gt 0 ] && [ $@ = '-i' ] && only_index=1
 
+newrow=-1
 counter=0
 block='■'
 
-printf '\n'
-
 for i in $colors
 do
+    [ $newrow -eq 0 ] && printf '\n'
     pattern=''
     [ $only_index -eq 0 ] && pattern="${block}${pattern}"
     [ $only_block -eq 0 ] && pattern="${pattern}$(printf '%03d' $i)"
     printf " \033[38;5;${i}m%b" "$pattern"
     counter=$((counter+1))
-    [ $((counter%CHUNK_LENGTH)) -eq 0 ] && printf '\n'
+    newrow=$((counter%CHUNK_LENGTH))
 done
 
 printf '\n'

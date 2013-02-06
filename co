@@ -1,1 +1,47 @@
-color_blocks
+#! /bin/dash
+
+slender_pattern='└┬┘'
+thick_pattern=' ━ '
+
+printc() {
+    printf '  \033[%sm%s\033[0m' "$1" "$2"
+}
+
+printf '\n'
+
+for background in $(seq 101 106) ; do
+    printc "$background;$((background - 70))" "$thick_pattern"
+done
+
+printf '\n\n'
+
+for background in $(seq 41 46) ; do
+    printc "$background;97" "$thick_pattern"
+done
+
+printf '\n\n'
+
+for foreground in $(seq 91 96) ; do
+    printc "40;$foreground" "$thick_pattern"
+done
+
+printf '\n\n'
+
+for color in '40;39' '100;37' '40;37' '100;37' '40;97' '100;97' ; do
+    printc "$color" "$thick_pattern"
+done
+
+printf '\n\n'
+
+for attribute in 1 0 ; do
+    for foreground in $(seq 31 36) ; do
+        printc "$attribute;$foreground" "$slender_pattern"
+    done
+    printf '\n\n'
+done
+
+for foreground in 90 39 37 39 97 39 ; do
+    printc "$foreground" "$slender_pattern"
+done
+
+printf '\n\n'

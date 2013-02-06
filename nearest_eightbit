@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/env python3
 
 import re
 import sys
@@ -9,12 +9,10 @@ COLOR_CHUNKS = [40 * j + (55 * (j > 0)) for j in range(6)]
 MONOTONE_CHUNKS = [10 * i + 8 for i in range(24)]
 COLORS = [(i, j, k) for i in COLOR_CHUNKS for j in COLOR_CHUNKS for k in COLOR_CHUNKS]
 MONOTONES = [(i, i, i) for i in MONOTONE_CHUNKS]
-NUMERAL_BASE = 16
-START_OF_COLORS = 16
-START_OF_MONOTONES = 232
-COMPARE_TO_MONOTONES = False
-SHOW_COLOR_INDEX = False
-VERBOSE_OUTPUT = False
+COLORS.extend(MONOTONES)
+START_INDEX = 16
+show_color_index = False
+verbose_output = False
 
 def get_nearest(element, source, verbose_output):
     distance = float('inf')
@@ -25,45 +23,36 @@ def get_nearest(element, source, verbose_output):
             distance = d
             nearest = candidate
     if verbose_output:
-        print('distance: %s' % distance)
+        print('distance: {}'.format(distance))
     return nearest
 
-def loop(compare_to_monotones, show_color_index, verbose_output):
-    source = COLORS
-    start_of_source = START_OF_COLORS
-    if compare_to_monotones:
-        source = MONOTONES
-        start_of_source = START_OF_MONOTONES
+def loop(show_color_index, verbose_output):
     for line in sys.stdin:
         color_codes = re.findall('#([0-9A-F]{6})', line.upper())
         for cc in color_codes:
             if verbose_output:
-                print('(%s)' % cc)
-            element = list(map(lambda x: int(x, NUMERAL_BASE), re.findall('[0-9A-F]{2}', cc)))
-            nearest = get_nearest(element, source, verbose_output)
-            formated_nearest = ['%02x' % n for n in nearest]
-            code_nearest = ('#%s' % (''.join(formated_nearest))).upper()
+                print('({})'.format(cc))
+            element = list(map(lambda x: int(x, 16), re.findall('[0-9A-F]{2}', cc)))
+            nearest = get_nearest(element, COLORS, verbose_output)
+            formated_nearest = ['{:02X}'.format(n) for n in nearest]
+            code_nearest = '#{}'.format(''.join(formated_nearest))
             print(code_nearest)
             if show_color_index:
-                    color_index = start_of_source + source.index(nearest)
-                    print('color%s' % color_index)
+                    color_index = START_INDEX + COLORS.index(nearest)
+                    print('color{}'.format(color_index))
 
 def main():
-    opts, args = getopt(sys.argv[1:], 'miv', ['monotones', 'index', 'verbose'])
+    opts, args = getopt(sys.argv[1:], 'iv', ['index', 'verbose'])
 
-    compare_to_monotones = COMPARE_TO_MONOTONES
-    show_color_index = SHOW_COLOR_INDEX
-    verbose_output = VERBOSE_OUTPUT
+    global show_color_index, verbose_output
 
     for opt, val in opts:
-        if opt in ('-m', '--monotones'):
-            compare_to_monotones = True
-        elif opt in ('-i', '--index'):
+        if opt in ('-i', '--index'):
             show_color_index = True
         elif opt in ('-v', '--verbose'):
             verbose_output = True
 
-    loop(compare_to_monotones, show_color_index, verbose_output)
+    loop(show_color_index, verbose_output)
 
 if __name__ == '__main__':
     main()

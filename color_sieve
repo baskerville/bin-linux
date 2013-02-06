@@ -43,7 +43,7 @@ def make_palette(img):
     data = list(img.getdata())
     palette = set()
 
-    while len(palette) < num_colors and len(data) > 0:
+    while (len(palette) < num_colors or num_colors < 1) and len(data) > 0:
         randindex = random.randint(0, len(data) - 1)
         pixel = data.pop(randindex)
 
