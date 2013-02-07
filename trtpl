@@ -1,75 +1,31 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
-import re
+import os
 import sys
 import yaml
 import jinja2
 from os import walk, mkdir
 from os.path import basename, exists, isdir, join, relpath, normpath, splitext
 from getopt import getopt
-from colormath.color_objects import RGBColor, LCHabColor
+from colormath.color_objects import LCHabColor, LabColor
 
 color_scheme = {}
 custom_filters = {}
 output_dir = 'output'
 templates_dir = 'templates'
+color_space = None
 filename_suffix = ''
 preserve_extensions = False
-exclude_pattern = None
+space_to_class = {'LCHab': LCHabColor, 'Lab': LabColor}
 
 try:
-    sys.path.append('.')
-    from settings import *
-    sys.path.pop()
-except ImportError as err:
+    filters_dir = os.getenv("TRTPL_FILTERS_DIR")
+    if filters_dir is not None:
+        sys.path.insert(1, filters_dir);
+        from color_filters import *
+        sys.path.pop(1)
+except:
     pass
-
-def lch_to_hex(lch_color):
-    return lch_color.convert_to('rgb').get_rgb_hex().upper()
-
-def raw_hex(hex_color):
-    return hex_color[1:]
-
-def slashed_hex(hex_color):
-    grps = re.match('#(..)(..)(..)', hex_color).groups()
-    return 'rgb:{}/{}/{}'.format(*grps)
-
-def raw_rgb(hex_color):
-    rgb_color = RGBColor()
-    rgb_color.set_from_rgb_hex(hex_color)
-    return '{} {} {}'.format(*rgb_color.get_value_tuple())
-
-def alter_lch(hex_color, value, component='L', relative=True):
-    rgb_color = RGBColor()
-    rgb_color.set_from_rgb_hex(hex_color)
-    lch_color = rgb_color.convert_to('lchab')
-    lch_lst = list(lch_color.get_value_tuple())
-    comp_idx = ('L', 'C', 'H').index(component)
-    lch_lst[comp_idx] = lch_lst[comp_idx] + value if relative else value
-    L, C, H = lch_lst
-    lch_res = LCHabColor(L, C, H)
-    return lch_to_hex(lch_res)
-
-def tune_lightness(hex_color, value):
-    return alter_lch(hex_color, value)
-
-def set_lightness(hex_color, value):
-    return alter_lch(hex_color, value, relative=False)
-
-def tune_chroma(hex_color, value):
-    return alter_lch(hex_color, value, component='C')
-
-def set_chroma(hex_color, value):
-    return alter_lch(hex_color, value, component='C', relative=False)
-
-def tune_hue(hex_color, value):
-    return alter_lch(hex_color, value, component='H')
-
-def set_hue(hex_color, value):
-    return alter_lch(hex_color, value, component='H', relative=False)
-
-def template_filter(tpl_pth):
-    return exclude_pattern == None or re.match(exclude_pattern, tpl_pth) == None
 
 def copy_dirs(src, dst):
     for root, dirnames, filenames in walk(src):
@@ -78,19 +34,18 @@ def copy_dirs(src, dst):
             if not exists(pth):
                 mkdir(pth)
 
+def interpret_values():
+    global color_scheme, color_space
+    for name, value in color_scheme.items():
+        source_color = space_to_class[color_space](*value)
+        color_scheme[name] = source_color.convert_to('rgb').get_rgb_hex()
+
 def translate_templates():
     ldr = jinja2.FileSystemLoader(templates_dir)
     env = jinja2.Environment(loader=ldr)
-    env.filters['slashedhex'] = slashed_hex
-    env.filters['rawhex'] = raw_hex
-    env.filters['rawrgb'] = raw_rgb
-    env.filters['L'] = tune_lightness
-    env.filters['_L'] = set_lightness
-    env.filters['C'] = tune_chroma
-    env.filters['_C'] = set_chroma
-    env.filters['H'] = tune_hue
-    env.filters['_H'] = set_hue
     env.filters.update(custom_filters)
+    if color_space is not None:
+        interpret_values()
 
     if not exists(output_dir):
         mkdir(output_dir)
@@ -100,7 +55,7 @@ def translate_templates():
 
     copy_dirs(templates_dir, output_dir)
 
-    for tpl_pth in env.list_templates(filter_func=template_filter):
+    for tpl_pth in env.list_templates():
         tpl = env.get_template(tpl_pth)
         output_root = tpl_pth if preserve_extensions else splitext(tpl_pth)[0]
         output_pth = '{}/{}{}'.format(output_dir, output_root, filename_suffix)
@@ -114,10 +69,13 @@ SYNOPSIS
 
 OPTIONS
     -h, --help
-        Show this message.
+        Show the synopsis on standard output and exit.
 
     -c, --color-scheme COLOR_SCHEME
         Read colors from the given file.
+
+    -i, --color-space LCHab|Lab
+        Set the color space of the color scheme.
 
     -o, --output-directory OUTPUT_DIR
         Define where the compiled templates will be stored.
@@ -125,17 +83,14 @@ OPTIONS
     -s, --filename-suffix SUFFIX
         Add the given suffix to the output file names.
 
-    -e, --exclude-templates REGEXP
-        Exclude templates matching the given pattern.
-
     -p, --preserve-extensions
         Preserve templates file name extensions in outputs.
 '''.format(basename(sys.argv[0])))
     sys.exit(1)
 
 def main():
-    global color_scheme, output_dir, templates_dir, filename_suffix, exclude_pattern, preserve_extensions
-    opts, args = getopt(sys.argv[1:], 'hpc:o:s:e:', ['help', 'preserve-extensions', 'color-scheme=', 'output-directory=', 'filename-suffix=', 'exclude-templates='])
+    global color_scheme, color_space, output_dir, templates_dir, filename_suffix, preserve_extensions
+    opts, args = getopt(sys.argv[1:], 'hpc:i:o:s:', ['help', 'preserve-extensions', 'color-scheme=', 'color-space=', 'output-directory=', 'filename-suffix='])
 
     if len(args) < 1:
         usage()
@@ -148,12 +103,12 @@ def main():
         elif opt in ('-c', '--color-scheme'):
             with open(val, 'r') as f:
                 color_scheme.update(yaml.load(f.read()))
+        elif opt in ('-i', '--color-space'):
+            color_space = val
         elif opt in ('-o', '--output-directory'):
             output_dir = val
         elif opt in ('-s', '--filename-suffix'):
             filename_suffix = val
-        elif opt in ('-e', '--exclude-templates'):
-            exclude_pattern = val
         elif opt in ('-p', '--preserve-extensions'):
             preserve_extensions = True
 
