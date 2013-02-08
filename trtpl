@@ -19,10 +19,10 @@ preserve_extensions = False
 space_to_class = {'LCHab': LCHabColor, 'Lab': LabColor}
 
 try:
-    filters_dir = os.getenv("TRTPL_FILTERS_DIR")
+    filters_dir = os.getenv("JINJA2_FILTERS_DIR")
     if filters_dir is not None:
         sys.path.insert(1, filters_dir);
-        from color_filters import *
+        from trtpl_filters import *
         sys.path.pop(1)
 except:
     pass
@@ -38,7 +38,7 @@ def interpret_values():
     global color_scheme, color_space
     for name, value in color_scheme.items():
         source_color = space_to_class[color_space](*value)
-        color_scheme[name] = source_color.convert_to('rgb').get_rgb_hex()
+        color_scheme[name] = source_color.convert_to('rgb').get_rgb_hex().upper()
 
 def translate_templates():
     ldr = jinja2.FileSystemLoader(templates_dir)

@@ -1,7 +1,7 @@
 #! /bin/dash
 
-TEMPLATES_DIR="$XDG_DOTFILES_DIR/templates"
-COLOR_SCHEMES_DIR="$XDG_DOTFILES_DIR/schemes"
+TEMPLATES_DIR="$XDG_DOTFILES_DIR/thmkits/templates"
+COLOR_SCHEMES_DIR="$XDG_DOTFILES_DIR/thmkits/color_schemes"
 OUTPUT_DIR=$(mktemp -d)
 
 trtpl -s '-dark' -c "${COLOR_SCHEMES_DIR}/current-dark" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid"
