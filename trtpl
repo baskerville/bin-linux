@@ -61,6 +61,8 @@ def translate_templates():
         output_pth = '{}/{}{}'.format(output_dir, output_root, filename_suffix)
         with open(output_pth, 'w') as f:
             f.write(tpl.render(color_scheme, **globals()))
+        tpl_mode = os.stat(join(templates_dir, tpl_pth)).st_mode
+        os.chmod(output_pth, tpl_mode)
 
 def usage():
     print('''
