@@ -1,5 +1,0 @@
-#! /bin/dash
-
-thm
-printf '\033[?25l' > /dev/tty
-sleep 2
