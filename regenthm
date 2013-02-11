@@ -1,15 +1,13 @@
 #! /bin/dash
 
-TEMPLATES_DIR="$XDG_DOTFILES_DIR/thmkits/templates"
-COLOR_SCHEMES_DIR="$XDG_DOTFILES_DIR/thmkits/color_schemes"
+TEMPLATES_DIR="$XDG_DOTFILES_DIR/color_kits/templates"
+COLOR_SCHEMES_DIR="$XDG_DOTFILES_DIR/color_kits/color_schemes"
 OUTPUT_DIR=$(mktemp -d)
 
-trtpl -s '-dark' -c "${COLOR_SCHEMES_DIR}/current-dark" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid"
-trtpl -s '-light' -c "${COLOR_SCHEMES_DIR}/current-light" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid"
-trtpl -s '-dark' -c "${COLOR_SCHEMES_DIR}/current-bump-dark" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid_bump"
-trtpl -s '-light' -c "${COLOR_SCHEMES_DIR}/current-bump-light" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid_bump"
-trtpl -c "${COLOR_SCHEMES_DIR}/current-dark" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/dark_only"
-trtpl -c "${COLOR_SCHEMES_DIR}/current-light" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/light_only"
+trtpl -s '-dark' -i LCH -c "${COLOR_SCHEMES_DIR}/current-dark" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid"
+trtpl -s '-light' -i LCH -c "${COLOR_SCHEMES_DIR}/current-light" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/hybrid"
+trtpl -i LCH -c "${COLOR_SCHEMES_DIR}/current-dark" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/dark_only"
+trtpl -i LCH -c "${COLOR_SCHEMES_DIR}/current-light" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/light_only"
 trtpl -c "${COLOR_SCHEMES_DIR}/current-symbolic" -o "$OUTPUT_DIR" "${TEMPLATES_DIR}/symbolic"
 
 cp -r -t "$XDG_DOTFILES_DIR" "${OUTPUT_DIR}"/dotfiles/*

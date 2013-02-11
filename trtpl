@@ -7,7 +7,7 @@ import jinja2
 from os import walk, mkdir
 from os.path import basename, exists, isdir, join, relpath, normpath, splitext
 from getopt import getopt
-from colormath.color_objects import LCHabColor, LabColor
+from colormath.color_objects import LCHabColor, LabColor, CMYKColor
 
 color_scheme = {}
 custom_filters = {}
@@ -16,7 +16,7 @@ templates_dir = 'templates'
 color_space = None
 filename_suffix = ''
 preserve_extensions = False
-space_to_class = {'LCHab': LCHabColor, 'Lab': LabColor}
+space_to_class = {'LCH': LCHabColor, 'Lab': LabColor, 'CMYK': CMYKColor}
 
 try:
     filters_dir = os.getenv("JINJA2_FILTERS_DIR")
@@ -76,7 +76,7 @@ OPTIONS
     -c, --color-scheme COLOR_SCHEME
         Read colors from the given file.
 
-    -i, --color-space LCHab|Lab
+    -i, --color-space LCH|Lab|CMYK
         Set the color space of the color scheme.
 
     -o, --output-directory OUTPUT_DIR
