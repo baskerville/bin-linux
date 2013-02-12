@@ -9,5 +9,7 @@ name=$(basename "$conf")
 current=$(readlink -nse "$conf")
 dir=$(dirname "$current")
 
+[ ! -e "$dir/${name}-${bgtype}" ] && exit 1
+
 cd "$dir"
 ln -sf "${name}-${bgtype}" "$name"

@@ -1,9 +1,0 @@
-#! /bin/dash
-
-fn='sans-serif:pixelsize=11'
-nb='#FEF9EC'
-nf='#6D727E'
-sb='#C5C1B4'
-sf='#3E424D'
-
-dmenu_run -i -h "$PANEL_HEIGHT" -fn "$fn" -nb "$nb" -nf "$nf" -sb "$sb" -sf "$sf" -p '>' -q

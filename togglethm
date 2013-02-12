@@ -32,9 +32,9 @@ setconfbg "$XDG_DOTFILES_DIR/dzen2_xresources" $bgtype
 # setconfbg "$XDG_DOTFILES_DIR/themes/vim/raven.vim" $bgtype
 # setconfbg "$XDG_DOTFILES_DIR/gtk2_gvim" $bgtype
 
-setconfbg "$XDG_BIN_DIR/dmenu_launch" $bgtype
-setconfbg "$XDG_BIN_DIR/dmenu_select" $bgtype
+setconfbg "$XDG_BIN_DIR/dmenu_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/bspwm_colors" $bgtype
+setconfbg "$XDG_BIN_DIR/panel_colors" $bgtype
 # setconfbg "$XDG_BIN_DIR/show_xface_colors" $bgtype
 
 setconfbg "$XDG_BIN_DIR/dvol_colors" $bgtype
