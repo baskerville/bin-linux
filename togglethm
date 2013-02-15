@@ -1,12 +1,13 @@
 #! /bin/dash
 
 current=$(readlink -nse "$XDG_COLORS_DIR/xresources")
+
 if [ $? -eq 1 ] ; then
     echo "can't find the current color theme" >&2
     exit 1
 fi
+
 base=$(basename "$current")
-name=${base%-*}
 bgtype=${base##*-}
 
 if [ $# -gt 0 ] ; then
@@ -25,7 +26,6 @@ fi
 setconfbg "$XDG_COLORS_DIR/xresources" $bgtype
 setconfbg "$XDG_COLORS_DIR/redef" $bgtype
 setconfbg "$XDG_COLORS_DIR/redef_console" $bgtype
-
 
 setconfbg "$XDG_DOTFILES_DIR/override.css" $bgtype
 setconfbg "$XDG_DOTFILES_DIR/dzen2_xresources" $bgtype
