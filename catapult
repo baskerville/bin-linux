@@ -42,6 +42,7 @@ fi
 
 if  [ "$action" != "rename" ] ; then
     destination=$(cat "$move_places" | dmenu_select)
+    [ -d "$destination" ] || exit 1
 else
     destination=$(echo -n "$(basename "$@")" | dmenu_select)
 fi

@@ -19,7 +19,7 @@ preserve_extensions = False
 space_to_class = {'LCH': LCHabColor, 'Lab': LabColor, 'CMYK': CMYKColor}
 
 try:
-    filters_dir = os.getenv("JINJA2_FILTERS_DIR")
+    filters_dir = os.getenv("JINJA_FILTERS_DIR")
     if filters_dir is not None:
         sys.path.insert(1, filters_dir);
         from trtpl_filters import *
@@ -67,7 +67,7 @@ def translate_templates():
 def usage():
     print('''
 SYNOPSIS
-    {} [OPTIONS] TEMPLATE_DIR
+    {} [OPTIONS] TEMPLATES_DIR
 
 OPTIONS
     -h, --help
@@ -77,10 +77,10 @@ OPTIONS
         Read colors from the given file.
 
     -i, --color-space LCH|Lab|CMYK
-        Set the color space of the color scheme.
+        Set the input color space.
 
     -o, --output-directory OUTPUT_DIR
-        Define where the compiled templates will be stored.
+        Define where the rendered templates will be stored.
 
     -s, --filename-suffix SUFFIX
         Add the given suffix to the output file names.
