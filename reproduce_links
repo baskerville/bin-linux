@@ -1,0 +1,15 @@
+#! /bin/dash
+
+depth=3
+
+while getopts "d:" opt ; do
+    case $opt in
+        d)
+            depth=$OPTARG
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+find "$HOME" -maxdepth $depth -path "$XDG_DOWNLOAD_DIR" -prune -o -type l -print0 | xargs -0 link_command

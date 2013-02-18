@@ -1,0 +1,8 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    link=$1
+    parent=$(dirname "$link")
+    printf 'cd "%s" && ln -s "%s" "%s"\n' "$(readlink -nf "$parent")" "$(readlink -n "$link")" "$(basename "$link")"
+    shift
+done

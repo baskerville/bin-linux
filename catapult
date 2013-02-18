@@ -42,7 +42,6 @@ fi
 
 if  [ "$action" != "rename" ] ; then
     destination=$(cat "$move_places" | dmenu_select)
-    [ -d "$destination" ] || exit 1
 else
     destination=$(echo -n "$(basename "$@")" | dmenu_select)
 fi
@@ -51,9 +50,11 @@ if [ -n "$destination" -a -$? -eq 0 ]; then
     destination=${destination//\~/$HOME}
     case "$action" in
         copy)
+            [ -d "$destination" ] || exit 1
             cp -t "$destination" "$@"
             ;;
         move)
+            [ -d "$destination" ] || exit 1
             mv -t "$destination" "$@"
             ;;
         rename)
