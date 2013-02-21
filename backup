@@ -8,7 +8,7 @@ do
             filelist=".coordinates .mpoprc .msmtprc .procmailrc .eatrc .castgetrc"
             ;;
         dirs)
-            filelist=".local .config .mutt .vim .mpd .themes .colors .fonts .icons .aria2 .irssi .pal .FontForge .ssh .w3m .elinks .lftp .ncmpcpp .audacity-data .audacity-files"
+            filelist=".local .config .mutt .vim .mpd .themes .fonts .icons .aria2 .irssi .pal .FontForge .ssh .w3m .elinks .lftp .ncmpcpp .audacity-data .audacity-files"
             ;;
         usenet)
             filelist=".jnewsrc .slrn .slrnpull/slrnpull.conf"
