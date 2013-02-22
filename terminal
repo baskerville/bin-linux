@@ -1,0 +1,15 @@
+#! /bin/dash
+
+pgrep -x urxvtd > /dev/null || urxvtd -q -o -f
+
+if [ $# -eq 0 ] ; then
+    curpath=$(xdotool getactivewindow getwindowname | grep '^Terminal ' | sed 's/^Terminal \(.*\)$/\1/' | sed "s:~:$HOME:")
+    if [ -z "$curpath" ] ; then
+        curpath=$HOME
+    elif [ ! -d "$curpath" ] ; then
+        curpath=$(printf "%s" "$curpath" | sed 's/ ([^)]\+)$//')
+    fi
+    urxvtc -cd "$curpath"
+else
+    urxvtc $@
+fi
