@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/env python3
 
 COLOR_CHUNKS = [40 * j + (55 * (j > 0)) for j in range(6)]
 COLORS = [(i, j, k) for i in COLOR_CHUNKS for j in COLOR_CHUNKS for k in COLOR_CHUNKS]
