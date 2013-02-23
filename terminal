@@ -3,13 +3,9 @@
 pgrep -x urxvtd > /dev/null || urxvtd -q -o -f
 
 if [ $# -eq 0 ] ; then
-    curpath=$(xdotool getactivewindow getwindowname | grep '^Terminal ' | sed 's/^Terminal \(.*\)$/\1/' | sed "s:~:$HOME:")
-    if [ -z "$curpath" ] ; then
-        curpath=$HOME
-    elif [ ! -d "$curpath" ] ; then
-        curpath=$(printf "%s" "$curpath" | sed 's/ ([^)]\+)$//')
-    fi
-    urxvtc -cd "$curpath"
+    recpth=$(cat "$HOME/.z" | awk -F '|' '{print $3, $1}' | sort -n | tail -n 1 | sed 's:^[^/]\+::')
+    [ -z "$recpth" ] && recpth=$HOME
+    urxvtc -cd "$recpth"
 else
     urxvtc $@
 fi
