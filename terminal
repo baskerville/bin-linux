@@ -4,7 +4,7 @@ pgrep -x urxvtd > /dev/null || urxvtd -q -o -f
 _Z_DATA=${_Z_DATA:-"$HOME/.z"}
 
 if [ $# -eq 0 ] ; then
-    recpth=$(cat "$_Z_DATA" | awk -F '|' '{print $3, $1}' | sort -n | tail -n 1 | sed 's/^[^ ]\+ //')
+    recpth=$(awk -F '|' '{print $3, $1}' "$_Z_DATA" | sort -n | tail -n 1 | sed 's/^[^ ]\+ //')
     [ -z "$recpth" ] && recpth=$HOME
     urxvtc -cd "$recpth"
 else
