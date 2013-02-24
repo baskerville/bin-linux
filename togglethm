@@ -46,10 +46,11 @@ setconfbg "$WALLPAPER" $bgtype
 
 xrdb -merge "$XDG_COLORS_DIR/xresources"
 xrdb -merge "$XDG_DOTFILES_DIR/dzen2_xresources"
+
+bspwm_colors
+reloadwallpaper
+reloadpanel
+
 for pts in $(find /dev/pts/ -maxdepth 1 -type c -group tty) ; do
     [ -w "$pts" ] && "$XDG_COLORS_DIR/redef" > "$pts"
 done
-
-bspwm_colors
-reloadpanel
-reloadwallpaper
