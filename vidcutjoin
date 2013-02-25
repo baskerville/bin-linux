@@ -1,0 +1,28 @@
+#! /bin/dash
+
+cnt=1
+input=$1
+shift
+ext=${input##*.}
+
+while [ $# -gt 0 ] ; do
+    begin=$1
+    shift
+    duration=$1
+    ffmpeg -i "$input" -c copy -ss "$begin" -t "$duration" "output-${cnt}.$ext"
+    shift
+    cnt=$((cnt + 1))
+done
+
+num=$cnt
+lst=$(mktemp)
+cnt=1
+
+while [ $cnt -lt $num ] ; do
+    printf "file '%s'\n" "$(readlink -f "output-${cnt}.$ext")" >> "$lst"
+    cnt=$((cnt + 1))
+done
+
+ffmpeg -f concat -i "$lst" -c copy "output.$ext"
+
+rm "$lst"
