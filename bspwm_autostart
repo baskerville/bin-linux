@@ -18,7 +18,7 @@ bspc set top_padding   24
 
 bspc set borderless_monocle     true
 bspc set gapless_monocle        true
-bspc set focus_follows_pointer  true
+bspc set focus_follows_pointer  false
 bspc set adaptative_raise       true
 bspc set apply_shadow_property  true
 
