@@ -1,5 +1,4 @@
 bspwm_colors
-hc_colors
 dvol_colors
 dbright_colors
 dbatt_colors
@@ -9,3 +8,4 @@ dmenu_colors
 panel_colors
 setrootbg
 clock
+bf
