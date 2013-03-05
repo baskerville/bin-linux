@@ -1,44 +1,34 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
 
-#define MAXLEN 256
-
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     char **args = argv + 1;
-    int num_args = argc - 1;
+    int num = argc - 1;
 
-    if (num_args != 2) {
-        fprintf(stderr, "usage: %s FORMAT INTERVAL\n", argv[0]);
-        return -1;
+    if (num != 2) {
+        fprintf(stderr, "usage: %s STRFTIME_FORMAT SLEEP_INTERVAL\n", argv[0]);
+        return EXIT_FAILURE;
     }
 
     char *format = *args;
     int interval = atoi(*(args + 1));
 
-    if (interval < 1) {
-        fprintf(stderr, "error: the sleep interval must be > 0\n");
-        return -1;
-    }
+    char buf[BUFSIZ];
+    time_t ct;
+    struct tm *lt;
 
-    char last_output[MAXLEN], output[MAXLEN];
-    time_t t;
-    struct tm *tmp;
-
-    while (1) {
-        t = time(NULL);
-        tmp = localtime(&t);
-        strftime(output, MAXLEN, format, tmp);
-        if (strcmp(output, last_output) != 0) {
-            printf("%s", output);
-            fflush(stdout);
-        }
-        strcpy(last_output, output);
+    while (true) {
+        ct = time(NULL);
+        lt = localtime(&ct);
+        strftime(buf, sizeof(buf), format, lt);
+        printf("%s\n", buf);
+        fflush(stdout);
         sleep(interval);
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
