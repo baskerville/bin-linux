@@ -57,7 +57,7 @@ do
             owl install python-colormath-git
             owl install urxvt-autocomplete-all-the-things-git
             owl install cower-git sxiv-git dwb-hg dmenu-q-xywh-xft-git
-            owl install detox duff dictd-jargon dictd-wn stderred-git z-git
+            owl install detox duff dictd-jargon dictd-wn stderred-git z-git v-git
             owl install mutt-bare-git dzen2-bare-git
             owl install girara-common-git girara-gtk2-git zathura-git
             owl install zathura-pdf-poppler-git zathura-ps-git zathura-djvu-git
