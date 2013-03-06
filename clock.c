@@ -25,7 +25,8 @@ int main(int argc, char *argv[]) {
         ct = time(NULL);
         lt = localtime(&ct);
         strftime(buf, sizeof(buf), format, lt);
-        printf("%s\n", buf);
+        if (printf("%s\n", buf) < 0)
+            return EXIT_FAILURE;
         fflush(stdout);
         sleep(interval);
     }
