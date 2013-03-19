@@ -18,7 +18,7 @@ do
     pattern=''
     [ $only_index -eq 0 ] && pattern="${block}${pattern}"
     [ $only_block -eq 0 ] && pattern="${pattern}$(printf '%03d' $i)"
-    printf " \033[38;5;${i}m%b" "$pattern"
+    printf " \033[38;5;${i}m%s" "$pattern"
     counter=$((counter+1))
     newrow=$((counter%CHUNK_LENGTH))
 done
