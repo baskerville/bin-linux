@@ -1,18 +1,11 @@
 #! /bin/dash
 
 _incg() {
+    printf "%s\n" "$1"
     local names="$(grep '^#include *"[^"]\+"' "$1" 2> /dev/null | sed 's/[^"]\+"\([^"]\+\)".*/\1/')"
-    if [ -z "$names" ] ; then
-        case "$1" in
-            *.h)
-                printf "%s\n" "$1"
-                ;;
-        esac
-    else
-        for nm in $names ; do
-            _incg "$nm"
-        done
-    fi
+    for nm in $names ; do
+        _incg "$nm"
+    done
 }
 
 suffix=.o
@@ -31,7 +24,7 @@ done
 shift $((OPTIND - 1))
 
 while [ $# -gt 0 ] ; do
-    printf "%s: %s" "${1%.*}$suffix" "$1"
+    printf "%s:" "${1%.*}$suffix"
     for nm in $(_incg "$1" | sort -u) ; do
         printf " %s" "$nm"
     done
