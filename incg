@@ -1,0 +1,21 @@
+#! /bin/dash
+
+_incg() {
+    local names="$(grep '^#include *"[^"]\+"' "$1" | sed 's/[^"]\+"\([^"]\+\)".*/\1/')"
+    if [ -z "$names" ] ; then
+        printf "%s\n" "$1"
+    else
+        for nm in $names ; do
+            _incg "$nm"
+        done
+    fi
+}
+
+while [ $# -gt 0 ] ; do
+    printf "%s: %s" "${1%.*}.o" "$1"
+    for nm in $(_incg "$1" | sort -u) ; do
+        printf " %s" "$nm"
+    done
+    printf "\n"
+    shift
+done
