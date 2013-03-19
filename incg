@@ -17,10 +17,13 @@ _incg() {
 
 suffix=.o
 
-while getopts 's:' opt ; do
+while getopts 'hs:' opt ; do
     case $opt in
         s)
             suffix=$OPTARG
+            ;;
+        h)
+            printf "%s [-h|-s SUFFIX] CSOURCE ...\n" "${0##*/}"
             ;;
     esac
 done
