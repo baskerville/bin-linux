@@ -6,8 +6,8 @@ bspc rename Desktop01 $FIRST_DESK
 bspc add $REMAINING_DESKS
 bspc layout monocle $FIRST_DESK $REMAINING_DESKS
 
-bspc rule Gimp Eight floating
-bspc rule Inkscape Seven floating
+bspc rule Gimp Eight floating follow
+bspc rule Inkscape Seven floating follow
 bspc rule fontforge floating
 bspc rule Download floating
 bspc rule Gifview floating
