@@ -12,8 +12,8 @@ bspc rule fontforge floating
 bspc rule Download floating
 bspc rule Gifview floating
 
-bspc set border_width  1
-bspc set window_gap    0
+bspc set border_width  4
+bspc set window_gap    12
 bspc set top_padding   24
 
 bspc set borderless_monocle     true
