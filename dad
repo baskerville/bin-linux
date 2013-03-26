@@ -2,38 +2,38 @@
 
 diana list > /dev/null 2>&1
 
-if [ $? -eq 0 ]; then
-    echo 'the daemon is already running' >&2
+if [ $? -eq 0 ] ; then
+    print '%s.\n' 'The daemon is already running' >&2
     exit 1
 fi
 
 HASHES_FILE=$XDG_DATA_HOME/aria2hashes
-BACKUP_HASHES=$XDG_DATA_HOME/aria2hashes.bak
+BACKUP_HASHES=${HASHES_FILE}.bak
 
 [ ! -e "$HASHES_FILE" -a -e "$BACKUP_HASHES" ] && mv "$BACKUP_HASHES" "$HASHES_FILE"
 
 tmp_file=$(mktemp)
-
 sort -u "$HASHES_FILE" > "$tmp_file"
 cp "$tmp_file" "$HASHES_FILE"
 rm "$tmp_file"
 
 aria2c -D --enable-rpc -j 16 -d "$XDG_TMP_DIR" -l "$HOME/.aria2/log" --on-bt-download-complete "$XDG_BIN_DIR/aria2_download_complete_hook" --on-download-complete "$XDG_BIN_DIR/aria2_download_complete_hook"
 
-for line in $(cat $HASHES_FILE); do
+for line in $(cat "$HASHES_FILE") ; do
     rhsh=${line%:*}
     sel=${line#*:}
     hsh=${rhsh#_}
 
-    for tor in "$XDG_TMP_DIR"/*.torrent; do
+    for tor in "$XDG_TMP_DIR"/*.torrent ; do
         match=$(aria2c -S "$tor" | grep -m 1 "$hsh")
-        if [ -n "$match" ]; then
-            echo "$tor"
+        if [ -n "$match" ] ; then
+            printf '%s\n' "$tor"
             gid=$(diana --select-file="$sel" add "$tor")
             [ $? -ne 0 ] && exit 1
             case $rhsh in
                 _*)
-                    diana pause $gid;;
+                    diana pause $gid
+                    ;;
             esac
         fi
     done
