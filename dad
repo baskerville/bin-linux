@@ -7,25 +7,20 @@ if [ $? -eq 0 ]; then
     exit 1
 fi
 
-hashes_file=$XDG_DATA_HOME/aria2hashes
-backup_hashes=$XDG_DATA_HOME/aria2hashes.bak
+HASHES_FILE=$XDG_DATA_HOME/aria2hashes
+BACKUP_HASHES=$XDG_DATA_HOME/aria2hashes.bak
 
-if [ ! -e "$hashes_file" ]
-then
-    if [ -e "$backup_hashes" ]; then
-        mv "$backup_hashes" "$hashes_file"
-    fi
-fi
+[ ! -e "$HASHES_FILE" -a -e "$BACKUP_HASHES" ] && mv "$BACKUP_HASHES" "$HASHES_FILE"
 
 tmp_file=$(mktemp)
 
-sort -u "$hashes_file" > "$tmp_file"
-cp "$tmp_file" "$hashes_file"
+sort -u "$HASHES_FILE" > "$tmp_file"
+cp "$tmp_file" "$HASHES_FILE"
 rm "$tmp_file"
 
 aria2c -D --enable-rpc -j 16 -d "$XDG_TMP_DIR" -l "$HOME/.aria2/log" --on-bt-download-complete "$XDG_BIN_DIR/aria2_download_complete_hook" --on-download-complete "$XDG_BIN_DIR/aria2_download_complete_hook"
 
-for line in $(cat $hashes_file); do
+for line in $(cat $HASHES_FILE); do
     rhsh=${line%:*}
     sel=${line#*:}
     hsh=${rhsh#_}
@@ -44,4 +39,4 @@ for line in $(cat $hashes_file); do
     done
 done
 
-mv "$hashes_file" "$backup_hashes"
+mv "$HASHES_FILE" "$BACKUP_HASHES"
