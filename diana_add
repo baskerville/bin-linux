@@ -1,6 +1,4 @@
 #! /bin/dash
 
-diana list > /dev/null 2>&1
-[ $? -ne 0 ] && dad
-
+dad start > /dev/null 2>&1
 diana add "$@"
