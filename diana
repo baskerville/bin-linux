@@ -1,16 +1,18 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import urllib.request, json, base64
-from urllib.error import URLError, HTTPError
-import sys, os
+import os
 import re
+import sys
+import json
+import base64
+import urllib.request
+from urllib.error import URLError, HTTPError
 from subprocess import check_call
 from getopt import getopt
 
 MAX_NAME_LEN = 50
 ELLIPSIS = '...'
-HASHES_FILE = os.path.expandvars('$XDG_DATA_HOME/aria2hashes')
 PREVIEW_COMMAND = 'open'
 INFO_COMMAND = 'fileinfo'
 BLACK = 30
@@ -58,11 +60,11 @@ def call_func(func, params=[]):
         elif type(err) is HTTPError:
             code = err.code
         if code == 111:
-            print('the daemon is not running', file = sys.stderr)
+            print('The daemon is not running.', file = sys.stderr)
         elif code == -1:
-            print('encountered an error of type: %s' % type(err), file = sys.stderr)
+            print('Encountered an error of type: %s.' % type(err), file = sys.stderr)
         else:
-            print('server replied: %s' % code, file = sys.stderr)
+            print('Server replied: %s.' % code, file = sys.stderr)
         exit(1)
     data = c.read().decode('utf-8')
     response = json.loads(data)
@@ -81,7 +83,7 @@ def get_files(gids):
     for g in gids:
         response = call_func('getFiles', [g])
         if not response:
-            print('failed on %s' % g)
+            print('Failed on %s.' % g)
         else:
             if len(gids) > 1:
                 print('%s: ' % magenta(g))
@@ -112,7 +114,7 @@ def apply_func_on_gids(fn, gids):
     for g in gids:
         response = call_func(fn, [g])
         if not response:
-            print('failed on %s' % g)
+            print('Failed on %s.' % g)
 
 def pattern_match(index, pattern):
     for p in pattern:
@@ -135,7 +137,7 @@ def command_by_gid(command, gids, options):
     for g in gids:
         response = call_func('getFiles', [g])
         if not response:
-            print('failed on %s' % g)
+            print('Failed on %s.' % g)
         else:
             if len(gids) > 1:
                 print('%s: ' % magenta(g))
@@ -193,39 +195,9 @@ def add_items(items, options={}):
                 response = call_func('addMetalink', [item_content, options])
 
         if not response:
-            print('failed on %s' % item)
+            print('Failed on %s.' % item)
         else:
             print(response['result'])
-
-def save_kill():
-    hf = open(HASHES_FILE, 'w')
-    downloads = []
-    active = get_active()
-    paused = get_waiting()
-    if active:
-        downloads.extend(active['result'])
-    if paused:
-        downloads.extend(paused['result'])
-    for d in downloads:
-        if 'infoHash' in d:
-            gid = d['gid']
-            infoHash = d['infoHash']
-            status = d['status']
-            if status == 'paused':
-                infoHash = '_%s' % infoHash
-            response = call_func('getFiles', [gid])
-            if response:
-                files = response['result']
-                selection = []
-                for f in files:
-                    index = f['index']
-                    selected = f['selected']
-                    if selected == 'true':
-                        selection.append(index)
-                select_file_argument = ','.join(selection)
-                hf.write('%s:%s\n' % (infoHash, select_file_argument))
-    hf.close()
-    call_func('shutdown')
 
 def pause_all():
     call_func('pauseAll')
@@ -337,38 +309,29 @@ def colored_string(c, s):
 def usage():
     print('''
 SYNOPSIS
-    %s <action> [arguments]
+    %s ACTION [ARGUMENTS]
 
 ACTIONS
     list
-        Show the list of active downloads.
+        Output the list of active downloads.
 
     paused
-        Show the list of paused downloads.
+        Output the list of paused downloads.
 
     stopped
-        Show the list of stopped downloads.
+        Output the list of stopped downloads.
+
+    info [--select-file=...] GID ...
+        Output informations regarding the given GIDs.
+
+    files GID ...
+        Output the files owned by the downloads corresponding to the given GIDs.
 
     errors
-        Show the list of encountered errors.
+        Output the list of errors.
 
     stats
-        Show download bandwidth statistics.
-
-    sleep
-        Pause all the active downloads.
-
-    wake
-        Resume all the paused downloads.
-
-    purge
-        Clear the list of stopped downloads and errors.
-
-    clean
-        Stop seeding completed downloads.
-
-    kill
-        Kill the daemon.
+        Output download bandwidth statistics.
 
     add [--select-file=...] ITEM ...
         Download the given items (local or remote URLs to torrents, etc.).
@@ -385,21 +348,26 @@ ACTIONS
     resume GID ...
         Resume the downloads corresponding to the given GIDs.
 
-    files GID ...
-        Show the files owned by the downloads corresponding to the given GIDs.
-
-    info [--select-file=...] GID ...
-        Retrieve informations regarding the given GIDs.
-
     preview [--select-file=...] GID ...
         Preview all the files from all the downloads corresponding to the given GIDs.
 
+    sleep
+        Pause all the active downloads.
+
+    wake
+        Resume all the paused downloads.
+
+    purge
+        Clear the list of stopped downloads and errors.
+
+    clean
+        Stop seeding completed downloads.
     ''' % os.path.basename(sys.argv[0]))
     sys.exit()
 
 
 def main():
-    opts, args = getopt(sys.argv[1:], 'h', ['help', 'out=', 'header=', 'referer=', 'user-agent=', 'select-file=', 'http-user=', 'http-passwd='])
+    opts, args = getopt(sys.argv[1:], 'h', ['help', 'pause', 'out=', 'header=', 'referer=', 'user-agent=', 'select-file=', 'http-user=', 'http-passwd='])
     options = {}
 
     for o, a in opts:
@@ -413,10 +381,10 @@ def main():
         arguments = args[1:]
 
         if action in NO_ARGS_ACTIONS and len(arguments) > 0:
-            print('action \'%s\' takes no arguments' % action, file=sys.stderr)
+            print('Action \'%s\' takes no arguments' % action, file=sys.stderr)
             sys.exit(1)
         elif action in ARGS_ACTIONS and len(arguments) < 1:
-            print('no arguments given for action \'%s\'' % action, file=sys.stderr)
+            print('No arguments given for action \'%s\'' % action, file=sys.stderr)
             sys.exit(1)
 
         if action == 'add':
@@ -453,15 +421,13 @@ def main():
             call_func('purgeDownloadResult')
         elif action == 'clean':
             clean()
-        elif action == 'kill':
-            save_kill()
         else:
-            print('unknown action: %s' % action, file=sys.stderr)
+            print('Unknown action: %s' % action, file=sys.stderr)
             exit(1)
     else:
         usage()
 
-NO_ARGS_ACTIONS = ('list', 'paused', 'stopped', 'errors', 'stats', 'sleep', 'wake', 'purge', 'clean', 'kill')
+NO_ARGS_ACTIONS = ('list', 'paused', 'stopped', 'errors', 'stats', 'sleep', 'wake', 'purge', 'clean')
 ARGS_ACTIONS = ('add', 'remove', 'forcerm', 'preview', 'pause', 'resume', 'files')
 
 EXIT_CODES = {
