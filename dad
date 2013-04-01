@@ -55,7 +55,7 @@ case "$1" in
             exit 1
         fi
 
-        kill -- $(cat "$daemon_pid") > /dev/null 2>&1
+        kill $(cat "$daemon_pid") > /dev/null 2>&1
 
         if [ $? -ne 0 ] ; then
             printf '%s\n' 'Could not stop the daemon.' >&2
