@@ -1,10 +1,14 @@
 #! /bin/dash
 
-[ -z "$EWMHSTATUS_FIFO" ] && exit 1
+[ -z "$PANEL_FIFO" ] && exit 1
+
+FONT_FAMILY='DejaDroid Sans'
+FONT_SIZE=11
 
 . panel_colors
 
-mkfifo "$EWMHSTATUS_FIFO"
-ewmhstatus "DejaDroid Sans" 11 9 2> "$HOME/.ewmhstatus.log" | dzen2 -bg "$BACKGROUND" -fg "$FOREGROUND" -title-name bar -dock -h 24 -fn 'DejaDroid Sans:pixelsize=11' -ta l &
-clock '%H:%M' 5 | uq > "$EWMHSTATUS_FIFO" &
+xtitle -sf 'T%s' > "$PANEL_FIFO" &
+clock 'S%A %H:%M' 5 > "$PANEL_FIFO" &
+cat "$PANEL_FIFO" | panel_dzen2 -f "$FONT_FAMILY" -s "$FONT_SIZE" | uq | dzen2 -h $PANEL_HEIGHT -dock -ta l -title-name panel -fn "${FONT_FAMILY}:pixelsize=${FONT_SIZE}" -fg "$COLOR_FOREGROUND" -bg "$COLOR_BACKGROUND" &
+pgrep -nx dzen2 > "$PANEL_PID"
 # compton-trans -w "$(xdotool search --sync --class dzen)" 90 &

@@ -1,5 +1,8 @@
 #! /bin/dash
 
+[ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
+mkfifo "$PANEL_FIFO"
+
 while true ; do
-  bspwm || break
+  bspwm -s "$PANEL_FIFO" || break
 done

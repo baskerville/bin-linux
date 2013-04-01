@@ -1,8 +1,8 @@
 #! /bin/dash
 
-[ -z "$EWMHSTATUS_FIFO" ] && exit 1
+[ -z "$PANEL_FIFO" ] && exit 1
 
 pkill -x clock
-pkill -x ewmhstatus
-
-[ -e "$EWMHSTATUS_FIFO" ] && rm "$EWMHSTATUS_FIFO"
+pkill -x xtitle
+kill $(cat "$PANEL_PID")
+rm "$PANEL_PID"
