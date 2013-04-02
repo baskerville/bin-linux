@@ -1,7 +1,7 @@
 #! /bin/dash
 
-name=$(basename "$1")
-size=$(du -h "$1" | cut -f 1)
-geom=$(identify -format '%wx%h' "$1[0]")
+path=$1
+size=$(du -h "$path" | cut -f 1)
+geom=$(identify -format '%wx%h' "$path[0]")
 
-printf "%s %s %s\n" "$name" "$geom" "$size"
+printf "%s | %s | %s\n" "$path" "$geom" "$size"

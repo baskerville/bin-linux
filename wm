@@ -4,5 +4,5 @@
 mkfifo "$PANEL_FIFO"
 
 while true ; do
-  bspwm -s "$PANEL_FIFO" || break
+  bspwm -s "$PANEL_FIFO" -p W || break
 done
