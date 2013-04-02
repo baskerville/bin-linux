@@ -1,6 +1,6 @@
 #! /bin/dash
 
-[ -z "$PANEL_FIFO" ] && exit 1
+[ ! -e "$PANEL_PID" ] && exit 1
 
 pkill -x clock
 pkill -x xtitle
