@@ -64,7 +64,7 @@ while read -r line ; do
                                 layout='▲'
                                 ;;
                         esac
-                        wm_infos="${wm_infos}^fg()^bg()${PADDING}${PADDING}^p(;-$((font_size / 11)))^fg($COLOR_LAYOUT_FG)^bg($COLOR_LAYOUT_BG)${PADDING}$layout${PADDING}^p()"
+                        wm_infos="${wm_infos}^fg()^bg()${PADDING}${PADDING}^p(;-$((font_size / 11)))^fg($COLOR_LAYOUT_FG)^bg($COLOR_LAYOUT_BG)^ca(1, bspc cycle_layout)${PADDING}$layout${PADDING}^ca()^p()"
                         ;;
                 esac
                 shift
