@@ -1,0 +1,16 @@
+#! /bin/dash
+
+[ ! -e "$PANEL_PID" ] && exit 1
+
+top_padding=$(bspc get top_padding)
+
+if [ $top_padding -eq $PANEL_HEIGHT ] ; then
+    top_padding=0
+    action=windowunmap
+else
+    top_padding=$PANEL_HEIGHT
+    action=windowmap
+fi
+
+xdotool search --all --pid $(cat "$PANEL_PID") --name panel $action
+bspc set top_padding $top_padding
