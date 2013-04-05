@@ -37,9 +37,9 @@ exclude = []
 env = mkd = root = None
 
 try:
-    sys.path.append(curdir)
+    sys.path.insert(1, curdir)
     from settings import *
-    sys.path.pop()
+    sys.path.pop(1)
 except ImportError:
     pass
 
