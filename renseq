@@ -1,12 +1,15 @@
 #! /bin/dash
 
 cmd='mv'
+counter=1
 
-while getopts "c" opt ; do
+while getopts "cs:" opt ; do
     case $opt in
         c)
             cmd='cp'
             ;;
+        s)
+            counter=$OPTARG
     esac
 done
 
@@ -17,7 +20,6 @@ if [ $# -lt 2 ] ; then
     exit 1
 fi
 
-counter=1
 basename=$1
 shift
 
