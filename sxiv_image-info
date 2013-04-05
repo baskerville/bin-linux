@@ -2,6 +2,6 @@
 
 path=$1
 size=$(du -h "$path" | cut -f 1)
-geom=$(identify -format '%wx%h' "$path[0]")
+geom=$(identify -format '%G' "$path[0]")
 
 printf "%s | %s | %s\n" "$path" "$geom" "$size"
