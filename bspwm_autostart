@@ -4,7 +4,7 @@ FIRST_DESK=One
 REMAINING_DESKS='Two Three Four Five Six Seven Eight Nine Ten'
 bspc rename Desktop01 $FIRST_DESK
 bspc add $REMAINING_DESKS
-bspc layout monocle $FIRST_DESK $REMAINING_DESKS
+# bspc layout monocle $FIRST_DESK $REMAINING_DESKS
 
 bspc rule Gimp Eight floating follow
 bspc rule Inkscape Seven floating follow

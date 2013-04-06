@@ -2,6 +2,8 @@
 
 font_family='sans-serif'
 font_size=11
+icons_font_family=$font_family
+icons_font_size=$font_size
 
 . panel_colors
 
@@ -11,7 +13,7 @@ NORMIFS=$IFS
 FIELDIFS=':'
 PADDING='  '
 
-while getopts 'af:s:' opt ; do
+while getopts 'af:s:F:S:' opt ; do
     case "$opt" in
         a)
             adaptive_centering=1
@@ -21,6 +23,12 @@ while getopts 'af:s:' opt ; do
             ;;
         s)
             font_size=$OPTARG
+            ;;
+        F)
+            icons_font_family=$OPTARG
+            ;;
+        S)
+            icons_font_size=$OPTARG
             ;;
     esac
 done
@@ -64,7 +72,7 @@ while read -r line ; do
             IFS=$NORMIFS
             ;;
     esac
-    set - $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^[a-z]\+([^)]*)//g' | xargs -0 textwidth -f "$font_family" -s "$font_size")
+    set - $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^[a-z]\+([^)]*)//g' | xargs -0 textwidth -f "$font_family" -s "$font_size" -F "$icons_font_family" -S "$icons_font_size")
     left_width=$1
     center_width=$2
     right_width=$3
