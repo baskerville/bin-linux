@@ -7,6 +7,7 @@ FONT_SIZE=11
 
 . panel_colors
 
+bspc put_status
 xtitle -sf 'T%s' > "$PANEL_FIFO" &
 clock "S%a %H:%M" 5 > "$PANEL_FIFO" &
 cat "$PANEL_FIFO" | panel_dzen2 -f "$PANEL_FONT_FAMILY" -s "$PANEL_FONT_SIZE" | uq | dzen2 -h $PANEL_HEIGHT -dock -ta l -title-name panel -fn "${FONT_FAMILY}:pixelsize=${FONT_SIZE}" -fg "$COLOR_FOREGROUND" -bg "$COLOR_BACKGROUND" &
