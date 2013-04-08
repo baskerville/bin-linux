@@ -2,8 +2,6 @@
 
 font_family='sans-serif'
 font_size=11
-icons_font_family=$font_family
-icons_font_size=$font_size
 
 . panel_colors
 
@@ -13,7 +11,7 @@ NORMIFS=$IFS
 FIELDIFS=':'
 PADDING='  '
 
-while getopts 'af:s:F:S:' opt ; do
+while getopts 'af:s:' opt ; do
     case "$opt" in
         a)
             adaptive_centering=1
@@ -24,12 +22,6 @@ while getopts 'af:s:F:S:' opt ; do
         s)
             font_size=$OPTARG
             ;;
-        F)
-            icons_font_family=$OPTARG
-            ;;
-        S)
-            icons_font_size=$OPTARG
-            ;;
     esac
 done
 
@@ -38,10 +30,10 @@ shift $((OPTIND - 1))
 while read -r line ; do
     case $line in
         S*)
-            sys_infos="^fg($COLOR_STATUS_FG)^bg($COLOR_STATUS_BG)${PADDING}${line#?}${PADDING}^fg()^bg()${PADDING}"
+            sys_infos="^fg($COLOR_STATUS_FG)^bg($COLOR_STATUS_BG)^ca(1, bspc toggle_visibility)${PADDING}${line#?}${PADDING}^ca()^fg()^bg()${PADDING}"
             ;;
         T*)
-            title="^fg($COLOR_TITLE_FG)^bg($COLOR_TITLE_BG)${PADDING}${line#?}${PADDING}"
+            title="^fg($COLOR_TITLE_FG)^bg($COLOR_TITLE_BG)^ca(1, bspc toggle_floating)^ca(2, bspc toggle_locked)^ca(3, bspc close)${PADDING}${line#?}${PADDING}^ca()^ca()^ca()"
             ;;
         W*)
             wm_infos="$PADDING"
@@ -50,21 +42,31 @@ while read -r line ; do
             while [ $# -gt 0 ] ; do
                 item=$1
                 case $item in
-                    [d_]!*)
-                        wm_infos="${wm_infos}^fg($COLOR_URGENT_FG)^bg($COLOR_URGENT_BG)${PADDING}${item#??}${PADDING}"
-                        ;;
-                    D*)
-                        wm_infos="${wm_infos}^fg($COLOR_ACTIVE_FG)^bg($COLOR_ACTIVE_BG)${PADDING}${item#??}${PADDING}"
-                        ;;
-                    d*)
-                        wm_infos="${wm_infos}^fg($COLOR_INACTIVE_FG)^bg($COLOR_INACTIVE_BG)${PADDING}${item#??}${PADDING}"
-                        ;;
-                    _*)
-                        wm_infos="${wm_infos}^fg($COLOR_EMPTY_FG)^bg($COLOR_EMPTY_BG)${PADDING}${item#??}${PADDING}"
+                    [DdEUu]*)
+                        name=${item#?}
+                        case $item in
+                            u*)
+                                FG=$COLOR_URGENT_FG
+                                BG=$COLOR_URGENT_BG
+                                ;;
+                            [DU]*)
+                                FG=$COLOR_ACTIVE_FG
+                                BG=$COLOR_ACTIVE_BG
+                                ;;
+                            d*)
+                                FG=$COLOR_INACTIVE_FG
+                                BG=$COLOR_INACTIVE_BG
+                                ;;
+                            E*)
+                                FG=$COLOR_EMPTY_FG
+                                BG=$COLOR_EMPTY_BG
+                                ;;
+                        esac
+                        wm_infos="${wm_infos}^fg(${FG})^bg(${BG})^ca(1, bspc use ${name})^ca(2, bspc send_to ${name})^ca(3, bspc send_to ${name} --follow)${PADDING}${name}${PADDING}^ca()^ca()^ca()"
                         ;;
                     L*)
                         layout=$(printf "%s" "${item#?}" | sed 's/^\(.\).*/\U\1/')
-                        wm_infos="${wm_infos}^fg()^bg()${PADDING}${PADDING}^fg($COLOR_LAYOUT_FG)^bg($COLOR_LAYOUT_BG)^ca(1, bspc cycle_layout)${PADDING}$layout${PADDING}^ca()"
+                        wm_infos="${wm_infos}^fg()^bg()${PADDING}${PADDING}^fg($COLOR_LAYOUT_FG)^bg($COLOR_LAYOUT_BG)^ca(1, bspc cycle_layout)^ca(2, bspc balance)${PADDING}$layout${PADDING}^ca()^ca()"
                         ;;
                 esac
                 shift
@@ -72,7 +74,7 @@ while read -r line ; do
             IFS=$NORMIFS
             ;;
     esac
-    set - $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^[a-z]\+([^)]*)//g' | xargs -0 textwidth -f "$font_family" -s "$font_size" -F "$icons_font_family" -S "$icons_font_size")
+    set - $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^[a-z]\+([^)]*)//g' | xargs -0 textwidth -f "$font_family" -s "$font_size")
     left_width=$1
     center_width=$2
     right_width=$3
