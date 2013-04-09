@@ -1,16 +1,17 @@
 #! /bin/bash
 
-select task in network user sound programs home links
+select task in network user sound
 do
     printf "%s\n" "$task"
     case $task in
         network)
             # as root
-            printf "%s\n" "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=wheel" > /etc/wpa_supplicant.conf
+            SUPPLICONF= /etc/wpa_supplicant/wpa_supplicant.conf
+            printf "%s\n" "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=wheel" > "$SUPPLICONF"
             read -p "SSID? " SSID
             read -p "PASS? "  PASS
-            wpa_passphrase "$SSID" "$PASS" >> /etc/wpa_supplicant.conf
-            wpa_supplicant -B -Dwext -i wlan0 -c /etc/wpa_supplicant.conf
+            wpa_passphrase "$SSID" "$PASS" >> "$SUPPLICONF"
+            wpa_supplicant -B -D wext -i wlan0 -c "$SUPPLICONF"
             dhcpcd wlan0
             pacman -S sudo netcfg wpa_actiond dhclient
             ;;
@@ -24,154 +25,6 @@ do
             alsamixer
             speaker-test -c 2
             sudo alsactl store
-            ;;
-        programs)
-            sudo pacman -S linux-docs
-            sudo pacman -S bash-completion dash gdb
-            sudo pacman -S curl yajl perl inetutils openssh openssl pkgfile
-            sudo pacman -S git mercurial subversion cvs bzr
-            sudo pacman -S zip unzip unrar
-            sudo pacman -S pm-utils vim mutt msmtp ed
-            sudo pacman -S rlwrap w3m elinks tmux duff ack surfraw dictd bc
-            sudo pacman -S xorg-server xorg-xinit xorg-utils xorg-server-utils xorg-docs
-            sudo pacman -S xorg-xmessage xorg-xclock xorg-xcalc xorg-xeyes
-            sudo pacman -S terminus-font rxvt-unicode xscreensaver zenity gtk-engine-murrine
-            sudo pacman -S scrot mplayer2 ffmpeg
-            sudo pacman -S mpd mpc
-            sudo pacman -S xclip xsel xdotool flashplugin
-            sudo pacman -S gimp inkscape audacity
-            sudo pacman -S cups gutenprint
-            sudo pacman -S cdrkit gphoto2 dcraw
-            sudo pacman -S lirc lirc-utils
-            sudo pacman -S mac cuetools shntool libplist
-            sudo pacman -S lsof strace words
-            sudo pacman -S gnuplot gtk
-            sudo pacman -S p7zip tk id3v2
-            sudo pacman -S jd7-openjdk icedtea-web-java7 apache-ant
-            sudo pacman -S apache php php-apache mysql
-            sudo pacman -S abiword gnumeric sdlmame libreoffice-impress
-            sudo pacman -S hfsprogs dosfstools
-            sudo pacman -S libxcb xcb-proto xcb-util xcb-util-wm xcb-util-keysyms xcb-util-image
-            sudo pacman -S fortune-mod figlet cowsay extundelete
-            owl install sxhkd-git bspwm-git backlight-git sres-git sutils-git textwidth-git xlsw-git
-            owl install python-colormath-git
-            owl install urxvt-autocomplete-all-the-things-git
-            owl install cower-git sxiv-git dwb-hg dmenu-q-xywh-xft-git
-            owl install detox duff dictd-jargon dictd-wn stderred-git z-git
-            owl install mutt-bare-git dzen2-bare-git slang-git slrn-git leafnode
-            owl install girara-common-git girara-gtk2-git zathura-git
-            owl install zathura-pdf-poppler-git zathura-ps-git zathura-djvu-git
-            owl install dfc-git compton-git youtube-dl-git
-            owl install libuninameslist fontforge-bskv-git
-            owl install ncmpcpp-git spdf-git jpdf-git
-            owl install paps-bskv compface-bskv
-            owl install grabc ppsei darcs-bin
-            owl install ttf-anonymous-pro ttf-dejavu ttf-droid ttf-envy-code-r ttf-freefont ttf-junicode ttf-liberation ttf-linux-libertine ttf-ms-fonts
-            owl install gnome-themes-standard faenza-icon-theme thunar
-            ;;
-        home)
-            cd "$HOME"
-            mkdir art doc incoming image audio video src tmp work misc public_html
-            git clone git://github.com/baskerville/dotfiles.git .dotfiles
-            git clone git://github.com/baskerville/bin.git .bin
-            mkdir -p .sxiv/cache
-            ;;
-        links)
-            cd "$HOME" && ln -s ".dotfiles/XCompose" ".XCompose"
-            cd "$HOME" && ln -s ".dotfiles/Xresources" ".Xresources"
-            cd "$HOME" && ln -s ".dotfiles/bash_profile" ".bash_profile"
-            cd "$HOME" && ln -s ".dotfiles/bashrc" ".bashrc"
-            cd "$HOME" && ln -s ".dotfiles/bcrc" ".bcrc"
-            cd "$HOME" && ln -s ".dotfiles/curlrc" ".curlrc"
-            cd "$HOME" && ln -s ".dotfiles/dhexrc" ".dhexrc"
-            cd "$HOME" && ln -s ".dotfiles/dircolors" ".dircolors"
-            cd "$HOME" && ln -s ".dotfiles/gitconfig" ".gitconfig"
-            cd "$HOME" && ln -s ".dotfiles/gtk2_gvim" ".gtk2_gvim"
-            cd "$HOME" && ln -s ".dotfiles/gtk2_settings" ".gtkrc-2.0"
-            cd "$HOME" && ln -s ".dotfiles/gvimrc" ".gvimrc"
-            cd "$HOME" && ln -s ".dotfiles/hgrc" ".hgrc"
-            cd "$HOME" && ln -s ".dotfiles/inputrc" ".inputrc"
-            cd "$HOME" && ln -s ".dotfiles/lftprc" ".lftprc"
-            cd "$HOME" && ln -s ".dotfiles/mailcap" ".mailcap"
-            cd "$HOME" && ln -s ".dotfiles/mpdconf" ".mpdconf"
-            cd "$HOME" && ln -s ".dotfiles/muttrc" ".muttrc"
-            cd "$HOME" && ln -s ".dotfiles/profile" ".profile"
-            cd "$HOME" && ln -s ".dotfiles/shell_aliases" ".shell_aliases"
-            cd "$HOME" && ln -s ".dotfiles/shell_functions" ".shell_functions"
-            cd "$HOME" && ln -s ".dotfiles/slrnrc" ".slrnrc"
-            cd "$HOME" && ln -s ".dotfiles/startpage.html" ".startpage"
-            cd "$HOME" && ln -s ".dotfiles/themes/slrn/slrn_theme" ".slrn_colors"
-            cd "$HOME" && ln -s ".dotfiles/tmux.conf" ".tmux.conf"
-            cd "$HOME" && ln -s ".dotfiles/toprc" ".toprc"
-            cd "$HOME" && ln -s ".dotfiles/vimrc" ".vimrc"
-            cd "$HOME" && ln -s ".dotfiles/xinitrc" ".xinitrc"
-            cd "$HOME" && ln -s ".dotfiles/xmodmaprc" ".xmodmaprc"
-            cd "$HOME" && ln -s ".wallpaper-light" ".wallpaper"
-            cd "$HOME" && ln -s "doc/books/" "books"
-            cd "$HOME" && ln -s "doc/notules/" "notules"
-            cd "$HOME" && ln -s "src/abs" "abs"
-            cd "$HOME" && ln -s "src/aur/" "aur"
-            cd "$HOME" && ln -s "src/lang/" "lang"
-            cd "$HOME" && ln -s "src/projects/" "projects"
-            cd "$HOME/.audacity-data/Theme" && ln -s "Gnome_ImageCache.png" "ImageCache.png"
-            cd "$HOME/.bin" && ln -s "/usr/bin/perl-rename" "pmv"
-            cd "$HOME/.bin" && ln -s "audio_player" "ap"
-            cd "$HOME/.bin" && ln -s "bspwm_colors-light" "bspwm_colors"
-            cd "$HOME/.bin" && ln -s "dbatt_colors-light" "dbatt_colors"
-            cd "$HOME/.bin" && ln -s "dbright_colors-light" "dbright_colors"
-            cd "$HOME/.bin" && ln -s "dmenu_colors-light" "dmenu_colors"
-            cd "$HOME/.bin" && ln -s "dnotify_colors-light" "dnotify_colors"
-            cd "$HOME/.bin" && ln -s "document_reader" "dr"
-            cd "$HOME/.bin" && ln -s "dvol_colors-light" "dvol_colors"
-            cd "$HOME/.bin" && ln -s "editor" "e"
-            cd "$HOME/.bin" && ln -s "fileinfo" "gi"
-            cd "$HOME/.bin" && ln -s "httpd_toggle" "ht"
-            cd "$HOME/.bin" && ln -s "image_viewer" "iv"
-            cd "$HOME/.bin" && ln -s "mutt_query" "mq"
-            cd "$HOME/.bin" && ln -s "open" "o"
-            cd "$HOME/.bin" && ln -s "open" "xdg-open"
-            cd "$HOME/.bin" && ln -s "panel_colors-light" "panel_colors"
-            cd "$HOME/.bin" && ln -s "show_xface_colors-light" "show_xface_colors"
-            cd "$HOME/.bin" && ln -s "video_player" "vp"
-            cd "$HOME/.bin" && ln -s "web_browser" "wb"
-            cd "$HOME/.config/bspwm" && ln -s "../../.bin/bspwm_autostart" "autostart"
-            cd "$HOME/.config/dwb" && ln -s "../../.dotfiles/dwb_config" "settings"
-            cd "$HOME/.config/dwb" && ln -s "../../.dotfiles/dwb_keys" "keys"
-            cd "$HOME/.config/dwb" && ln -s "../../.dotfiles/override.css" "override.css"
-            cd "$HOME/.config/dwb" && ln -s "../../.dotfiles/style.css" "style.css"
-            cd "$HOME/.config/fontconfig" && ln -s "../../.dotfiles/fonts.conf" "fonts.conf"
-            cd "$HOME/.config/gtk-3.0" && ln -s "../../.dotfiles/gtk3_settings" "settings.ini"
-            cd "$HOME/.config/i3status" && ln -s "../../.dotfiles/i3status_config" "config"
-            cd "$HOME/.config/newsbeuter" && ln -s "../../.dotfiles/newsbeuter_config" "config"
-            cd "$HOME/.config/sxhkd" && ln -s "../../.dotfiles/sxhkdrc" "sxhkdrc"
-            cd "$HOME/.config/tint2" && ln -s "../../.dotfiles/tint2rc" "tint2rc"
-            cd "$HOME/.config/zathura" && ln -s "../../.dotfiles/zathura_colors" "zathura_colors"
-            cd "$HOME/.config/zathura" && ln -s "../../.dotfiles/zathura_config" "zathurarc"
-            cd "$HOME/.dotfiles" && ln -s "dzen2_xresources-light" "dzen2_xresources"
-            cd "$HOME/.dotfiles" && ln -s "gtk2_gvim-light" "gtk2_gvim"
-            cd "$HOME/.dotfiles" && ln -s "override.css-light" "override.css"
-            cd "$HOME/.dotfiles" && ln -s "tint2rc-dark" "tint2rc"
-            cd "$HOME/.dotfiles/color_schemes" && ln -s "ivory-dark.yaml" "current-dark"
-            cd "$HOME/.dotfiles/color_schemes" && ln -s "ivory-light.yaml" "current-light"
-            cd "$HOME/.dotfiles/color_schemes" && ln -s "symbolic.yaml" "current-symbolic"
-            cd "$HOME/.dotfiles/terminal_colors" && ln -s "redef-light" "redef"
-            cd "$HOME/.dotfiles/terminal_colors" && ln -s "redef_console-light" "redef_console"
-            cd "$HOME/.dotfiles/terminal_colors" && ln -s "xresources-light" "xresources"
-            cd "$HOME/.local/share" && ln -s "../../.dotfiles/texmf/" "texmf"
-            cd "$HOME/.mplayer" && ln -s "../.dotfiles/mplayer_config" "config"
-            cd "$HOME/.mplayer" && ln -s "../.dotfiles/mplayer_keys" "input.conf"
-            cd "$HOME/.mutt" && ln -s "../.dotfiles/themes/mutt/mutt_theme" "theme"
-            cd "$HOME/.ncmpcpp" && ln -s "../.dotfiles/ncmpcpp_config" "config"
-            cd "$HOME/.ncmpcpp" && ln -s "../.dotfiles/ncmpcpp_keys" "bindings"
-            cd "$HOME/.slrn" && ln -s "../.dotfiles/slrn_macros/" "macros"
-            cd "$HOME/.sxiv/exec" && ln -s "../../.bin/sxiv_image-info" "image-info"
-            cd "$HOME/.themes/mango" && ln -s "../../.dotfiles/themes/fontforge/mango_fontforge" "mango_fontforge"
-            cd "$HOME/.vim/bundle" && ln -s "../../.dotfiles/vim-quirks/" "vim-quirks"
-            cd "$HOME/.vim/colors" && ln -s "../../.dotfiles/themes/vim/bubblegum.vim" "bubblegum.vim"
-            cd "$HOME/.vim/colors" && ln -s "../../.dotfiles/themes/vim/raven.vim" "raven.vim"
-            cd "$HOME/.vim/colors" && ln -s "../../.dotfiles/themes/vim/raven256.vim" "raven256.vim"
-            cd "$HOME/.vim/colors" && ln -s "../../.dotfiles/themes/vim/raven8.vim" "raven8.vim"
-            cd "$HOME/src" && ln -s "../.dotfiles/patches/" "patches"
             ;;
     esac
 done
