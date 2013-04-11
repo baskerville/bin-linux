@@ -17,7 +17,7 @@ bspc set window_gap       12
 bspc set top_padding      24
 bspc set split_ratio       0.52
 
-# bspc set borderless_monocle     true
+bspc set borderless_monocle     true
 # bspc set gapless_monocle        true
 bspc set focus_follows_pointer  false
 bspc set adaptative_raise       true
