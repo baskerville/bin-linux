@@ -9,7 +9,6 @@ bspc add $REMAINING_DESKS
 bspc rule Gimp Eight floating follow
 bspc rule Inkscape Seven floating follow
 bspc rule fontforge floating
-bspc rule Download floating
 bspc rule Gifview floating
 
 bspc set border_width      3
