@@ -11,5 +11,6 @@ bspc put_status
 xtitle -sf 'T%s' > "$PANEL_FIFO" &
 clock -s -i 5 -f "S%a %H:%M" > "$PANEL_FIFO" &
 cat "$PANEL_FIFO" | panel_dzen2 -a -f "$PANEL_FONT_FAMILY" -s "$PANEL_FONT_SIZE" | uq | dzen2 -h $PANEL_HEIGHT -dock -ta l -title-name panel -fn "${FONT_FAMILY}:pixelsize=${FONT_SIZE}" -fg "$COLOR_FOREGROUND" -bg "$COLOR_BACKGROUND" &
-ps -p $(pgrep -nx cat) -o pgrp= | tr -d ' ' > "$PANEL_PGRP"
+# ps -p $(pgrep -nx cat) -o pgrp= | tr -d ' ' > "$PANEL_PGRP"
+ps -p $(xdotool search --sync --class dzen getwindowpid) -o pgrp= | tr -d ' ' > "$PANEL_PGRP"
 # compton-trans -w "$(xdotool search --sync --class dzen)" 90 &

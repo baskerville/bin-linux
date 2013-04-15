@@ -1,3 +1,0 @@
-#! /bin/dash
-
-find "$HOME/.vim/bundle" -mindepth 1 -maxdepth 1 -type d | xargs -rI % owl_update_repository "%"
