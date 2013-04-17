@@ -2,6 +2,8 @@
 
 font_family='sans-serif'
 font_size=11
+icons_font_family=$font_family
+icons_font_size=$font_size
 
 . panel_colors
 
@@ -11,7 +13,7 @@ NORMIFS=$IFS
 FIELDIFS=':'
 PADDING='  '
 
-while getopts 'af:s:' opt ; do
+while getopts 'af:s:F:S:' opt ; do
     case "$opt" in
         a)
             adaptive_centering=1
@@ -22,6 +24,12 @@ while getopts 'af:s:' opt ; do
         s)
             font_size=$OPTARG
             ;;
+        F)
+            icons_font_family=$OPTARG
+            ;;
+        S)
+            icons_font_size=$OPTARG
+            ;;
     esac
 done
 
@@ -29,8 +37,20 @@ shift $((OPTIND - 1))
 
 while read -r line ; do
     case $line in
-        S*)
-            sys_infos="^fg($COLOR_STATUS_FG)^bg($COLOR_STATUS_BG)^ca(1, bspc toggle_visibility)${PADDING}${line#?}${PADDING}^ca()^fg()^bg()${PADDING}"
+        C*)
+            sys_clock="^fg($COLOR_STATUS_FG)^bg($COLOR_STATUS_BG)${PADDING}${line#?}${PADDING}^fg()^bg()"
+            ;;
+        N*)
+            raw_state=${line#?}
+            case $raw_state in
+                up)
+                    icon_state='E'
+                    ;;
+                down)
+                    icon_state='D'
+                    ;;
+            esac
+            sys_net="^fg($COLOR_STATUS_FG)^bg($COLOR_STATUS_BG)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}^fg()^bg()"
             ;;
         T*)
             title="^fg($COLOR_TITLE_FG)^bg($COLOR_TITLE_BG)^ca(1, bspc toggle_floating)^ca(2, bspc toggle_locked)^ca(3, bspc close)${PADDING}${line#?}${PADDING}^ca()^ca()^ca()"
@@ -74,7 +94,8 @@ while read -r line ; do
             IFS=$NORMIFS
             ;;
     esac
-    set - $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^[a-z]\+([^)]*)//g' | xargs -0 textwidth -f "$font_family" -s "$font_size")
+    sys_infos="${sys_net}${sys_clock}${PADDING}"
+    set - $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^fn()/\\)/g; s/\^fn([^)]\+)/\\(/g; s/\^[a-z]\+([^)]*)//g' | xargs -0 textwidth -f "$font_family" -s "$font_size" -F "$icons_font_family" -S "$icons_font_size")
     left_width=$1
     center_width=$2
     right_width=$3
