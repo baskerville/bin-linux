@@ -40,16 +40,54 @@ while read -r line ; do
         C*)
             sys_clock="^fg($COLOR_STATUS_FG)^bg($COLOR_STATUS_BG)${PADDING}${line#?}${PADDING}^fg()^bg()"
             ;;
-        N*)
-            raw_state=${line#?}
-            case $raw_state in
-                up)
-                    icon_state='E'
+        B*)
+            set - ${line#?}
+            state=$1
+            level=$2
+            case $state in
+                Charging)
+                    icon_state=\;
                     ;;
-                down)
-                    icon_state='D'
+                Discharging)
+                    if [ $level -eq 0 ] ; then
+                        icon_state=0
+                    else
+                        icon_state=${level%?}
+                    fi
+                    ;;
+                Full|Unknown)
+                    icon_state=\:
                     ;;
             esac
+            sys_battery="^fg($COLOR_STATUS_FG)^bg($COLOR_STATUS_BG)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}^fg()^bg()"
+            ;;
+        V*)
+            set - ${line#?}
+            state=$1
+            level=$2
+            case $state in
+                off)
+                    icon_state=A
+                    ;;
+                on)
+                    if [ $level -eq 0 ] ; then
+                        icon_state=A
+                    elif [ $level -lt 50 ] ; then
+                        icon_state=B
+                    else
+                        icon_state=C
+                    fi
+                    ;;
+            esac
+            sys_volume="^fg($COLOR_STATUS_FG)^bg($COLOR_STATUS_BG)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}^fg()^bg()"
+            ;;
+        N*)
+            essid=${line#?}
+            if [ -n "$essid" ] ; then
+                icon_state='E'
+            else
+                icon_state='D'
+            fi
             sys_net="^fg($COLOR_STATUS_FG)^bg($COLOR_STATUS_BG)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}^fg()^bg()"
             ;;
         T*)
@@ -85,8 +123,17 @@ while read -r line ; do
                         wm_infos="${wm_infos}^fg(${FG})^bg(${BG})^ca(1, bspc use ${name})^ca(2, bspc send_to ${name})^ca(3, bspc send_to ${name} --follow)${PADDING}${name}${PADDING}^ca()^ca()^ca()"
                         ;;
                     L*)
-                        layout=$(printf "%s" "${item#?}" | sed 's/^\(.\).*/\U\1/')
-                        wm_infos="${wm_infos}^fg()^bg()${PADDING}${PADDING}^fg($COLOR_LAYOUT_FG)^bg($COLOR_LAYOUT_BG)^ca(1, bspc cycle_layout)^ca(2, bspc balance)${PADDING}$layout${PADDING}^ca()^ca()"
+                        # layout=$(printf "%s" "${item#?}" | sed 's/^\(.\).*/\U\1/')
+                        layout=${item#?}
+                        case $layout in
+                            tiled)
+                                icon_state=G
+                                ;;
+                            monocle)
+                                icon_state=F
+                                ;;
+                        esac
+                        wm_infos="${wm_infos}^fg()^bg()${PADDING}${PADDING}^fg($COLOR_LAYOUT_FG)^bg($COLOR_LAYOUT_BG)^ca(1, bspc cycle_layout)^ca(2, bspc balance)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}^ca()^ca()"
                         ;;
                 esac
                 shift
@@ -94,7 +141,7 @@ while read -r line ; do
             IFS=$NORMIFS
             ;;
     esac
-    sys_infos="${sys_net}${sys_clock}${PADDING}"
+    sys_infos="${sys_battery}${sys_net}${sys_volume}${sys_clock}${PADDING}"
     set - $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^fn()/\\)/g; s/\^fn([^)]\+)/\\(/g; s/\^[a-z]\+([^)]*)//g' | xargs -0 textwidth -f "$font_family" -s "$font_size" -F "$icons_font_family" -S "$icons_font_size")
     left_width=$1
     center_width=$2

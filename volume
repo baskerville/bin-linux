@@ -1,0 +1,30 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    case "$1" in
+        status)
+            :
+            ;;
+        toggle)
+            amixer -q set Master toggle
+            ;;
+        raise)
+            amixer -q set Master 1+
+            ;;
+        lower)
+            amixer -q set Master 1-
+            ;;
+        strong_raise)
+            amixer -q set Master 1%+
+            ;;
+        strong_lower)
+            amixer -q set Master 1%-
+            ;;
+        *)
+            printf "Unknown action: '%s'.\n" "$@" >&2
+            exit 1
+            ;;
+    esac
+    printf "V%s %s\n" $(amixer get Master | grep -o '\[\([0-9]\+%\|\(on\|off\)\)\]' | tr -d ']%[' | tac) > "$PANEL_FIFO"
+    shift
+done

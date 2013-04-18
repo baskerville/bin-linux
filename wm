@@ -1,6 +1,5 @@
 #! /bin/dash
 
-[ -f "$PANEL_FIFO" ] && mv "$PANEL_FIFO" "$PANEL_FOOD"
 [ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
 mkfifo "$PANEL_FIFO"
 
