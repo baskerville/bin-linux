@@ -9,7 +9,7 @@ volume status &
 xtitle -sf 'T%s' > "$PANEL_FIFO" &
 clock -s -i 5 -f 'C%a %H:%M' > "$PANEL_FIFO" &
 essid -s -i 3 -f 'N%s' > "$PANEL_FIFO" &
-battery -s -i 120 -f 'B%s %i' > "$PANEL_FIFO" &
+battery -s -i 11 -f 'B%s %i' > "$PANEL_FIFO" &
 cat "$PANEL_FIFO" | panel_dzen2 -a -f "$PANEL_FONT_FAMILY" -s "$PANEL_FONT_SIZE" -F "$PANEL_ICONS_FONT_FAMILY" -S "$PANEL_ICONS_FONT_SIZE" | uq | dzen2 -h $PANEL_HEIGHT -dock -ta l -title-name panel -fn "${PANEL_FONT_FAMILY}:pixelsize=${PANEL_FONT_SIZE}" -fg "$COLOR_FOREGROUND" -bg "$COLOR_BACKGROUND" &
 # ps -p $(pgrep -nx cat) -o pgrp= | tr -d ' ' > "$PANEL_PGRP"
 ps -p $(xdotool search --sync --class dzen getwindowpid) -o pgrp= | tr -d ' ' > "$PANEL_PGRP"
