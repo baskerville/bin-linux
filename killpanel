@@ -1,6 +1,4 @@
 #! /bin/dash
 
-[ ! -e "$PANEL_PGRP" ] && exit 1
-
-pkill -g $(cat "$PANEL_PGRP")
-rm "$PANEL_PGRP"
+pgrp=$(ps -p $(pgrep -nx dzen2) -o pgrp= | tr -d ' ')
+pkill -g $pgrp

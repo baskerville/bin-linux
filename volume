@@ -21,8 +21,7 @@ while [ $# -gt 0 ] ; do
             amixer -q set Master 1%-
             ;;
         *)
-            printf "Unknown action: '%s'.\n" "$@" >&2
-            exit 1
+            amixer "$1"
             ;;
     esac
     printf "V%s %s\n" $(amixer get Master | grep -o '\[\([0-9]\+%\|\(on\|off\)\)\]' | tr -d ']%[' | tac) > "$PANEL_FIFO"

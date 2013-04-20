@@ -36,10 +36,6 @@ setconfbg "$XDG_BIN_DIR/dmenu_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/bspwm_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/panel_colors" $bgtype
 # setconfbg "$XDG_BIN_DIR/show_xface_colors" $bgtype
-
-setconfbg "$XDG_BIN_DIR/dvol_colors" $bgtype
-setconfbg "$XDG_BIN_DIR/dbright_colors" $bgtype
-setconfbg "$XDG_BIN_DIR/dbatt_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/dnotify_colors" $bgtype
 
 setconfbg "$WALLPAPER" $bgtype

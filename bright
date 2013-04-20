@@ -1,0 +1,20 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    case "$1" in
+        status)
+            :
+            ;;
+        min)
+            backlight 0
+            ;;
+        max)
+            backlight $(backlight m)
+            ;;
+        *)
+            backlight "$1"
+            ;;
+    esac
+    printf "S%s\n" "$((100*$(backlight c)/$(backlight m)))" > "$PANEL_FIFO"
+    shift
+done
