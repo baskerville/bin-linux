@@ -93,9 +93,9 @@ while read -r line ; do
         N*)
             essid=${line#?}
             if [ -n "$essid" ] ; then
-                icon_state=v
+                icon_state=u
             else
-                icon_state=w
+                icon_state=d
             fi
             sys_net="^fg($COLOR_STATUS_FG)^bg($COLOR_STATUS_BG)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}^fg()^bg()"
             ;;
