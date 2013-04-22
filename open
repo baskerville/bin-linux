@@ -100,7 +100,7 @@ while [ $# -gt 0 ] ; do
                     *.nfo)
                         editor "$1"
                         ;;
-                    *.pcf|*.bdf)
+                    *.pcf|*.bdf|*.pfb)
                         fontforge "$1"
                         ;;
                     *.svg)
