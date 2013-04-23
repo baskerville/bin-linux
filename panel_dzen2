@@ -67,15 +67,15 @@ while read -r line ; do
             level=$2
             case $state in
                 off)
-                    icon_state=a
+                    icon_state=X
                     ;;
                 on)
-                    if [ $level -eq 0 ] ; then
-                        icon_state=a
-                    elif [ $level -lt 50 ] ; then
-                        icon_state=b
+                    if [ $level -lt 33 ] ; then
+                        icon_state=A
+                    elif [ $level -lt 66 ] ; then
+                        icon_state=B
                     else
-                        icon_state=c
+                        icon_state=C
                     fi
                     ;;
             esac
