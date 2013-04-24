@@ -1,6 +1,6 @@
 #! /bin/dash
 
-[ ! -e "$PANEL_PGRP" ] && exit 1
+[ ! -e "$PANEL_LOCK" ] && exit 1
 
 top_padding=$(bspc get top_padding)
 
@@ -12,5 +12,6 @@ else
     action=windowmap
 fi
 
-xdotool search --all --pid $(pgrep -g $(cat "$PANEL_PGRP") -x dzen2) --name panel $action
+pgrp=$(ps -p $(pgrep -nx clock) -o pgrp= | tr -d ' ')
+xdotool search --all --pid $(pgrep -g $pgrp -x dzen2) --name panel $action
 bspc set top_padding $top_padding
