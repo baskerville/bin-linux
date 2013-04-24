@@ -2,7 +2,7 @@
 
 _deps() {
     printf "%s\n" "$1"
-    local names="$(grep '^#include *"[^"]\+"' "$1" 2> /dev/null | sed 's/[^"]\+"\([^"]\+\)".*/\1/')"
+    local names="$(sed -n 's/^#include *"\([^"]\+\)".*/\1/p' "$1")"
     for nm in $names ; do
         _deps "$nm"
     done

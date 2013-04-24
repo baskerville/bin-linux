@@ -32,7 +32,7 @@ done
 shift $((OPTIND - 1))
 tmpout=$(mktemp)
 
-num=$(grep '^> ' "$V_INFO" | grep "${@:-.}" | sed 's/^> //' | tee "$tmpout" | wc -l)
+num=$(sed -n 's:^> *\(.*'$@'.*\)$:\1:p' "$V_INFO" | tee "$tmpout" | wc -l)
 
 if [ $list_files -eq 1 ] ; then
     sed "s!^~!$HOME!" "$tmpout" | tac
