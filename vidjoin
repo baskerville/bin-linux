@@ -1,0 +1,13 @@
+#! /bin/dash
+
+ext=${1##*.}
+lst=$(mktemp)
+
+while [ $# -gt 0 ] ; do
+    printf "file '%s'\n" "$(readlink -f "$1")" >> "$lst"
+    shift
+done
+
+ffmpeg -f concat -i "$lst" -c copy "output.$ext"
+
+rm "$lst"

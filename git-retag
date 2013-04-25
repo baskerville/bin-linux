@@ -1,0 +1,11 @@
+#! /bin/dash
+
+git show-ref --dereference | sed -n 's:^\([^ ]\+\) refs/tags/\([^^]\+\)\^{}:\2 \1:p' | \
+    { while read line ; do
+        set - $line
+        tag=$1
+        commit=$2
+        git tag -d "$tag"
+        git push origin :refs/tags/"$tag"
+        git tag -a "$tag" -m "Version $tag" "$commit"
+    done }

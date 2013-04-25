@@ -1,0 +1,27 @@
+#! /bin/dash
+
+base=output
+
+while getopts 'b:' opt ; do
+    case $opt in
+        b)
+            base=$OPTARG
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+cnt=1
+input=$1
+shift
+ext=${input##*.}
+
+while [ $# -gt 0 ] ; do
+    begin=$1
+    shift
+    duration=$1
+    ffmpeg -i "$input" -c copy -ss "$begin" -t "$duration" "${base}-${cnt}.$ext"
+    shift
+    cnt=$((cnt + 1))
+done
