@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 #
 # Converts a prepared Inkscape SVG (all object must be converted to paths, the
-# `title` metadata attribute must be a glyph name) to a FontForge glyph
+# `title` metadata attribute must be a valid glyph name) to a FontForge glyph
 
 import sys
 import re
@@ -199,15 +199,18 @@ def handle_transform(elt):
             dx = dx + next(mp, 0)
             dy = dy + next(mp, 0)
 
-opts, args = getopt(sys.argv[1:], 'a:e:o:', ['ascent=', 'em-size=', 'output-dir='])
+opts, args = getopt(sys.argv[1:], 'ha:e:o:', ['help', 'ascent=', 'em-size=', 'output-dir='])
 
 for opt, val in opts:
     if opt in ('-a', '--ascent'):
         ascent = int(val)
-    if opt in ('-e', '--em-size'):
+    elif opt in ('-e', '--em-size'):
         em_size = int(val)
-    if opt in ('-o', '--output-dir'):
+    elif opt in ('-o', '--output-dir'):
         output_dir = val
+    elif opt in ('-h', '--help'):
+        print('svg2glyph [-h|-a ASCENT|-e EM_SIZE|-o OUTPUT_DIR] SVG_FILE ...')
+        sys.exit(0)
 
 gid = 0
 
