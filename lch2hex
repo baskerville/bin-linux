@@ -5,7 +5,7 @@ from colormath.color_objects import RGBColor, LCHabColor
 
 (L, C, H) = map(lambda x: float(x), sys.argv[1:])
 
-lch_color = LCHabColor(L, C, H)
+lch_color = LCHabColor(L, C, H, illuminant='d65')
 rgb_color = lch_color.convert_to('rgb')
 hex_color = rgb_color.get_rgb_hex()
 

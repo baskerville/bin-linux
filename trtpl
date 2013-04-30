@@ -14,6 +14,7 @@ custom_filters = {}
 output_dir = 'output'
 templates_dir = 'templates'
 color_space = None
+illuminant = 'd65'
 filename_suffix = ''
 preserve_extensions = False
 space_to_class = {'LCH': LCHabColor, 'Lab': LabColor, 'CMYK': CMYKColor}
@@ -38,6 +39,8 @@ def interpret_values():
     global color_scheme, color_space
     for name, value in color_scheme.items():
         source_color = space_to_class[color_space](*value)
+        if hasattr(source_color, 'illuminant'):
+            source_color.illuminant = illuminant
         color_scheme[name] = source_color.convert_to('rgb').get_rgb_hex().upper()
 
 def translate_templates():
@@ -79,6 +82,9 @@ OPTIONS
     -i, --color-space LCH|Lab|CMYK
         Set the input color space.
 
+    -I, --illuminant d65|d50
+        Set the input illuminant.
+
     -o, --output-directory OUTPUT_DIR
         Define where the rendered templates will be stored.
 
@@ -91,8 +97,8 @@ OPTIONS
     sys.exit(1)
 
 def main():
-    global color_scheme, color_space, output_dir, templates_dir, filename_suffix, preserve_extensions
-    opts, args = getopt(sys.argv[1:], 'hpc:i:o:s:', ['help', 'preserve-extensions', 'color-scheme=', 'color-space=', 'output-directory=', 'filename-suffix='])
+    global color_scheme, color_space, illuminant, output_dir, templates_dir, filename_suffix, preserve_extensions
+    opts, args = getopt(sys.argv[1:], 'hpc:i:I:o:s:', ['help', 'preserve-extensions', 'color-scheme=', 'color-space=', 'illuminant=', 'output-directory=', 'filename-suffix='])
 
     if len(args) < 1:
         usage()
@@ -107,6 +113,8 @@ def main():
                 color_scheme.update(yaml.load(f.read()))
         elif opt in ('-i', '--color-space'):
             color_space = val
+        elif opt in ('-I', '--illuminant'):
+            illuminant = val
         elif opt in ('-o', '--output-directory'):
             output_dir = val
         elif opt in ('-s', '--filename-suffix'):
