@@ -14,7 +14,7 @@ custom_filters = {}
 output_dir = 'output'
 templates_dir = 'templates'
 color_space = None
-illuminant = 'd65'
+illuminant = 'D65'
 filename_suffix = ''
 preserve_extensions = False
 space_to_class = {'LCH': LCHabColor, 'Lab': LabColor, 'CMYK': CMYKColor}
@@ -40,7 +40,7 @@ def interpret_values():
     for name, value in color_scheme.items():
         source_color = space_to_class[color_space](*value)
         if hasattr(source_color, 'illuminant'):
-            source_color.illuminant = illuminant
+            source_color.illuminant = illuminant.lower()
         color_scheme[name] = source_color.convert_to('rgb').get_rgb_hex().upper()
 
 def translate_templates():
@@ -82,7 +82,7 @@ OPTIONS
     -i, --color-space LCH|Lab|CMYK
         Set the input color space.
 
-    -I, --illuminant d65|d50
+    -I, --illuminant D65|D50|...
         Set the input illuminant.
 
     -o, --output-directory OUTPUT_DIR
