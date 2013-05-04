@@ -1,0 +1,116 @@
+#! /usr/bin/env python3
+
+import re
+import sys
+from colormath.color_objects import RGBColor, LCHabColor
+
+DELTA_L_MIN = 27
+DELTA_H_MIN = 10
+RATIO_C_MIN = 3
+
+monochromes = ['Black', 'DarkGrey', 'LightGrey', 'White']
+colors = ['Red', 'Yellow', 'Green', 'Cyan', 'Blue', 'Magenta']
+color_prefixes = ['Light', 'Dark']
+standard_order = ['Black', 'DarkRed', 'DarkGreen', 'DarkYellow', 'DarkBlue', 'DarkMagenta', 'DarkCyan', 'LightGrey', 'DarkGrey', 'LightRed', 'LightGreen', 'LightYellow', 'LightBlue', 'LightMagenta', 'LightCyan', 'White']
+
+def gethex(lch_color):
+    return lch_color.convert_to('rgb').get_rgb_hex()
+
+def getlch(hex_color):
+    rgb_color = RGBColor()
+    rgb_color.set_from_rgb_hex(hex_color)
+    return rgb_color.convert_to('lchab')
+
+def hue(lch_color):
+    return lch_color.lch_h
+
+def chroma(lch_color):
+    return lch_color.lch_c
+
+def lightness(lch_color):
+    return lch_color.lch_l
+
+def delta(a, b):
+    return abs(a - b)
+
+def delta_hue(a, b):
+    d = delta(a, b)
+    if d <= 180:
+        return d
+    else:
+        return 360 - d
+
+def ratio(a, b):
+    if b == 0:
+        return sys.float_info.max
+    else:
+        return a / b
+
+def getval(val, scheme, fn, comp):
+    if type(val) is tuple:
+        a, b = val
+        if fn == delta and comp == hue:
+            fn = delta_hue
+        return fn(comp(scheme[a]), comp(scheme[b]))
+    else:
+        return val
+
+def is_computable(tpl, scheme):
+    for pair in tpl:
+        if type(pair) is tuple:
+            for elt in pair:
+                if scheme[elt] is None:
+                    return False
+    return True        
+
+def validates(scheme, constraints):
+    num = 0
+    for fn in constraints:
+        for comp in constraints[fn]:
+            for tpl in constraints[fn][comp]:
+                if is_computable(tpl, scheme):
+                    first, second = tpl
+                    if getval(first, scheme, fn, comp) < getval(second, scheme, fn, comp):
+                        print('{} {}: {} < {}'.format(fn.__name__, comp.__name__, first, second))
+                        num = num + 1
+                else:
+                    continue
+    return num
+
+if __name__ == '__main__':
+    constraints = {delta: {lightness: [], hue: []}, ratio: {chroma: []}}
+
+    for fg in monochromes[1:]:
+        constraints[delta][lightness].append(((fg, 'Black'), DELTA_L_MIN))
+
+    for prefix in color_prefixes:
+        for fg in colors:
+            constraints[delta][lightness].append((('{}{}'.format(prefix, fg), 'Black'), DELTA_L_MIN))
+
+    for fg in colors + ['Grey']:
+        constraints[delta][lightness].append((('White', 'Dark{}'.format(fg)), ('LightGrey', 'Black')))
+        constraints[delta][lightness].append((('Light{}'.format(fg), 'Black'), ('Dark{}'.format(fg), 'Black')))
+
+    for prefix in color_prefixes:
+        for i in range(len(colors)):
+            j = (i + 1) % len(colors)
+            constraints[delta][hue].append((('{}{}'.format(prefix, colors[i]), ('{}{}'.format(prefix, colors[j]))), DELTA_H_MIN))
+
+    for fg in colors + ['Grey']:
+        constraints[delta][hue].append((DELTA_H_MIN, ('Light{}'.format(fg), 'Dark{}'.format(fg))))
+
+    for fgm in monochromes:
+        for prefix in color_prefixes:
+            for fgc in colors:
+                constraints[ratio][chroma].append((('{}{}'.format(prefix, fgc), fgm), RATIO_C_MIN))
+
+    scheme = {}
+    for line in sys.stdin:
+        m = re.search('color(\d+):\s*(#[0-9A-F]{6})', line, flags=re.I)
+        if m is not None:
+            idx, hex_color = m.groups()
+            idx = int(idx)
+            if idx < 16:
+                scheme[standard_order[idx]] = getlch(hex_color)
+
+    sys.exit(validates(scheme, constraints))
