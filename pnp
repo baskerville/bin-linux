@@ -75,9 +75,6 @@ case $action in
         fi
         sudo mkdir "$mount_point"
         sudo mount $mount_options "$device" "$mount_point"
-        # if [ -t 1 ] ; then
-        #     ncd "$mount_point"
-        # fi
         ;;
     u|umount)
         if [ -z "$device" ] ; then
@@ -93,6 +90,7 @@ case $action in
             fi
             sudo umount "$mount_point"
             sudo rmdir "$mount_point"
+            [ -t 1 ] && printf '\a'
         fi
         ;;
     d|devices)
