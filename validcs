@@ -2,16 +2,33 @@
 
 import re
 import sys
-from colormath.color_objects import RGBColor, LCHabColor
+from colormath.color_objects import RGBColor
 
 DELTA_L_MIN = 27
 DELTA_H_MIN = 10
 RATIO_C_MIN = 3
 
-monochromes = ['Black', 'DarkGrey', 'LightGrey', 'White']
+monochromes = ['Background', 'Black', 'DarkGrey', 'Foreground', 'LightGrey', 'White']
 colors = ['Red', 'Yellow', 'Green', 'Cyan', 'Blue', 'Magenta']
 color_prefixes = ['Light', 'Dark']
-standard_order = ['Black', 'DarkRed', 'DarkGreen', 'DarkYellow', 'DarkBlue', 'DarkMagenta', 'DarkCyan', 'LightGrey', 'DarkGrey', 'LightRed', 'LightGreen', 'LightYellow', 'LightBlue', 'LightMagenta', 'LightCyan', 'White']
+standard_mapping = {'foreground': 'Foreground',
+                    'background': 'Background',
+                        'color0': 'Black',
+                        'color1': 'DarkRed',
+                        'color2': 'DarkGreen',
+                        'color3': 'DarkYellow',
+                        'color4': 'DarkBlue',
+                        'color5': 'DarkMagenta',
+                        'color6': 'DarkCyan',
+                        'color7': 'LightGrey',
+                        'color8': 'DarkGrey',
+                        'color9': 'LightRed',
+                       'color10': 'LightGreen',
+                       'color11': 'LightYellow',
+                       'color12': 'LightBlue',
+                       'color13': 'LightMagenta',
+                       'color14': 'LightCyan',
+                       'color15': 'White'}
 
 def gethex(lch_color):
     return lch_color.convert_to('rgb').get_rgb_hex()
@@ -61,7 +78,7 @@ def is_computable(tpl, scheme):
             for elt in pair:
                 if scheme[elt] is None:
                     return False
-    return True        
+    return True
 
 def validates(scheme, constraints):
     num = 0
@@ -80,37 +97,42 @@ def validates(scheme, constraints):
 if __name__ == '__main__':
     constraints = {delta: {lightness: [], hue: []}, ratio: {chroma: []}}
 
-    for fg in monochromes[1:]:
-        constraints[delta][lightness].append(((fg, 'Black'), DELTA_L_MIN))
+    for i in range(2, len(monochromes)):
+        j = i - 1
+        constraints[delta][lightness].append(((monochromes[i], 'Background'), (monochromes[j], 'Background')))
+
+    for i in range(3):
+        bg = monochromes[i]
+        for j in range(len(monochromes) - i - 2):
+            fg = monochromes[i + j + 2]
+            constraints[delta][lightness].append(((fg, bg), DELTA_L_MIN))
 
     for prefix in color_prefixes:
         for fg in colors:
-            constraints[delta][lightness].append((('{}{}'.format(prefix, fg), 'Black'), DELTA_L_MIN))
+            constraints[delta][lightness].append((('{}{}'.format(prefix, fg), 'Background'), DELTA_L_MIN))
 
     for fg in colors + ['Grey']:
-        constraints[delta][lightness].append((('White', 'Dark{}'.format(fg)), ('LightGrey', 'Black')))
-        constraints[delta][lightness].append((('Light{}'.format(fg), 'Black'), ('Dark{}'.format(fg), 'Black')))
+        constraints[delta][lightness].append((('White', 'Dark{}'.format(fg)), DELTA_L_MIN))
+        constraints[delta][lightness].append((('Light{}'.format(fg), 'Background'), ('Dark{}'.format(fg), 'Background')))
 
     for prefix in color_prefixes:
         for i in range(len(colors)):
             j = (i + 1) % len(colors)
             constraints[delta][hue].append((('{}{}'.format(prefix, colors[i]), ('{}{}'.format(prefix, colors[j]))), DELTA_H_MIN))
 
-    for fg in colors + ['Grey']:
+    for fg in colors:
         constraints[delta][hue].append((DELTA_H_MIN, ('Light{}'.format(fg), 'Dark{}'.format(fg))))
 
-    for fgm in monochromes:
-        for prefix in color_prefixes:
-            for fgc in colors:
-                constraints[ratio][chroma].append((('{}{}'.format(prefix, fgc), fgm), RATIO_C_MIN))
+    for prefix in color_prefixes:
+        for fg in colors:
+            constraints[ratio][chroma].append((('{}{}'.format(prefix, fg), 'Foreground'), RATIO_C_MIN))
 
     scheme = {}
     for line in sys.stdin:
-        m = re.search('color(\d+):\s*(#[0-9A-F]{6})', line, flags=re.I)
+        m = re.search('(color\d+|Foreground|background):\s*(#[0-9A-F]{6})', line, flags=re.I)
         if m is not None:
-            idx, hex_color = m.groups()
-            idx = int(idx)
-            if idx < 16:
-                scheme[standard_order[idx]] = getlch(hex_color)
+            name, hex_color = m.groups()
+            if name in standard_mapping:
+                scheme[standard_mapping[name]] = getlch(hex_color)
 
     sys.exit(validates(scheme, constraints))
