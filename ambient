@@ -1,0 +1,3 @@
+#! /bin/dash
+
+sensors | sed -n 's/^TA0P *: *\([^ ]\+\)/\1/p'
