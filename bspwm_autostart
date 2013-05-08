@@ -21,12 +21,18 @@ bspc set gapless_monocle        true
 bspc set focus_follows_pointer  false
 bspc set adaptative_raise       false
 bspc set apply_shadow_property  true
+bspc set focus_by_distance      true
 
-if [ -e "$BSPWM_BACKUP" ] ; then
-    bspc restore "$BSPWM_BACKUP"
-    rm "$BSPWM_BACKUP"
+if [ -e "$BSPWM_LAYOUT" ] ; then
+    bspc restore_layout "$BSPWM_LAYOUT"
+    rm "$BSPWM_LAYOUT"
 else
     bspc adopt_orphans
+fi
+
+if [ -e "$BSPWM_HISTORY" ] ; then
+    bspc restore_history "$BSPWM_HISTORY"
+    rm "$BSPWM_HISTORY"
 fi
 
 updatethm
