@@ -1,10 +1,9 @@
 #! /bin/dash
 
 pgrep -x urxvtd > /dev/null || urxvtd -q -o -f
-Z_DATA_FILE=${Z_DATA_FILE:-"$HOME/.z"}
 
 if [ $# -eq 0 ] ; then
-    recpth=$(sort "$Z_DATA_FILE" | tail -n 1 | awk -F "\x00" '{print $3}')
+    recpth=$(z -s atime | head -n 1)
     [ -d "$recpth" ] || recpth=$HOME
     urxvtc -cd "$recpth"
 else
