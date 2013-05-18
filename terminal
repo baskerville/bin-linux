@@ -3,7 +3,7 @@
 pgrep -x urxvtd > /dev/null || urxvtd -q -o -f
 
 if [ $# -eq 0 ] ; then
-    recpth=$(z -s atime | head -n 1)
+    recpth=$(Z -s atime | head -n 1)
     [ -d "$recpth" ] || recpth=$HOME
     urxvtc -cd "$recpth"
 else
