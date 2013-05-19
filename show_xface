@@ -19,7 +19,7 @@ uncompface -X "$xface_pth" "$xbm_img"
 size=$(grep -m 1 -o '[0-9]\+' "$xbm_img")
 size=$((size + 7))
 
-wid=$(xdotool search --classname $classname)
+wid=$(xdo id -n $classname)
 [ $? -ne 0 ] && exit 1
 xwininfo -id "$wid" > "$tmp_out"
 top_x=$(awk -F ' *: *' '/Absolute upper-left X/ {print $2}' "$tmp_out")

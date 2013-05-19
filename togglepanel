@@ -6,12 +6,12 @@ top_padding=$(bspc get top_padding)
 
 if [ $top_padding -eq $PANEL_HEIGHT ] ; then
     top_padding=0
-    action=windowunmap
+    action=hide
 else
     top_padding=$PANEL_HEIGHT
-    action=windowmap
+    action=show
 fi
 
 pgrp=$(ps -p $(pgrep -nx clock) -o pgrp= | tr -d ' ')
-xdotool search --all --pid $(pgrep -g $pgrp -x dzen2) --name panel $action
+xdo $action -p $(pgrep -g $pgrp -x dzen2) -N dzen
 bspc set top_padding $top_padding
