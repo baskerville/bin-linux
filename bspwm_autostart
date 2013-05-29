@@ -6,23 +6,6 @@ bspc rename Desktop01 $FIRST_DESK
 bspc add $REMAINING_DESKS
 # bspc layout monocle $FIRST_DESK $REMAINING_DESKS
 
-bspc rule Gimp Eight floating follow
-bspc rule Inkscape Seven floating follow
-bspc rule fontforge Six floating follow
-bspc rule Gifview floating
-
-bspc set border_width      2
-bspc set window_gap       12
-bspc set top_padding      24
-bspc set split_ratio       0.52
-
-bspc set borderless_monocle     true
-bspc set gapless_monocle        true
-bspc set focus_follows_pointer  false
-bspc set adaptative_raise       false
-bspc set apply_shadow_property  true
-bspc set focus_by_distance      true
-
 if [ -e "$BSPWM_LAYOUT" ] ; then
     bspc restore_layout "$BSPWM_LAYOUT"
     rm "$BSPWM_LAYOUT"
@@ -34,6 +17,23 @@ if [ -e "$BSPWM_HISTORY" ] ; then
     bspc restore_history "$BSPWM_HISTORY"
     rm "$BSPWM_HISTORY"
 fi
+
+bspc rule Gimp Eight floating follow
+bspc rule Inkscape Seven floating follow
+bspc rule fontforge Six floating follow
+bspc rule Gifview floating
+
+bspc set border_width      1
+bspc set window_gap       12
+bspc set top_padding      24
+bspc set split_ratio       0.52
+
+bspc set borderless_monocle     true
+bspc set gapless_monocle        true
+bspc set focus_follows_pointer  false
+bspc set adaptative_raise       false
+bspc set apply_shadow_property  true
+bspc set focus_by_distance      true
 
 updatethm
 pgrep -x compton > /dev/null || compton --shadow-exclude '_COMPTON_SHADOW:32c = 0' -bc -t -8 -l -9 -r 6 -o 0.7 -e 0.8
