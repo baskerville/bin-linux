@@ -2,8 +2,18 @@
 
 FIRST_DESK=One
 REMAINING_DESKS='Two Three Four Five Six Seven Eight Nine Ten'
+# REMAINING_DESKS='Two Three Four'
 bspc rename Desktop01 $FIRST_DESK
 bspc add $REMAINING_DESKS
+
+# bspc add_monitor Foo 1920x720+0+0
+# bspc add_monitor Bar 1920x360+0+720
+# bspc rename Desktop02 $FIRST_DESK
+# bspc add_in Foo $REMAINING_DESKS
+# bspc rename Desktop03 Eleven
+# bspc add_in Bar Twelve
+# bspc use_monitor Foo
+
 # bspc layout monocle $FIRST_DESK $REMAINING_DESKS
 
 if [ -e "$BSPWM_LAYOUT" ] ; then
@@ -23,7 +33,7 @@ bspc rule Inkscape Seven floating follow
 bspc rule fontforge Six floating follow
 bspc rule Gifview floating
 
-bspc set border_width      1
+bspc set border_width      2
 bspc set window_gap       12
 bspc set top_padding      24
 bspc set split_ratio       0.52

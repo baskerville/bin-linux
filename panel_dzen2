@@ -131,6 +131,20 @@ while read -r line ; do
                         esac
                         wm_infos="${wm_infos}^fg(${FG})^bg(${BG})^ca(1, bspc use ${name})^ca(2, bspc send_to ${name})^ca(3, bspc send_to ${name} --follow)${PADDING}${name}${PADDING}^ca()^ca()^ca()"
                         ;;
+                    # [Mm]*)
+                    #     case $item in
+                    #         M*)
+                    #             FG=$COLOR_ACTIVE_MONITOR_FG
+                    #             BG=$COLOR_ACTIVE_MONITOR_BG
+                    #             ;;
+                    #         m*)
+                    #             FG=$COLOR_INACTIVE_MONITOR_FG
+                    #             BG=$COLOR_INACTIVE_MONITOR_BG
+                    #             ;;
+                    #     esac
+                    #     name=${item#?}
+                    #     wm_infos="${wm_infos}^fg(${FG})^bg(${BG})${PADDING}${name}${PADDING}"
+                    #     ;;
                     L*)
                         layout=${item#?}
                         case $layout in

@@ -1,3 +1,0 @@
-#! /bin/dash
-
-xrandr | grep -m 1 '*' | cut -d ' ' -f 4 | figlet -f larry3d
