@@ -1,7 +1,7 @@
 #! /bin/dash
 
 args=$@
-WEATHER_LOCATION=${args:-$WEATHERCODE}
+WEATHER_LOCATION=${args:-$WEATHER_CODE}
 METRIC_URL_SUFFIX="&u=c"
 
 answer=$(wget -qO - "http://xml.weather.yahoo.com/forecastrss?p=${WEATHER_LOCATION}${METRIC_URL_SUFFIX}" | sed -n 's/.*- \([^\.]\+\)\. High: \(-\?[0-9]\+\) Low: \(-\?[0-9]\+\).*/\1 \3 \2/p')
