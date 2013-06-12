@@ -5,7 +5,7 @@ if ! [ -e "$XDG_TRASH_DIR" ] ; then
     exit 1
 fi
 
-for raw in *.CR2; do
+for raw in *.{CR2,RAF}; do
     base=${raw%.*}
     good=$(ls $base.* | grep -v $raw)
     if [ -z "$good" ]; then
