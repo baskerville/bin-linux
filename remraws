@@ -5,11 +5,13 @@ if ! [ -e "$XDG_TRASH_DIR" ] ; then
     exit 1
 fi
 
-for raw in *.{CR2,RAF}; do
+ext=${1:-RAF}
+
+for raw in *.${ext} ; do
     base=${raw%.*}
-    good=$(ls $base.* | grep -v $raw)
-    if [ -z "$good" ]; then
-        echo "trashing $raw"
-        mv -t "$XDG_TRASH_DIR" "$raw"
+    good=$(ls -d "$base".* | grep -v "$raw")
+    if [ -z "$good" ] ; then
+        printf "Trashing '%s'.\n" "$raw"
+        mv "$raw" "$XDG_TRASH_DIR"
     fi
 done

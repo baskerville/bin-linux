@@ -1,10 +1,12 @@
 #! /bin/dash
 
-for raw in *.CR2; do
+ext=${1:-RAF}
+
+for raw in *.${ext} ; do
     base=${raw%.*}
-    good=$(ls $base.* | grep -v $raw)
-    if [ -z "$good" ]; then
-        echo "developing $raw"
-        open "$raw"
+    good=$(ls -d "$base".* | grep -v "$raw")
+    if [ -z "$good" ] ; then
+        printf "Developing '%s'.\n" "$raw"
+        dcraw -T -w "$raw"
     fi
 done
