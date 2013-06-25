@@ -1,4 +1,5 @@
 #! /bin/dash
 
 killpanel
+sleep 0.3
 launchpanel

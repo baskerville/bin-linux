@@ -1,0 +1,52 @@
+#! /bin/dash
+
+if [ $# -ne 2 ] ; then
+    printf "%s ACTION FILE\n" "${0##*/}" >&2
+    exit 1
+fi
+
+action=$1
+shift
+fp=$1
+cmd=mv
+
+DATA_FILE="$XDG_DATA_HOME/sxiv_do.data"
+LAST_ACTION="$XDG_DATA_HOME/sxiv_do.last"
+
+if [ "$action" = "repeat" ] ; then
+    action=$(cat "$LAST_ACTION")
+    dest=$(Z -i "$DATA_FILE" -s atime | head -n 1)
+fi
+
+case $action in
+    rename)
+        dest=$(printf "%s" "$(basename "$fp")" | dmenu_select)
+        if [ -n "$dest" ] ; then
+            $cmd "$fp" "$(dirname "$fp")/$dest"
+        fi
+        ;;
+    copy|move)
+        if [ -z "$dest" ] ; then
+            dest=$(Z -i "$DATA_FILE" | sed 's:^'$HOME':~:' | dmenu_select | sed 's:^~:'$HOME':')
+        fi
+        if [ -d "$dest" ] ; then
+            [ "$action" = "copy" ] && cmd=cp
+            $cmd "$fp" "$dest"
+            Z -i "$DATA_FILE" -a "$dest"
+            printf "%s\n" "$action" > "$LAST_ACTION"
+        else
+            Z -i "$DATA_FILE" -d "$dest"
+        fi
+        ;;
+    comment)
+        tmp=$(mktemp)
+        gm identify -format '%c' "$fp" | perl -pe 's/^\n//' > "$tmp"
+        urxvt -e editor "$tmp"
+        gm mogrify -comment @"$tmp" "$fp"
+        rm "$tmp"
+        ;;
+    *)
+        printf "Unknown action: '%s'\n" "$action" >&2
+        exit 1
+        ;;
+esac
