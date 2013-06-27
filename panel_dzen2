@@ -164,7 +164,7 @@ while read -r line ; do
             ;;
     esac
     sys_infos="${sys_battery}${sys_net}${sys_volume}${sys_brightness}${sys_clock}${PADDING}"
-    set - $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^fn()/\\)/g; s/\^fn([^)]\+)/\\(/g; s/\^[a-z]\+([^)]*)//g' | xargs -0 textwidth -f "$font_family" -s "$font_size" -F "$icons_font_family" -S "$icons_font_size")
+    set - $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^fn()/\\)/g; s/\^fn([^)]\+)/\\(/g; s/\^[a-z]\+([^)]*)//g' | xargs -0 txtw -f "$font_family" -s "$font_size" -F "$icons_font_family" -S "$icons_font_size")
     left_width=$1
     center_width=$2
     right_width=$3
