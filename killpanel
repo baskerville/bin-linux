@@ -6,5 +6,5 @@ if [ ! -e "$PANEL_LOCK" ] ; then
 fi
 
 pgrp=$(ps -p $(pgrep -nx clock) -o pgrp= | tr -d ' ')
-pkill -g $pgrp
-rm "$PANEL_LOCK"
+
+pkill -g $pgrp && rm "$PANEL_LOCK"
