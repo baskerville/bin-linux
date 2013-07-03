@@ -67,7 +67,7 @@ while read -r line ; do
             level=$2
             case $state in
                 off)
-                    icon_state=X
+                    icon_state=Y
                     ;;
                 on)
                     if [ $level -lt 33 ] ; then
