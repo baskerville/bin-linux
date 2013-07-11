@@ -2,50 +2,50 @@
 
 FIRST_DESK=One
 REMAINING_DESKS='Two Three Four Five Six Seven Eight Nine Ten'
-bspc rename Desktop01 $FIRST_DESK
-bspc add $REMAINING_DESKS
+bspc desktop Desktop01 -n $FIRST_DESK
+bspc monitor -a $REMAINING_DESKS
 
-# bspc rename_monitor Monitor01 X
-# bspc rename Desktop01 Y
-# bspc add_monitor Alpha 1920x720+0+0
-# bspc add_monitor Beta 1560x360+0+720
-# bspc add_monitor Gamma 360x360+1560+720
-# bspc rename Desktop02 One
-# bspc add_in Alpha Two Three
-# bspc rename Desktop03 Four
-# bspc add_in Beta Five Six Seven Eight
-# bspc rename Desktop04 Nine
-# bspc add_in Gamma Ten
-# bspc use_monitor Alpha
+# bspc monitor Monitor01 -n X
+# bspc desktop Desktop01 -n Y
+# bspc monitor -A Alpha 1920x720+0+0
+# bspc monitor -A Beta 1560x360+0+720
+# bspc monitor -A Gamma 360x360+1560+720
+# bspc desktop Desktop02 -n One
+# bspc monitor Alpha -a Two Three
+# bspc desktop Desktop03 -n Four
+# bspc monitor Beta -a Five Six Seven Eight
+# bspc desktop Desktop04 -n Nine
+# bspc monitor Gamma -a Ten
+# bspc monitor -f Alpha
 
-if [ -e "$BSPWM_LAYOUT" ] ; then
-    bspc restore_layout "$BSPWM_LAYOUT"
-    rm "$BSPWM_LAYOUT"
+if [ -e "$BSPWM_TREE" ] ; then
+    bspc restore -T "$BSPWM_TREE"
+    rm "$BSPWM_TREE"
 else
-    bspc adopt_orphans
+    bspc control --adopt-orphans
 fi
 
 if [ -e "$BSPWM_HISTORY" ] ; then
-    bspc restore_history "$BSPWM_HISTORY"
+    bspc restore -H "$BSPWM_HISTORY"
     rm "$BSPWM_HISTORY"
 fi
 
-bspc rule Gimp Eight floating follow
-bspc rule Inkscape Seven floating follow
-bspc rule fontforge Six floating follow
-bspc rule Gifview floating
+bspc rule -a Gimp -d Eight --floating --follow
+bspc rule -a Inkscape -d Seven --floating --follow
+bspc rule -a fontforge -d Six --floating --follow
+bspc rule -a Gifview --floating
 
-bspc set border_width      2
-bspc set window_gap       12
-bspc set top_padding      24
-bspc set split_ratio       0.52
+bspc config border_width      2
+bspc config window_gap       12
+bspc config top_padding      24
+bspc config split_ratio       0.52
 
-bspc set borderless_monocle     true
-bspc set gapless_monocle        true
-bspc set focus_follows_pointer  false
-bspc set adaptative_raise       false
-bspc set apply_shadow_property  true
-bspc set focus_by_distance      true
+bspc config borderless_monocle     true
+bspc config gapless_monocle        true
+bspc config focus_follows_pointer  false
+bspc config adaptative_raise       false
+bspc config apply_shadow_property  true
+bspc config focus_by_distance      true
 
 updatethm
 pgrep -x compton > /dev/null || compton --shadow-exclude '_COMPTON_SHADOW:32c = 0' -bc -t -8 -l -9 -r 6 -o 0.7 -e 0.8

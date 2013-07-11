@@ -7,7 +7,7 @@ fi
 
 . panel_colors
 
-bspc put_status
+bspc control --put-status
 volume status &
 bright status &
 xtitle -sf 'T%s' > "$PANEL_FIFO" &

@@ -2,7 +2,7 @@
 
 [ ! -e "$PANEL_LOCK" ] && exit 1
 
-top_padding=$(bspc get top_padding)
+top_padding=$(bspc config top_padding)
 
 if [ $top_padding -eq $PANEL_HEIGHT ] ; then
     top_padding=0
@@ -14,4 +14,4 @@ fi
 
 pgrp=$(ps -p $(pgrep -nx clock) -o pgrp= | tr -d ' ')
 xdo $action -p $(pgrep -g $pgrp -x dzen2) -N dzen
-bspc set top_padding $top_padding
+bspc config top_padding $top_padding

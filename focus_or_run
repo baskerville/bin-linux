@@ -6,7 +6,7 @@ while [ $# -gt 0 ] ; do
         dwb | dwb_restore)
             CMD=dwb
             [ "$prg" = "dwb_restore" ] && CMD="$CMD -rf default"
-            if ! bspc list_windows | xargs xdo activate -N Dwb ; then
+            if ! bspc query -W | xargs xdo activate -N Dwb ; then
                 pgrep -x dwb > /dev/null || $CMD
             fi
             ;;
