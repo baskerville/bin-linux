@@ -6,7 +6,7 @@ geom=$(identify -format '%G' "$path[0]")
 OLDIFS=$IFS
 IFS="
 "
-set - $(exiv2 -Pt -g Exif.Photo.ISOSpeedRatings -g Exif.Photo.ShutterSpeedValue -g Exif.Photo.FNumber "$path")
+set -- $(exiv2 -Pt -g Exif.Photo.ISOSpeedRatings -g Exif.Photo.ShutterSpeedValue -g Exif.Photo.FNumber "$path")
 IFS=$OLDIFS
 printf "%s | %s | %s" "$path" "$geom" "$size"
 [ $# -eq 3 ] && printf " | ISO %s | %s | %s" "$2" "$3" "$1"

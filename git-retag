@@ -2,7 +2,7 @@
 
 git show-ref --dereference | sed -n 's:^\([^ ]\+\) refs/tags/\([^^]\+\)\^{}:\2 \1:p' | \
     { while read line ; do
-        set - $line
+        set -- $line
         tag=$1
         commit=$2
         git tag -d "$tag"

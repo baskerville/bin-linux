@@ -41,7 +41,7 @@ while read -r line ; do
             sys_clock="^fg($COLOR_STATUS_ACTIVE_FG)^bg($COLOR_STATUS_BG)${PADDING}${line#?}${PADDING}^fg()^bg()"
             ;;
         B*)
-            set - ${line#?}
+            set -- ${line#?}
             state=$1
             level=$2
             case $state in
@@ -62,7 +62,7 @@ while read -r line ; do
             sys_battery="^fg($COLOR_STATUS_ACTIVE_FG)^bg($COLOR_STATUS_BG)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}^fg()^bg()"
             ;;
         V*)
-            set - ${line#?}
+            set -- ${line#?}
             FG=$COLOR_STATUS_ACTIVE_FG
             state=$1
             level=$2
@@ -107,7 +107,7 @@ while read -r line ; do
         W*)
             wm_infos="$PADDING"
             IFS=$FIELDIFS
-            set - ${line#?}
+            set -- ${line#?}
             while [ $# -gt 0 ] ; do
                 item=$1
                 case $item in
@@ -145,7 +145,7 @@ while read -r line ; do
                     #             ;;
                     #     esac
                     #     name=${item#?}
-                    #     wm_infos="${wm_infos}^fg(${FG})^bg(${BG})${PADDING}${name}${PADDING}"
+                    #     wm_infos="${wm_infos}^fg(${FG})^bg(${BG})^ca(1, bspc monitor -f ${name})${PADDING}${name}${PADDING}^ca()"
                     #     ;;
                     L*)
                         layout=${item#?}
@@ -166,7 +166,7 @@ while read -r line ; do
             ;;
     esac
     sys_infos="${sys_battery}${sys_net}${sys_volume}${sys_brightness}${sys_clock}${PADDING}"
-    set - $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^fn()/\\)/g; s/\^fn([^)]\+)/\\(/g; s/\^[a-z]\+([^)]*)//g' | xargs -0 txtw -f "$font_family" -s "$font_size" -F "$icons_font_family" -S "$icons_font_size")
+    set -- $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^fn()/\\)/g; s/\^fn([^)]\+)/\\(/g; s/\^[a-z]\+([^)]*)//g' | xargs -0 txtw -f "$font_family" -s "$font_size" -F "$icons_font_family" -S "$icons_font_size")
     left_width=$1
     center_width=$2
     right_width=$3
