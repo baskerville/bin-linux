@@ -66,7 +66,7 @@ class PageItem:
         self.content = content
 
     def build(self, top_dir=site_dir):
-        for filename in sorted(listdir(top_dir)):
+        for filename in sorted(listdir(top_dir), reverse=True):
             filepath = join(top_dir, filename)
             filedir = relpath(filepath, site_dir)
             if filename.startswith('.') or any([filedir.startswith(s) for s in exclude]):
