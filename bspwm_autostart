@@ -11,6 +11,7 @@ bspc monitor -p 24 0 0 0
 # bspc monitor -A Alpha 1920x720+0+0
 # bspc monitor -A Beta 1560x360+0+720
 # bspc monitor -A Gamma 360x360+1560+720
+# bspc monitor Alpha -p 24 0 0 0
 # bspc desktop Desktop02 -n One
 # bspc monitor Alpha -a Two Three
 # bspc desktop Desktop03 -n Four
