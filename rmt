@@ -1,17 +1,15 @@
 #! /bin/dash
 
-if [ -h "$@" ]
-then
+if [ -h "$@" ] ; then
     real=$(readlink -sm "$@")
-
-    if [ -n "$real" ]; then
-        echo -n "Remove $real?"
+    if [ -n "$real" ] ; then
+        printf "Remove %s? " "$real"
         read answer
         case $answer in
             yes|Yes|y|Y)
-                if [ -f "$real" ]; then
+                if [ -f "$real" ] ; then
                     rm -vf "$real"
-                elif [ -d "$real" ]; then
+                elif [ -d "$real" ] ; then
                     rm -vrf "$real"
                 fi
                 ;;
