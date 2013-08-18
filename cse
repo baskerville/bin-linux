@@ -1,0 +1,24 @@
+#! /usr/bin/env python3
+
+import os
+import sys
+import sqlite3
+from urllib.parse import quote
+
+DBPATH = os.path.join(os.environ['XDG_CONFIG_HOME'], 'chromium/Default/Web Data')
+
+if len(sys.argv) < 3:
+    sys.exit(1)
+
+kw = sys.argv[1]
+terms = sys.argv[2:]
+conn = sqlite3.connect(DBPATH)
+cur = conn.cursor()
+cur.execute("select url from keywords where keyword={!r}".format(kw))
+resp = cur.fetchone()
+
+if resp is not None:
+    url = resp[0]
+    print(url.format(searchTerms=quote(' '.join(terms))))
+
+conn.close()

@@ -1,3 +1,8 @@
 #! /bin/dash
 
-gphoto2 --get-all-files 2> /dev/null
+# gphoto2 --get-all-files 2> /dev/null
+
+DEST="$HOME/art/raw/$(date +%Y%m%d)"
+[ -d "$DEST" ] || mkdir "$DEST"
+# no spaces in file names
+cp $(find /media -iregex '.*\.\(jpg\|raf\)') "$DEST"

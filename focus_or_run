@@ -15,7 +15,7 @@ while [ $# -gt 0 ] ; do
                     CMD=m
                     ;;
                 bspwm_config)
-                    CMD="editor ${XDG_CONFIG_HOME}/bspwm/autostart"
+                    CMD="editor ${XDG_DOTFILES_DIR}/bspwmrc"
                     ;;
                 sxhkd_config)
                     CMD="editor ${XDG_DOTFILES_DIR}/sxhkdrc"

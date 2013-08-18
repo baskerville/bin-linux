@@ -1,0 +1,30 @@
+#! /usr/bin/env python3
+
+import sys
+import urllib.request
+from urllib.parse import urljoin
+from html.parser import HTMLParser
+
+class SimpleHTMLParser(HTMLParser):
+    def __init__(self, url):
+        HTMLParser.__init__(self)
+        self.url = url
+
+    def handle_starttag(self, tag, attrs):
+        if tag == 'link':
+            dic = {}
+            for kv in attrs:
+                dic[kv[0].lower()] = map(lambda x: x.lower(), kv[1].split(' '))
+            if 'rel' in dic and 'icon' in dic['rel'] and 'href' in dic:
+                print(urljoin(self.url, ''.join([x for x in dic['href']])))
+
+args = sys.argv[1:]
+
+for url in args:
+    try:
+        req = urllib.request.urlopen(url)
+        data = req.read().decode('utf-8')
+        parser = SimpleHTMLParser(req.geturl())
+        parser.feed(data)
+    except:
+        pass
