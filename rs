@@ -37,6 +37,7 @@ while [ $# -gt 0 ] ; do
     previewdir="$imagedir/previews"
     mkdir -p "$previewdir"
     previewpath="$previewdir/pv_$imagebase.$ext"
-    convert -filter "$filter" -resize ${area}@\> -quality $quality -interlace Line "$imagepath" "$previewpath"
+    printf "%s -> %s\n" "$imagepath" "$previewpath"
+    convert -filter "$filter" -resize ${area}@\> -quality $quality -interlace Line -auto-orient "$imagepath" "$previewpath"
     shift
 done

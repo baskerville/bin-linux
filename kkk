@@ -1,5 +1,7 @@
 #! /bin/dash
 
-PID=$(pgrep -x "$@")
-
-[ -n "$PID" ] && kill -KILL "$PID"
+while [ $# -gt 0 ] ; do
+    PID=$(pgrep -x "$1")
+    [ -n "$PID" ] && kill -KILL "$PID"
+    shift
+done
