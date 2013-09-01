@@ -3,7 +3,7 @@
 
 import re
 import sys
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageColor
 from math import ceil
 from getopt import getopt
 
@@ -74,7 +74,7 @@ for c in palette:
     tly = y
     brx = x + output_square_side - 1
     bry = y + output_square_side - 1
-    draw.rectangle([tlx, tly, brx, bry], fill=c)
+    draw.rectangle([tlx, tly, brx, bry], fill=ImageColor.getrgb(c))
     x = x + output_square_side + square_gap
     if x >= output_width:
         x = square_gap
