@@ -5,13 +5,31 @@ if ! [ -e "$XDG_TRASH_DIR" ] ; then
     exit 1
 fi
 
-ext=${1:-RAF}
+fake=0
+ext=RAF
+
+while getopts "hfe:" opt ; do
+    case $opt in
+        h)
+            printf "%s [-h|-f|-e EXTENSION]\n" "${0##*/}"
+            exit 0
+            ;;
+        f)
+            fake=1
+            ;;
+        e)
+            ext=$OPTARG
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
 
 for raw in *.${ext} ; do
     base=${raw%.*}
     good=$(ls -d "$base".* | grep -v "$raw")
     if [ -z "$good" ] ; then
-        printf "Trashing '%s'.\n" "$raw"
-        mv "$raw" "$XDG_TRASH_DIR"
+        printf "%s\n" "$raw"
+        [ $fake -eq 0 ] && mv "$raw" "$XDG_TRASH_DIR"
     fi
 done

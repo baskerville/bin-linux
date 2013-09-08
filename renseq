@@ -10,6 +10,7 @@ while getopts "cs:" opt ; do
             ;;
         s)
             counter=$OPTARG
+            ;;
     esac
 done
 
