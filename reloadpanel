@@ -1,4 +1,4 @@
 #! /bin/dash
 
-killpanel
-launchpanel
+pkill -x panel
+panel &
