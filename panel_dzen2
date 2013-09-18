@@ -102,7 +102,7 @@ while read -r line ; do
             sys_net="^fg($COLOR_STATUS_ACTIVE_FG)^bg($COLOR_STATUS_BG)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}^fg()^bg()"
             ;;
         T*)
-            title="^fg($COLOR_TITLE_FG)^bg($COLOR_TITLE_BG)^ca(1, bspc window -t floating)^ca(2, bspc window -t locked)^ca(3, bspc window -c)${PADDING}${line#?}${PADDING}^ca()^ca()^ca()"
+            title="^fg($COLOR_TITLE_FG)^bg($COLOR_TITLE_BG)^ca(1, bspc window -t floating)^ca(2, bspc window -t locked)^ca(3, bspc window -c)${PADDING}${line#?}${PADDING}^ca()^ca()^ca()^fg()^bg()"
             ;;
         W*)
             wm_infos="$PADDING"
