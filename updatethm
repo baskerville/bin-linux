@@ -1,7 +1,14 @@
 #! /bin/dash
 
 if daytime ; then
-    togglethm light
+    bg=light
 else
-    togglethm dark
+    bg=dark
 fi
+
+if [ -e "$EXTERNAL_CONDITIONS" ] ; then
+    [ "$(cat "$EXTERNAL_CONDITIONS")" = "$bg" ] && exit 1
+fi
+
+printf "%s" "$bg" > "$EXTERNAL_CONDITIONS"
+togglethm "$bg"
