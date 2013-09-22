@@ -10,6 +10,9 @@ while [ $# -gt 0 ] ; do
     elif [ -e "$1" ]; then
         mime_type=$(file -L -b --mime-type "$1")
         # the order is important, e.g. foo/bar must appear before foo/*
+        DATA_FILE="$XDG_DATA_HOME/open.data"
+        fp=$(readlink -f "$1")
+        Z -i "$DATA_FILE" -a "$fp"
         case $mime_type in
             inode/x-empty)
                 editor "$1"
@@ -168,6 +171,7 @@ while [ $# -gt 0 ] ; do
                 ;;
             *)
                 echo "file not found: '$1'" >&2
+                exit 1
                 ;;
         esac
     fi
