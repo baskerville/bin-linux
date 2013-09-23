@@ -1,36 +1,35 @@
 #! /bin/dash
 
 while [ $# -gt 0 ] ; do
-    prg=$1
-    case "$prg" in
+    case "$1" in
         browser)
-            if ! bspc query -W | xargs xdo activate -n $BROWSER ; then
-                pgrep -x $BROWSER > /dev/null || fork $BROWSER
-            fi
-            ;;
-        mutt | top | bspwm_config | sxhkd_config | ncmpcpp)
-            CMD=$prg
-            case "$prg" in
-                mutt)
-                    CMD=m
-                    ;;
-                bspwm_config)
-                    CMD="editor ${XDG_DOTFILES_DIR}/bspwmrc"
-                    ;;
-                sxhkd_config)
-                    CMD="editor ${XDG_DOTFILES_DIR}/sxhkdrc"
-                    ;;
-            esac
-            case "$prg" in
-                mutt | ncmpcpp | top)
-                    pgrep -x "$prg" > /dev/null && CMD=""
-                    ;;
-            esac
-            xdo activate -n "$prg" || urxvtc -title "$prg" -name "$prg" -e $CMD
+            name=$BROWSER
+            cmd="fork $name"
             ;;
         *)
-            xdo activate -n "$prg" || urxvtc -name "$prg" -e editor "${XDG_DATA_HOME}/$prg"
+            name=$1
+            case "$1" in
+                mutt)
+                    cmd=m
+                    ;;
+                bspwmrc|sxhkdrc)
+                    cmd="editor ${XDG_DOTFILES_DIR}/$1"
+                    ;;
+                ncmpcpp|top)
+                    cmd=$1
+                    ;;
+                *)
+                    cmd="editor ${XDG_DATA_HOME}/$1"
+                    ;;
+            esac
+            cmd="urxvtc -name "$name" -e $cmd"
             ;;
     esac
+    wid=$(xdo id -n "$name" $(bspc query -W) | head -n 1)
+    if [ -n "$wid" ] ; then
+        bspc window "$wid" -f
+    else
+        $cmd
+    fi
     shift
 done

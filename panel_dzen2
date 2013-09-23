@@ -102,7 +102,7 @@ while read -r line ; do
             sys_net="^fg($COLOR_STATUS_ACTIVE_FG)^bg($COLOR_STATUS_BG)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}^fg()^bg()"
             ;;
         T*)
-            title="^fg($COLOR_TITLE_FG)^bg($COLOR_TITLE_BG)^ca(1, bspc window -t floating)^ca(2, bspc window -t locked)^ca(3, bspc window -c)${PADDING}${line#?}${PADDING}^ca()^ca()^ca()^fg()^bg()"
+            title="^fg($COLOR_TITLE_FG)^bg($COLOR_TITLE_BG)${PADDING}${line#?}${PADDING}^fg()^bg()"
             ;;
         W*)
             wm_infos="$PADDING"
@@ -131,7 +131,7 @@ while read -r line ; do
                                 BG=$COLOR_URGENT_BG
                                 ;;
                         esac
-                        wm_infos="${wm_infos}^fg(${FG})^bg(${BG})^ca(1, bspc desktop -f ${name})^ca(2, bspc window -d ${name})^ca(3, bspc window -d ${name} -f)${PADDING}${name}${PADDING}^ca()^ca()^ca()"
+                        wm_infos="${wm_infos}^fg(${FG})^bg(${BG})${PADDING}${name}${PADDING}"
                         ;;
                     # [Mm]*)
                     #     case $item in
@@ -145,7 +145,7 @@ while read -r line ; do
                     #             ;;
                     #     esac
                     #     name=${item#?}
-                    #     wm_infos="${wm_infos}^fg(${FG})^bg(${BG})^ca(1, bspc monitor -f ${name})${PADDING}${name}${PADDING}^ca()"
+                    #     wm_infos="${wm_infos}^fg(${FG})^bg(${BG})${PADDING}${name}${PADDING}"
                     #     ;;
                     L*)
                         layout=${item#?}
@@ -157,7 +157,7 @@ while read -r line ; do
                                 icon_state=M
                                 ;;
                         esac
-                        wm_infos="${wm_infos}^fg()^bg()${PADDING}${PADDING}^fg($COLOR_LAYOUT_FG)^bg($COLOR_LAYOUT_BG)^ca(1, bspc cycle_layout)^ca(2, bspc balance)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}^ca()^ca()"
+                        wm_infos="${wm_infos}^fg()^bg()${PADDING}${PADDING}^fg($COLOR_LAYOUT_FG)^bg($COLOR_LAYOUT_BG)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}"
                         ;;
                 esac
                 shift
