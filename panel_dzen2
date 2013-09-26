@@ -110,21 +110,29 @@ while read -r line ; do
             set -- ${line#?}
             while [ $# -gt 0 ] ; do
                 item=$1
+                name=${item#?}
                 case $item in
                     [OoFfUu]*)
-                        name=${item#?}
                         case $item in
-                            [OFU]*)
-                                FG=$COLOR_ACTIVE_FG
-                                BG=$COLOR_ACTIVE_BG
+                            O*)
+                                FG=$COLOR_FOCUSED_OCCUPIED_FG
+                                BG=$COLOR_FOCUSED_OCCUPIED_BG
+                                ;;
+                            F*)
+                                FG=$COLOR_FOCUSED_FREE_FG
+                                BG=$COLOR_FOCUSED_FREE_BG
+                                ;;
+                            U*)
+                                FG=$COLOR_FOCUSED_URGENT_FG
+                                BG=$COLOR_FOCUSED_URGENT_BG
                                 ;;
                             o*)
-                                FG=$COLOR_INACTIVE_FG
-                                BG=$COLOR_INACTIVE_BG
+                                FG=$COLOR_OCUPPIED_FG
+                                BG=$COLOR_OCUPPIED_BG
                                 ;;
                             f*)
-                                FG=$COLOR_EMPTY_FG
-                                BG=$COLOR_EMPTY_BG
+                                FG=$COLOR_FREE_FG
+                                BG=$COLOR_FREE_BG
                                 ;;
                             u*)
                                 FG=$COLOR_URGENT_FG
@@ -133,23 +141,23 @@ while read -r line ; do
                         esac
                         wm_infos="${wm_infos}^fg(${FG})^bg(${BG})${PADDING}${name}${PADDING}"
                         ;;
-                    # [Mm]*)
-                    #     case $item in
-                    #         M*)
-                    #             FG=$COLOR_ACTIVE_MONITOR_FG
-                    #             BG=$COLOR_ACTIVE_MONITOR_BG
-                    #             ;;
-                    #         m*)
-                    #             FG=$COLOR_INACTIVE_MONITOR_FG
-                    #             BG=$COLOR_INACTIVE_MONITOR_BG
-                    #             ;;
-                    #     esac
-                    #     name=${item#?}
-                    #     wm_infos="${wm_infos}^fg(${FG})^bg(${BG})${PADDING}${name}${PADDING}"
-                    #     ;;
+                    [Mm]*)
+                        case $item in
+                            M*)
+                                FG=$COLOR_ACTIVE_MONITOR_FG
+                                BG=$COLOR_ACTIVE_MONITOR_BG
+                                ;;
+                            m*)
+                                FG=$COLOR_INACTIVE_MONITOR_FG
+                                BG=$COLOR_INACTIVE_MONITOR_BG
+                                ;;
+                        esac
+                        if [ ! "$name" = "LVDS" ] ; then
+                            wm_infos="${wm_infos}^fg(${FG})^bg(${BG})${PADDING}${name}${PADDING}"
+                        fi
+                        ;;
                     L*)
-                        layout=${item#?}
-                        case $layout in
+                        case $name in
                             tiled)
                                 icon_state=T
                                 ;;
