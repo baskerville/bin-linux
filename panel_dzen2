@@ -113,10 +113,12 @@ while read -r line ; do
                 name=${item#?}
                 case $item in
                     [OoFfUu]*)
+                        font_style=Regular
                         case $item in
                             O*)
                                 FG=$COLOR_FOCUSED_OCCUPIED_FG
                                 BG=$COLOR_FOCUSED_OCCUPIED_BG
+                                font_style=Bold
                                 ;;
                             F*)
                                 FG=$COLOR_FOCUSED_FREE_FG
@@ -125,10 +127,12 @@ while read -r line ; do
                             U*)
                                 FG=$COLOR_FOCUSED_URGENT_FG
                                 BG=$COLOR_FOCUSED_URGENT_BG
+                                font_style=Bold
                                 ;;
                             o*)
                                 FG=$COLOR_OCUPPIED_FG
                                 BG=$COLOR_OCUPPIED_BG
+                                font_style=Bold
                                 ;;
                             f*)
                                 FG=$COLOR_FREE_FG
@@ -137,9 +141,10 @@ while read -r line ; do
                             u*)
                                 FG=$COLOR_URGENT_FG
                                 BG=$COLOR_URGENT_BG
+                                font_style=Bold
                                 ;;
                         esac
-                        wm_infos="${wm_infos}^fg(${FG})^bg(${BG})${PADDING}${name}${PADDING}"
+                        wm_infos="${wm_infos}^fg(${FG})^bg(${BG})${PADDING}^fn(${font_family}:pixelsize=${font_size}:style=${font_style})${name}^fn()${PADDING}"
                         ;;
                     [Mm]*)
                         case $item in
