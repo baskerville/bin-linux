@@ -15,143 +15,143 @@ while [ $# -gt 0 ] ; do
         Z -i "$DATA_FILE" -a "$fp"
         case $mime_type in
             inode/x-empty)
-                editor "$1"
+                editor "$fp"
                 ;;
             video/*|application/vnd.rn-realmedia)
-                video_player "$1"
+                video_player "$fp"
                 ;;
             audio/*)
-                audio_player "$1"
+                audio_player "$fp"
                 ;;
             image/vnd.djvu)
-                document_reader "$1"
+                document_reader "$fp"
                 ;;
             image/x-canon-cr2)
-                dcraw -T -w "$1"
+                dcraw -T -w "$fp"
                 ;;
             image/svg+xml|application/x-shockwave-flash)
-                web_browser "$1"
+                web_browser "$fp"
                 ;;
             image/x-xcf)
-                gimp "$1"
+                gimp "$fp"
                 ;;
             image/*)
-                image_viewer "$1"
+                image_viewer "$fp"
                 ;;
             application/x-lha)
-                lha x "$1"
+                lha x "$fp"
                 ;;
             application/postscript)
-                document_reader "$1"
+                document_reader "$fp"
                 ;;
             application/pdf)
-                document_reader "$1"
+                document_reader "$fp"
                 ;;
             application/zip)
-                unzip -d "${@%.*}" "$1"
+                unzip -d "${@%.*}" "$fp"
                 ;;
             application/x-tar)
-                tar xvf "$1"
+                tar xvf "$fp"
                 ;;
             application/x-rar)
-                unrar -ad x "$1"
+                unrar -ad x "$fp"
                 ;;
             application/x-bittorrent)
-                diana_add "$1"
+                diana_add "$fp"
                 ;;
             application/vnd.ms-opentype|application/x-font-ttf|application/vnd.font-fontforge-sfd)
-                fontforge "$1"
+                fontforge "$fp"
                 ;;
             text/html)
-                web_browser "$1"
+                web_browser "$fp"
                 ;;
             text/troff)
-                man -l "$1"
+                man -l "$fp"
                 ;;
             *)
-                case "$1" in
+                case "$fp" in
                     *.tar.gz|*.tgz)
-                        tar xvzf "$1"
+                        tar xvzf "$fp"
                         ;;
                     *.tar.xz)
-                        tar xvJf "$1"
+                        tar xvJf "$fp"
                         ;;
                     *.tar.bz2)
-                        tar xvjf "$1"
+                        tar xvjf "$fp"
                         ;;
                     *.bz2)
-                        bunzip2 "$1"
+                        bunzip2 "$fp"
                         ;;
                     *.tar)
-                        tar xvf "$1"
+                        tar xvf "$fp"
                         ;;
                     *.gz)
-                        gunzip "$1"
+                        gunzip "$fp"
                         ;;
                     *.ace)
-                        unace x "$1"
+                        unace x "$fp"
                         ;;
                     *.7z)
-                        7z x "$1"
+                        7z x "$fp"
                         ;;
                     *.chm)
-                        xchm "$1"
+                        xchm "$fp"
                         ;;
                     *.nzb)
-                        nzbget -A "$1"
+                        nzbget -A "$fp"
                         ;;
                     *.nfo)
-                        editor "$1"
+                        editor "$fp"
                         ;;
                     *.pcf|*.bdf|*.pfb)
-                        fontforge "$1"
+                        fontforge "$fp"
                         ;;
                     *.svg)
-                        web_browser "$1"
+                        web_browser "$fp"
                         ;;
                     *.pps|*.PPS|*.ppt|*.PPT)
-                        ppsei "$1"
+                        ppsei "$fp"
                         ;;
                     *.abw)
-                        abiword "$1"
+                        abiword "$fp"
                         ;;
                     *.rtf|*.doc)
-                        catdoc -w -s cp1252 "$1"
+                        catdoc -w -s cp1252 "$fp"
                         ;;
                     *.xls)
-                        xls2csv -s cp1252 "$1"
+                        xls2csv -s cp1252 "$fp"
                         ;;
                     *.xpm)
-                        image_viewer "$1"
+                        image_viewer "$fp"
                         ;;
                     *.mp3|*.m3u|*.ogg)
-                        audio_player "$1"
+                        audio_player "$fp"
                         ;;
                     *.mp4|*.avi|*.mpg|*.mpeg|*.mkv|*.ogv|*.f4v|*.m2ts)
-                        video_player "$1"
+                        video_player "$fp"
                         ;;
                     *.webarchive)
                         tmp_xml=$(mktemp)
                         tmp_html=$(mktemp)
-                        plutil -i "$1" -o "$tmp_xml"
+                        plutil -i "$fp" -o "$tmp_xml"
                         webarchive_decodemain "$tmp_xml" > "$tmp_html"
                         web_browser "$tmp_html"
                         rm "$tmp_xml"
                         ;;
                     *.blend)
-                        blender "$1"
+                        blender "$fp"
                         ;;
                     *.emulecollection)
-                        amule-emc "$1"
+                        amule-emc "$fp"
                         ;;
                     *)
-                        mime_encoding=$(file -L -b --mime-encoding "$1")
+                        mime_encoding=$(file -L -b --mime-encoding "$fp")
                         case $mime_encoding in
                             *binary)
-                                xxd -l 128 "$1"
+                                xxd -l 128 "$fp"
                                 ;;
                             *)
-                                editor "$1"
+                                editor "$fp"
                                 ;;
                         esac
                         ;;
