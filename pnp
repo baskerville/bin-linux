@@ -33,7 +33,7 @@ device=$2
 case $action in
     m|mount)
         if [ -z "$device" ] ; then
-            device=$(ls -1td /dev/s* | head -n 1 | grep '/dev/s\(d[b-z]\|r\)[0-9]\+' )
+            device=$(ls -1td /dev/s* | grep '/dev/s\(d[b-z]\|r\)[0-9]\+' | head -n 1)
             if [ -z "$device" ] ; then
                 printf "No device matched.\n" >&2
                 exit 1
