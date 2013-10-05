@@ -1,0 +1,5 @@
+#! /bin/dash
+
+[ $# -eq 0 ] && exit 1
+
+ctags --c-kinds=f --format=1 --sort=no -I main -f - "$@" | awk -F '\t' '{print $3}' | sed -n 's/^..\(.*\)..$/\1;/p'

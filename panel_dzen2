@@ -106,6 +106,7 @@ while read -r line ; do
             ;;
         W*)
             wm_infos="$PADDING"
+            tags=""
             IFS=$FIELDIFS
             set -- ${line#?}
             while [ $# -gt 0 ] ; do
@@ -161,6 +162,9 @@ while read -r line ; do
                             wm_infos="${wm_infos}^fg(${FG})^bg(${BG})${PADDING}${name}${PADDING}"
                         fi
                         ;;
+                    T*)
+                        tags="$tags${PADDING}$name"
+                        ;;
                     L*)
                         case $name in
                             tiled)
@@ -170,7 +174,7 @@ while read -r line ; do
                                 icon_state=M
                                 ;;
                         esac
-                        wm_infos="${wm_infos}^fg()^bg()${PADDING}${PADDING}^fg($COLOR_LAYOUT_FG)^bg($COLOR_LAYOUT_BG)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}"
+                        wm_infos="${wm_infos}^fg()^bg()${PADDING}${PADDING}^fg($COLOR_LAYOUT_FG)^bg($COLOR_LAYOUT_BG)${PADDING}^fn(${icons_font_family}:pixelsize=${icons_font_size})${icon_state}^fn()${PADDING}${PADDING}${PADDING}${tags}${PADDING}^fg()^bg()"
                         ;;
                 esac
                 shift
