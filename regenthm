@@ -13,7 +13,7 @@ trtpl -c "${COLOR_SCHEMES_DIR}/current-symbolic" -o "$OUTPUT_DIR" "${TEMPLATES_D
 cp -r -t "$XDG_DOTFILES_DIR" "${OUTPUT_DIR}"/dotfiles/*
 cp -r -t "$XDG_BIN_DIR" "${OUTPUT_DIR}"/bin/*
 
-tmp_out=$(mktemp)
-grep -iv '#[a-f0-9]\{6\}' "${XDG_DOTFILES_DIR}/dwb_config" > "$tmp_out"
-cat "${XDG_DOTFILES_DIR}/dwb_colors" >> "$tmp_out"
-mv "$tmp_out" "$XDG_DOTFILES_DIR/dwb_config"
+# tmp_out=$(mktemp)
+# grep -iv '#[a-f0-9]\{6\}' "${XDG_DOTFILES_DIR}/dwb_config" > "$tmp_out"
+# cat "${XDG_DOTFILES_DIR}/dwb_colors" >> "$tmp_out"
+# mv "$tmp_out" "$XDG_DOTFILES_DIR/dwb_config"

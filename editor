@@ -1,4 +1,3 @@
 #! /bin/dash
 
-# title "$EDITOR $@"
 $EDITOR "$@"

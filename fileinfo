@@ -6,6 +6,9 @@ while [ $# -gt 0 ] ; do
         image/svg+xml)
             inkscape -S "$1"
             ;;
+        image/gif)
+            gifsicle -I "$1"
+            ;;
         video/* | application/vnd.rn-realmedia | audio/* | image/*)
             mediainfo "$1"
             ;;

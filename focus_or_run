@@ -1,35 +1,44 @@
 #! /bin/dash
 
 while [ $# -gt 0 ] ; do
+    arg=""
+    cmd=""
+    trm=1
     case "$1" in
         browser)
-            name=$BROWSER
-            cmd="fork $name"
+            cmd=$BROWSER
+            trm=0
             ;;
         *)
-            name=$1
             case "$1" in
-                mutt)
-                    cmd=m
-                    ;;
-                bspwmrc|sxhkdrc)
-                    cmd="editor ${XDG_DOTFILES_DIR}/$1"
-                    ;;
-                ncmpcpp|top)
+                mutt|ncmpcpp|top)
                     cmd=$1
                     ;;
+                bspwmrc|sxhkdrc)
+                    arg="${XDG_DOTFILES_DIR}/$1"
+                    ;;
                 *)
-                    cmd="editor ${XDG_DATA_HOME}/$1"
+                    arg="${XDG_DATA_HOME}/$1"
                     ;;
             esac
-            cmd="urxvtc -name "$name" -e $cmd"
+            [ -n "$cmd" ] && cmd="termite -e \"$cmd\""
             ;;
     esac
-    wid=$(xdo id -n "$name" $(bspc query -W) | head -n 1)
+    wid=""
+    if [ $trm -eq 0 ] ; then
+        wid=$(xdo id -n $cmd $(bspc query -W) | tail -n 1)
+    else
+        ppid=$(pgrep -nf "${cmd:-"$arg"}")
+        [ -n "$ppid" ] && wid=$(xdo id -p $ppid $(bspc query -W) | tail -n 1)
+    fi
     if [ -n "$wid" ] ; then
         bspc window "$wid" -f
     else
-        $cmd
+        if [ -n "$cmd" ] ; then
+            fork $cmd
+        else
+            fork termite -e "editor '$arg'"
+        fi
     fi
     shift
 done

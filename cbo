@@ -1,0 +1,29 @@
+#! /usr/bin/env python3
+
+import re
+import os
+import sys
+import json
+
+BOOKMARKS_PATH = os.path.join(os.environ['XDG_CONFIG_HOME'], 'chromium/Default/Bookmarks')
+
+if len(sys.argv) < 2:
+    sys.exit(1)
+
+f = open(BOOKMARKS_PATH)
+j = json.loads(f.read())
+f.close()
+
+args = sys.argv[1:]
+pattern = re.compile('.*'.join(args), re.I)
+
+def find_urls(data):
+    if data['type'] == 'folder':
+        for itm in data['children']:
+            find_urls(itm)
+    else:
+        if re.search(pattern, data['url']) or re.search(pattern, data['name']):
+            print(data['url'])
+
+find_urls(j['roots']['other'])
+find_urls(j['roots']['bookmark_bar'])

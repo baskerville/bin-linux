@@ -1,0 +1,24 @@
+#! /usr/bin/env python3
+
+import re
+import sys
+
+COLOR_CHUNKS = [40 * j + (55 * (j > 0)) for j in range(6)]
+MONOTONE_CHUNKS = [10 * i + 8 for i in range(24)]
+COLORS = [(i, j, k) for i in COLOR_CHUNKS for j in COLOR_CHUNKS for k in COLOR_CHUNKS]
+MONOTONES = [(i, i, i) for i in MONOTONE_CHUNKS]
+COLORS.extend(MONOTONES)
+START_INDEX = 16
+
+def main():
+    for line in sys.stdin:
+        color_indexes = re.findall('\d+', line)
+        for idx in color_indexes:
+            real_idx = int(idx)
+            if real_idx >= START_INDEX and real_idx <= 256:
+                color = COLORS[int(idx) - START_INDEX]
+                hex_color = ''.join(['{:02X}'.format(n) for n in color])
+                print('#{}'.format(hex_color))
+
+if __name__ == '__main__':
+    main()

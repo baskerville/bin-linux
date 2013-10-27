@@ -1,11 +1,13 @@
 #! /bin/dash
 
-pgrep -x urxvtd > /dev/null || urxvtd -q -o -f
+# pgrep -x urxvtd > /dev/null || urxvtd -q -o -f
 
 if [ $# -eq 0 ] ; then
     recpth=$(Z -s atime | head -n 1)
     [ -d "$recpth" ] || recpth=$HOME
-    urxvtc -cd "$recpth"
+    # urxvtc -cd "$recpth"
+    termite -d "$recpth"
 else
-    urxvtc $@
+    termite -d "$@"
+    # urxvtc -cd "$@"
 fi

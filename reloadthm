@@ -7,6 +7,8 @@ bspwm_colors
 reloadwallpaper
 reloadpanel
 
-for pts in $(find /dev/pts/ -maxdepth 1 -type c -group tty) ; do
-    [ -w "$pts" ] && "$XDG_COLORS_DIR/redef" > "$pts"
-done
+pkill -USR1 -x termite
+
+# for pts in $(find /dev/pts/ -maxdepth 1 -type c -group tty) ; do
+#     [ -w "$pts" ] && "$XDG_COLORS_DIR/redef" > "$pts"
+# done

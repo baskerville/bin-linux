@@ -29,8 +29,9 @@ setconfbg "$XDG_COLORS_DIR/redef_console" $bgtype
 
 setconfbg "$XDG_DOTFILES_DIR/override.css" $bgtype
 setconfbg "$XDG_DOTFILES_DIR/dzen2_xresources" $bgtype
-# setconfbg "$XDG_DOTFILES_DIR/themes/vim/raven.vim" $bgtype
-# setconfbg "$XDG_DOTFILES_DIR/gtk2_gvim" $bgtype
+setconfbg "$XDG_DOTFILES_DIR/themes/vim/raven.vim" $bgtype
+setconfbg "$XDG_DOTFILES_DIR/termite_config" $bgtype
+setconfbg "$XDG_DOTFILES_DIR/gtk2_gvim" $bgtype
 
 setconfbg "$XDG_BIN_DIR/dmenu_colors" $bgtype
 setconfbg "$XDG_BIN_DIR/bspwm_colors" $bgtype

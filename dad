@@ -41,7 +41,7 @@ case "$1" in
 
         aria2c --daemon --enable-rpc --continue --dir "$download_dir" --input-file "$diana_session" --save-session "$diana_session"
 
-        pgrep -n -x aria2c > "$daemon_pid"
+        pgrep -nx aria2c > "$daemon_pid"
 
         if [ $? -ne 0 ] ; then
             printf '%s\n' 'The daemon failed to start.' >&2
@@ -55,7 +55,8 @@ case "$1" in
             exit 1
         fi
 
-        kill $(cat "$daemon_pid") > /dev/null 2>&1
+        # kill $(cat "$daemon_pid") > /dev/null 2>&1
+        pkill -g $(cat "$daemon_pid") > /dev/null 2>&1
 
         if [ $? -ne 0 ] ; then
             printf '%s\n' 'Could not stop the daemon.' >&2

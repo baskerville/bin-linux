@@ -1,7 +1,7 @@
 #! /bin/dash
 
 V_INFO=${V_INFO:-"$HOME/.viminfo"}
-V_VIM=${V_VIM:-vim}
+V_VIM=${V_VIM:-${EDITOR:-vim}}
 
 pick_latest=1
 choose_index=0
