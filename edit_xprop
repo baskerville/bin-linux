@@ -1,5 +1,0 @@
-#! /bin/dash
-
-tmpfile=$(mktemp)
-xprop > "$tmpfile"
-urxvtc -e editor "$tmpfile"

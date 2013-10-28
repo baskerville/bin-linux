@@ -1,6 +1,0 @@
-#! /bin/dash
-
-while [ $# -gt 0 ] ; do
-    urxvtc -e open "$1"
-    shift
-done

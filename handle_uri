@@ -10,15 +10,15 @@ fi
 
 case $scheme in
     mailto)
-        urxvtc -e mutt "$uri"
+        fork termite -e "mutt '$uri'"
         ;;
     ftp)
         case "$uri" in
             */)
-                urxvtc -e lftp "$uri"
+                fork termite -e "lftp '$uri'"
                 ;;
             *)
-                urxvtc -e wget -P "$XDG_DOWNLOAD_DIR" "$uri"
+                fork termite -e "wget -P '$XDG_DOWNLOAD_DIR' '$uri'"
                 ;;
         esac
         ;;

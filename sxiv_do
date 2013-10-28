@@ -41,7 +41,7 @@ case $action in
     comment)
         tmp=$(mktemp)
         gm identify -format '%c' "$fp" | perl -pe 's/^\n//' > "$tmp"
-        urxvt -e editor "$tmp"
+        termite -e "gvim -f '$tmp'"
         gm mogrify -comment @"$tmp" "$fp"
         rm "$tmp"
         ;;
