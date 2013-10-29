@@ -11,7 +11,7 @@ do
             filelist=".local .config .mutt .vim .mpd .themes .fonts .icons .aria2 .irssi .pal .FontForge .ssh .w3m .elinks .lftp .ncmpcpp .audacity-data .audacity-files"
             ;;
         usenet)
-            filelist=".usenet_id .newsgroups .slrn /var/spool/news"
+            filelist=".jnewsrc .usenet_id .usenet .slrn"
             ;;
         mail)
             filelist=".maildir"

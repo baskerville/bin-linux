@@ -8,7 +8,6 @@ usage() {
 [ $# -eq 0 ] && usage
 
 label="noname"
-iso=$(mktemp)
 
 while getopts "hl:" opt ; do
     case $opt in
@@ -23,9 +22,9 @@ done
 
 shift $(($OPTIND - 1))
 
-genisoimage -l -r -J -f -V "$label" -o "$iso" $@
-
-isoinfo -J -l -i "$iso"
+img=$(iso -l "$label" "$@")
+[ -z "$img" ] && exit 1
+isoinfo -J -l -i "$img"
 
 printf "%s" "Ready to burn? [Y/n] "
 read answer
@@ -33,6 +32,6 @@ read answer
 
 case "$answer" in
     y|Y|yes|Yes)
-        wodim -v "$iso"
+        wodim -v "$img"
         ;;
 esac
