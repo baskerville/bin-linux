@@ -26,12 +26,7 @@ while [ $# -gt 0 ] ; do
             esac
             ;;
     esac
-    if [ -z "$arg" ] ; then
-        wid=$(xdo id -n $name $(bspc query -W) | tail -n 1)
-    else
-        ppid=$(pgrep -nf "$arg")
-        [ -n "$ppid" ] && wid=$(xdo id -p $ppid $(bspc query -W) | tail -n 1) || wid=""
-    fi
+    wid=$(xdo id -n $name $(bspc query -W) | tail -n 1)
     if [ -n "$wid" ] ; then
         bspc window "$wid" -f
     else
