@@ -2,9 +2,6 @@
 
 trap 'pkill -x panel' INT TERM QUIT EXIT
 
-[ -e "$PANEL_FIFO" ] && rm "$PANEL_FIFO"
-mkfifo "$PANEL_FIFO"
-
 while true ; do
-  bspwm -s "$PANEL_FIFO" -p W || break
+  bspwm || break
 done
