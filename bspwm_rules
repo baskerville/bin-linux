@@ -1,7 +1,7 @@
 #! /bin/dash
 
 rulc -l > /dev/null
-while [ $? eq 1 ] ; do
+while [ $? -eq 1 ] ; do
     sleep 0.1
     rulc -l > /dev/null
 done
