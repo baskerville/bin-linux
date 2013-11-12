@@ -1,0 +1,6 @@
+#! /bin/dash
+
+set -- $(gm identify -format "%w %h" "$1")
+width=$1
+height=$2
+printf "%s\n" $((width * height))
