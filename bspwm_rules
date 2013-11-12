@@ -1,11 +1,5 @@
 #! /bin/dash
 
-rulc -l > /dev/null
-while [ $? -eq 1 ] ; do
-    sleep 0.1
-    rulc -l > /dev/null
-done
-
 num=$(rulc -l | grep -m 1 -c class)
 if [ $num -ne 1 ] ; then
     rulc -a 'class == "Gimp"' 'desktop = ^8, follow = on, floating = on'
