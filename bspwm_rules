@@ -1,9 +1,9 @@
 #! /bin/dash
 
 rulc -l > /dev/null || fork ruld
-
-num=$(rulc -l | grep -m 1 -c class)
-if [ $num -ne 1 ] ; then
+rules=$(rulc -l)
+if [ -z "$rules" ] ; then
+    sleep 0.1
     rulc -a 'class == "Gimp"' 'desktop = ^8, follow = on, floating = on'
     rulc -a 'class == "Inkscape"' 'desktop = ^7, follow = on, floating = on'
     rulc -a 'class == "fontforge"' 'desktop = ^6, follow = on, floating = on'
