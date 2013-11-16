@@ -29,6 +29,7 @@ case $action in
         if [ -z "$dest" ] ; then
             dest=$(Z -i "$DATA_FILE" | sed 's:^'$HOME':~:' | dmenu_select | sed 's:^~:'$HOME':')
         fi
+        [ -z "$dest" ] && exit 0
         if [ -d "$dest" ] ; then
             [ "$action" = "copy" ] && cmd=cp
             $cmd "$fp" "$dest"
