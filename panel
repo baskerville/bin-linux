@@ -25,6 +25,6 @@ fi
 volume status &
 bright status &
 
-cat "$PANEL_FIFO" | panel_dzen2 -f "$PANEL_FONT_FAMILY" -s "$PANEL_FONT_SIZE" -F "$PANEL_ICONS_FONT_FAMILY" -S "$PANEL_ICONS_FONT_SIZE" | uq | dzen2 -h $PANEL_HEIGHT -dock -ta l -title-name panel -fn "${PANEL_FONT_FAMILY}:pixelsize=${PANEL_FONT_SIZE}" -fg "$COLOR_FOREGROUND" -bg "$COLOR_BACKGROUND" &
+cat "$PANEL_FIFO" | panel_dzen2 -f "$PANEL_FONT_FAMILY" -s "$PANEL_FONT_SIZE" -F "$PANEL_ICONS_FONT_FAMILY" -S "$PANEL_ICONS_FONT_SIZE" | dzen2 -h $PANEL_HEIGHT -dock -ta l -title-name panel -fn "${PANEL_FONT_FAMILY}:pixelsize=${PANEL_FONT_SIZE}" -fg "$COLOR_FOREGROUND" -bg "$COLOR_BACKGROUND" &
 
 wait
