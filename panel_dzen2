@@ -9,6 +9,7 @@ icons_font_size=$font_size
 
 adaptive_centering=0
 screen_width=$(sres -W)
+num_mon=$(bspc query -M | wc -l)
 NORMIFS=$IFS
 FIELDIFS=':'
 PADDING='  '
@@ -157,7 +158,7 @@ while read -r line ; do
                                 BG=$COLOR_INACTIVE_MONITOR_BG
                                 ;;
                         esac
-                        if [ ! "$name" = "LVDS" ] ; then
+                        if [ $num_mon -gt 1 ] ; then
                             wm_infos="${wm_infos}^fg(${FG})^bg(${BG})${PADDING}${name}${PADDING}"
                         fi
                         ;;
