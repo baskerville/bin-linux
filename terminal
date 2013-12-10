@@ -1,13 +1,16 @@
 #! /bin/dash
 
-# pgrep -x urxvtd > /dev/null || urxvtd -q -o -f
+dir=$@
 
-if [ $# -eq 0 ] ; then
-    recpth=$(Z -s atime | head -n 1)
-    [ -d "$recpth" ] || recpth=$HOME
-    # urxvtc -cd "$recpth"
-    termite -d "$recpth"
-else
-    termite -d "$@"
-    # urxvtc -cd "$@"
+if [ -z "$dir" ] ; then
+    wid=$(xdo id)
+    if [ -n "$wid" -a "$(xwinfo -c $wid)" = "Termite" ] ; then
+        pid=$(pgrep -nP $(xdo pid $wid))
+        dir=$(readlink /proc/$pid/cwd)
+    else
+        dir=$(Z -s atime | head -n 1)
+        [ -d "$dir" ] || dir=$HOME
+    fi
 fi
+
+termite -d "$dir"
