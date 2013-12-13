@@ -1,0 +1,6 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    mv -v "$1" "$XDG_TRASH_DIR"
+    shift
+done

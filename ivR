@@ -1,0 +1,3 @@
+#! /bin/dash
+
+{ while [ $# -gt 0 ] ; do printf "%s %s\n" $(imratio "$1") "$1"; shift; done; } 2> /dev/null | sort -rn | cut -d ' ' -f 2- | sxiv -bi
