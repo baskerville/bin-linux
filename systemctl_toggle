@@ -1,0 +1,10 @@
+#! /bin/dash
+
+while [ $# -gt 0 ] ; do
+    if systemctl is-active --quiet "$1"; then
+        systemctl stop "$1"
+    else
+        systemctl start "$1"
+    fi
+    shift
+done
