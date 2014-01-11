@@ -4,4 +4,4 @@
 
 FONT='sans-serif:pixelsize=11'
 
-dmenu_run -i -h "$PANEL_HEIGHT" -fn "$FONT" -nb "$NORMAL_BACKGROUND" -nf "$NORMAL_FOREGROUND" -sb "$SELECTED_BACKGROUND" -sf "$SELECTED_FOREGROUND" -p '>' -q
+dmenu_run "$@" -i -h "$PANEL_HEIGHT" -fn "$FONT" -nb "$NORMAL_BACKGROUND" -nf "$NORMAL_FOREGROUND" -sb "$SELECTED_BACKGROUND" -sf "$SELECTED_FOREGROUND" -p '>' -q
