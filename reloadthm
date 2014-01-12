@@ -2,6 +2,7 @@
 
 xrdb -merge "$XDG_COLORS_DIR/xresources"
 xrdb -merge "$XDG_DOTFILES_DIR/dzen2_xresources"
+xrdb -merge "$XDG_DOTFILES_DIR/simpleswitcher_xresources"
 
 bspwm_colors
 reloadwallpaper
