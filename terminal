@@ -5,8 +5,7 @@ dir=$@
 if [ -z "$dir" ] ; then
     wid=$(xdo id)
     if [ -n "$wid" -a "$(xwinfo -c $wid)" = "Termite" ] ; then
-        pid=$(pgrep -nP $(xdo pid $wid))
-        dir=$(readlink /proc/$pid/cwd)
+        dir=$(xcwd "$wid")
     else
         dir=$(Z -s atime | head -n 1)
         [ -d "$dir" ] || dir=$HOME

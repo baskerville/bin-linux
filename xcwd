@@ -1,0 +1,11 @@
+#! /bin/dash
+
+wid=${1:-"$(xdo id)"}
+pid=$(xdo pid "$wid")
+[ -z "$pid" ] && exit 1
+child=$(pgrep -nP $pid)
+while [ -n "$child" ] ; do
+    pid=$child
+    child=$(pgrep -nP $pid)
+done
+printf "%s\n" "$(readlink /proc/${pid}/cwd)"
