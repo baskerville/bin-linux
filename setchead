@@ -1,0 +1,38 @@
+#! /usr/bin/env python3
+
+import sys
+import re
+from getopt import getopt
+
+args = sys.argv[1:]
+
+if len(args) != 2:
+    print('Usage: setchead HEAD BODY')
+    sys.exit(1)
+
+head = args[0]
+body = args[1]
+
+with open(head) as h:
+    content = h.read()
+    content = re.sub('(^|\n)', r'\1 * ', content) 
+    content = re.sub('^ | $', '/', content) 
+    content = re.sub(' *\n', '\n', content) 
+    print(content)
+
+print()
+
+state = -1
+line_length = 0
+
+with open(body) as s:
+    for index, line in enumerate(s.readlines()):
+        if (state == -1 and index == 0 and line.find('/*') != -1):
+            state = state + 1
+        if (state == 0 and line.find('*/') != -1):
+            state = state + 1
+            continue
+        if line_length == 0 and state == 1:
+            line_length = len(line.rstrip())
+        if (state == 1 and line_length > 0) or state == -1:
+            print(line, end='')

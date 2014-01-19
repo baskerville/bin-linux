@@ -74,7 +74,7 @@ case $action in
             printf "%s\n" "$mount_point"
         fi
         sudo mkdir "$mount_point"
-        sudo mount $mount_options "$device" "$mount_point"
+        sudo mount $mount_options "$device" "$mount_point" || sudo rmdir "$mount_point"
         ;;
     u|umount)
         if [ -z "$device" ] ; then
@@ -88,8 +88,7 @@ case $action in
             else
                 printf "%s\n" "$mount_point"
             fi
-            sudo umount "$mount_point"
-            sudo rmdir "$mount_point"
+            sudo umount "$mount_point" && sudo rmdir "$mount_point"
             [ -t 1 ] && printf '\a'
         fi
         ;;
