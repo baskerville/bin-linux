@@ -1,0 +1,42 @@
+#! /bin/dash
+
+case "$1" in
+	"y")
+		printf "%s" "$2" | xcmenu -ci ;;
+	"C-g")
+		gimp "$2" & ;;
+	"o")
+		sxiv "$2" & ;;
+	"C-o")
+		browse_parent "$2" ;;
+	"C-s")
+		setwallpaper "$2" ;;
+	"C-d")
+		remove "$2" ;;
+	"C-m")
+		sxiv_do move "$2" ;;
+	"C-c")
+		sxiv_do copy "$2" ;;
+	"C-r")
+		sxiv_do rename "$2" ;;
+	"c")
+		sxiv_do comment "$2" ;;
+	"C-semicolon")
+		sxiv_do repeat "$2" ;;
+	"C-backslash")
+		exec jpegtran -flip horizontal -copy all -outfile "$2" "$2" ;;
+	"C-bar")
+		exec jpegtran -flip vertical -copy all -outfile "$2" "$2" ;;
+	"C-comma")
+		exec jpegtran -rotate 270 -copy all -outfile "$2" "$2" ;;
+	"C-period")
+		exec jpegtran -rotate  90 -copy all -outfile "$2" "$2" ;;
+	"C-slash")
+		exec jpegtran -rotate 180 -copy all -outfile "$2" "$2" ;;
+	"C-less")
+		exec mogrify -rotate -90 "$2" ;;
+	"C-greater")
+		exec mogrify -rotate +90 "$2" ;;
+	"C-question")
+		exec mogrify -rotate 180 "$2" ;;
+esac
