@@ -15,9 +15,9 @@ body = args[1]
 
 with open(head) as h:
     content = h.read()
-    content = re.sub('(^|\n)', r'\1 * ', content) 
-    content = re.sub('^ | $', '/', content) 
-    content = re.sub(' *\n', '\n', content) 
+    content = re.sub('(^|\n)', r'\1 * ', content)
+    content = re.sub('^ | $', '/', content)
+    content = re.sub(' *\n', '\n', content)
     print(content)
 
 print()
