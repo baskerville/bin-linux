@@ -41,14 +41,14 @@ elif [ $num -eq 0 ] ; then
         printf "%s\n" "No matches." >&2
     fi
 elif [ $pick_latest -eq 0 -o $num -eq 1 ] ; then
-    $V_VIM $(sed "s!^~!$HOME!" "$tmpout")
+    sed "s!^~!$HOME!" "$tmpout" | xargs -d '\n' dash -c $V_VIM' "$@" < /dev/tty' $V_VIM
 else
     if [ $choose_index -eq 1 ] ; then
         nl -s ': ' -w 3 "$tmpout" | tac
         printf "%s" "? "
         read index
     fi
-    [ -n "$index" ] && $V_VIM $(head -n $index "$tmpout" | tail -n 1 | sed "s!^~!$HOME!")
+    [ -n "$index" ] && head -n $index "$tmpout" | tail -n 1 | sed "s!^~!$HOME!" | xargs -d '\n' dash -c $V_VIM' "$@" < /dev/tty' $V_VIM
 fi
 
 rm "$tmpout"
