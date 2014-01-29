@@ -1,0 +1,15 @@
+#! /bin/dash
+
+lines=16
+
+while getopts "l:" opt ; do
+    case $opt in
+        l)
+            lines=$OPTARG
+            ;;
+    esac
+done
+
+shift $((OPTIND - 1))
+
+tr '\n' '\0' | xargs -0 -p -n "$lines" $@
