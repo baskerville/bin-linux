@@ -50,7 +50,7 @@ while read -r line ; do
                     icon_state=g
                     ;;
                 Discharging)
-                    if [ $level -eq 0 ] ; then
+                    if [ $level -lt 10 ] ; then
                         icon_state=e
                     else
                         icon_state=${level%?}
