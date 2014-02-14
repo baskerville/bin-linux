@@ -1,0 +1,5 @@
+#! /bin/dash
+
+name=$1
+shift
+tar cvzf "${name}.tgz" "$@"
