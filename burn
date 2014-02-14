@@ -1,23 +1,31 @@
 #! /bin/dash
 
 usage() {
-    printf "%s [-l LABEL] FILE ...\n" "$(basename "$0")"
-    exit 0
+	printf "%s [-h|-D|-d DEVICE|-l LABEL] FILE ...\n" "$(basename "$0")"
+	exit ${1:-0}
 }
 
-[ $# -eq 0 ] && usage
+[ $# -eq 0 ] && usage 1
 
 label="noname"
+dvd=0
+device=/dev/sr1
 
-while getopts "hl:" opt ; do
-    case $opt in
-        h)
-            usage
-            ;;
-        l)
-            label=$OPTARG
-            ;;
-    esac
+while getopts "Dhd:l:" opt ; do
+	case $opt in
+		h)
+			usage
+			;;
+		l)
+			label=$OPTARG
+			;;
+		d)
+			device=$OPTARG
+			;;
+		D)
+			dvd=1
+			;;
+	esac
 done
 
 shift $(($OPTIND - 1))
@@ -31,7 +39,13 @@ read answer
 [ -z "$answer" ] && answer="yes"
 
 case "$answer" in
-    y|Y|yes|Yes)
-        wodim -v "$img"
-        ;;
+	y|Y|yes|Yes)
+		if [ $dvd -eq 0 ] ; then
+			wodim dev=$device -v "$img"
+		else
+			growisofs -Z "${device}=${img}"
+		fi
+		;;
 esac
+
+rm "$img"
