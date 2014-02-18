@@ -181,20 +181,22 @@ while read -r line ; do
     esac
     sys_infos="${sys_battery}${sys_net}${sys_volume}${sys_brightness}${sys_clock}${PADDING}"
     set -- $(printf '%s\0%s\0%s' "$wm_infos" "$title" "$sys_infos" | sed 's/\^fn()/\\)/g; s/\^fn([^)]\+)/\\(/g; s/\^[a-z]\+([^)]*)//g' | xargs -0 txtw -f "$font_family" -s "$font_size" -F "$icons_font_family" -S "$icons_font_size")
-    left_width=$1
-    center_width=$2
-    right_width=$3
-    left_indent=0
-    right_indent=$((screen_width - right_width))
-    available_center=$((screen_width - (left_width + right_width)))
-    if [ $available_center -lt $center_width ] ; then
-        center_indent=$((left_indent + left_width))
-    else
-        if [ $adaptive_centering -eq 1 ] ; then
-            center_indent=$((left_width + (available_center - center_width) / 2))
-        else
-            center_indent=$(( (screen_width - center_width) / 2 ))
-        fi
-    fi
+	left_width=$1
+	center_width=$2
+	right_width=$3
+	left_indent=0
+	right_indent=$((screen_width - right_width))
+	available_center=$((screen_width - (left_width + right_width)))
+	if [ $available_center -lt $center_width ] ; then
+		center_indent=$left_width
+	else
+		max_left_right_width=$left_width
+		[ $left_width -lt $right_width ] && max_left_right_width=$right_width
+		if [ $((2 * max_left_right_width + center_width)) -gt $screen_width ] ; then
+			center_indent=$((left_width + (available_center - center_width) / 2))
+		else
+			center_indent=$(((screen_width - center_width) / 2))
+		fi
+	fi
     printf "%s\n" "^pa($center_indent)$title^pa($left_indent)$wm_infos^pa($right_indent)$sys_infos"
 done
